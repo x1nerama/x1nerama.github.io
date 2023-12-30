@@ -1,0 +1,35 @@
+---
+layout: default
+---
+{% unless site.dash.show_author == false %}
+  {% include author.html %}
+{% endunless %}
+<h1 class="post-title">articles tagged with <a class="tag" href="{{ page.tag | tag_url }}">{{ page.tag }}</a></h1>
+<div class="post-links">
+  {% assign tag_slug = page.tag | slugify %}
+  {% for post in site.posts %}
+    {% if page.tag == "all" or post.tags contains page.tag %}
+      <div class="post-link-wrapper">
+        <a href="{{ post.url | relative_url }}" class="post-link">{{ post.title }}</a>
+        <div class="post-meta">
+          <div class="post-tags">
+            {% for tag in post.tags %}
+              <a class="tag" href="{{ tag | tag_url }}">{{ tag }}</a>
+            {% endfor %}
+          </div>
+          {% if site.dash.date_format %}
+            {{ post.date | date: site.dash.date_format }}
+          {% else %}
+            {{ post.date | date: "%b %-d, %Y" }}
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
+{% assign tagcloud_tags = "" %}
+{% for post in site.posts %}
+  {% assign tagcloud_tags = tagcloud_tags | append: post.tags | append: "," %}
+{% endfor %}
+{% assign tagcloud_tags = tagcloud_tags | split: "," | uniq %}
+{% include tagcloud.html %}
