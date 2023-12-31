@@ -81,13 +81,15 @@ Fonksiyonlarda **main** ve **ptrace** görmemiz yeterli olacaktır. Şimdi ise `
 
 <img src="https://raw.githubusercontent.com/x1nerama/x1nerama.github.io/main/images/photos-for-ptrace-blog/photo2.png">
 
-main içerisine baktığımızda işte prelog dediğimiz işlemin gerçekleştiğini görmekteyiz. Daha sonra ptrace fonksiyonun çağırıldığını görüyoruz ancak ondan önce bu fonksiyon için parametreler hazırlanıyor ve tüm parametrelere 0 değeri verilmiş. Fonksiyonun çağırılmasından sonra ise rax register'ın ```test``` instruction ile test edildiğini görmekteyiz. Daha sonra ```jns``` (Jump if not Sign) ile eğer test edilen sonuç sıfır veya pozitif bir sayı değilse **0x00001186** adresine atlanıyor. Bu atlanılan kısımda **Debugging yok Security Var!** mesajı bastırılıyor. Yani bu kısım debugging edilmediğinde atlanılan bir kısım.
+main içerisine baktığımızda ilk olarak prelog dediğimiz işlemin gerçekleştiğini görmekteyiz. Daha sonra ptrace fonksiyonun çağırıldığını görüyoruz ancak ondan önce bu fonksiyon için parametreler hazırlanıyor ve tüm parametrelere 0 değeri verilmiş. Fonksiyonun çağırılmasından sonra ise rax register'ın ```test``` instruction ile test edildiğini görmekteyiz. 
+
+Daha sonra ```jns``` (Jump if not Sign) ile eğer test edilen sonuç negatif bir sayı değil ise **( rax > 0 )** **0x00001186** adresine atlanıyor. Bu atlanılan kısımda **Debugging yok Security Var!** mesajı bastırılıyor. Yani bu kısım debugging edilmediğinde atlanılan bir kısım.
 
 Eğer bu işlem başarısız olunursa yani sonuç negatif bir sayı ise **0x00001170** adresinden devam ediyor. Burası ise programın debugging edildiğinde atlanılan kısım. Bu kısımda ise **Dostum sanırım Debugging yapıyorsun hadi seni bir çıkışa alalım** mesajı bastırılıyor ve program bitiriliyor. Yani bu kısmın decompiler'ı şu şekilde olabilir:
 
 ```c
 long rax = ptrace(PTRACE_TRACEME, 0, 0, 0);
-if (rax > 0) {
+if (rax >= 0) {
     printf("Debugging yok Security var!\n");
     return 0;
 }
@@ -133,7 +135,7 @@ printf("Dostum sanırım Debugging yapıyorsun hadi seni bir çıkışa alalım\
 return -1;
 ```
 
-Programı debugger ile çalıştırdığımız için bu if koşulun içerisine girecektir çünkü rax, -1 değerini alacaktır. 
+Programı debugger ile çalıştırdığımız için bu if koşulun içerisine girecektir çünkü rax, -1 değerini alacaktır. ```js``` Instruction'u negatif değerleri kontrol etmek için kullanılır. 
 
 Bu değişikliklerin ardından program için potansiyel bir sorun oluşmakta. Size şunu sormak istiyorum debug etmeden normal şartlarda bu programı çalıştırdığımızda sizce ne olur? Gelin bir de buna bakalım:
 
