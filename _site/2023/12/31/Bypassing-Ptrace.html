@@ -165,12 +165,14 @@
 
 <p><img src="https://raw.githubusercontent.com/x1nerama/x1nerama.github.io/main/images/photos-for-ptrace-blog/photo2.png" /></p>
 
-<p>main içerisine baktığımızda işte prelog dediğimiz işlemin gerçekleştiğini görmekteyiz. Daha sonra ptrace fonksiyonun çağırıldığını görüyoruz ancak ondan önce bu fonksiyon için parametreler hazırlanıyor ve tüm parametrelere 0 değeri verilmiş. Fonksiyonun çağırılmasından sonra ise rax register’ın <code class="language-plaintext highlighter-rouge">test</code> instruction ile test edildiğini görmekteyiz. Daha sonra <code class="language-plaintext highlighter-rouge">jns</code> (Jump if not Sign) ile eğer test edilen sonuç sıfır veya pozitif bir sayı değilse <strong>0x00001186</strong> adresine atlanıyor. Bu atlanılan kısımda <strong>Debugging yok Security Var!</strong> mesajı bastırılıyor. Yani bu kısım debugging edilmediğinde atlanılan bir kısım.</p>
+<p>main içerisine baktığımızda ilk olarak prelog dediğimiz işlemin gerçekleştiğini görmekteyiz. Daha sonra ptrace fonksiyonun çağırıldığını görüyoruz ancak ondan önce bu fonksiyon için parametreler hazırlanıyor ve tüm parametrelere 0 değeri verilmiş. Fonksiyonun çağırılmasından sonra ise rax register’ın <code class="language-plaintext highlighter-rouge">test</code> instruction ile test edildiğini görmekteyiz.</p>
+
+<p>Daha sonra <code class="language-plaintext highlighter-rouge">jns</code> (Jump if not Sign) ile eğer test edilen sonuç negatif bir sayı değil ise <strong>( rax &gt; 0 )</strong> <strong>0x00001186</strong> adresine atlanıyor. Bu atlanılan kısımda <strong>Debugging yok Security Var!</strong> mesajı bastırılıyor. Yani bu kısım debugging edilmediğinde atlanılan bir kısım.</p>
 
 <p>Eğer bu işlem başarısız olunursa yani sonuç negatif bir sayı ise <strong>0x00001170</strong> adresinden devam ediyor. Burası ise programın debugging edildiğinde atlanılan kısım. Bu kısımda ise <strong>Dostum sanırım Debugging yapıyorsun hadi seni bir çıkışa alalım</strong> mesajı bastırılıyor ve program bitiriliyor. Yani bu kısmın decompiler’ı şu şekilde olabilir:</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">long</span> <span class="n">rax</span> <span class="o">=</span> <span class="n">ptrace</span><span class="p">(</span><span class="n">PTRACE_TRACEME</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-<span class="k">if</span> <span class="p">(</span><span class="n">rax</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">rax</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">printf</span><span class="p">(</span><span class="s">"Debugging yok Security var!</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
     <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
@@ -215,7 +217,7 @@
 <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
 </code></pre></div></div>
 
-<p>Programı debugger ile çalıştırdığımız için bu if koşulun içerisine girecektir çünkü rax, -1 değerini alacaktır.</p>
+<p>Programı debugger ile çalıştırdığımız için bu if koşulun içerisine girecektir çünkü rax, -1 değerini alacaktır. <code class="language-plaintext highlighter-rouge">js</code> Instruction’u negatif değerleri kontrol etmek için kullanılır.</p>
 
 <p>Bu değişikliklerin ardından program için potansiyel bir sorun oluşmakta. Size şunu sormak istiyorum debug etmeden normal şartlarda bu programı çalıştırdığımızda sizce ne olur? Gelin bir de buna bakalım:</p>
 
