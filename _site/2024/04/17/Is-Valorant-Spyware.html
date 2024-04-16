@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html class="direction--ltr"lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Is Valorant Spyware? | bekoo’s blog</title>
+<meta name="generator" content="Jekyll v3.9.5" />
+<meta property="og:title" content="Is Valorant Spyware?" />
+<meta name="author" content="bekoo" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Valorant oyunun spyware iddiaları hakkında bir analiz yazısı" />
+<meta property="og:description" content="Valorant oyunun spyware iddiaları hakkında bir analiz yazısı" />
+<link rel="canonical" href="http://localhost:8080/2024/04/17/Is-Valorant-Spyware.html" />
+<meta property="og:url" content="http://localhost:8080/2024/04/17/Is-Valorant-Spyware.html" />
+<meta property="og:site_name" content="bekoo’s blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-04-17T00:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Is Valorant Spyware?" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"bekoo"},"dateModified":"2024-04-17T00:00:00+03:00","datePublished":"2024-04-17T00:00:00+03:00","description":"Valorant oyunun spyware iddiaları hakkında bir analiz yazısı","headline":"Is Valorant Spyware?","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:8080/2024/04/17/Is-Valorant-Spyware.html"},"url":"http://localhost:8080/2024/04/17/Is-Valorant-Spyware.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="stylesheet" href="/assets/css/magnific-popup.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:8080/feed.xml" title="bekoo&apos;s blog" /><script src="https://code.jquery.com/jquery-3.2.0.min.js"></script> 
+  <script src="/assets/js/jquery.magnific-popup.js"></script>
+</head>
+<body><div class="site-header">
+  <div class="wrapper">
+    <a class="site-title" rel="author" href="/">bekoo&#39;s blog<b class="command_prompt"></b><b class="blinking_cursor">_</b></a>
+    <span class="social_links">
+        
+        
+        <a class="color--hover" href=""><i class="fab fa-"></i></a>
+        
+        
+        
+        <a class="color--hover" href=""><i class="fab fa-"></i></a>
+        
+        
+        
+        <a class="color--hover" href=""><i class="fab fa-"></i></a>
+        
+        
+    </span>
+    <style>
+        .about-link {
+          font-size: 20px;
+          color: #637AFE;
+        }
+
+        @media only screen and (max-width: 768px) {
+          .about-link {
+            font-size: 16px;
+          }
+        }
+    </style>
+    <div class="site-title" style="float: right;">
+        <a href="/about/about.html" class="about-link">About</a>
+    </div>
+  </div>
+</div>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+  <div class="author-box">
+
+
+<img src="https://avatars.githubusercontent.com/u/101501854?v=4" class="author-avatar" alt="Avatar" style="width: 20%"/>
+<div class="description">"Everything open-source if you can read Assembly."
+</div>
+
+</div>
+
+
+<div class="post">
+  <h1 class="post-title">Is Valorant Spyware?</h1>
+  
+  <div class="post-tags">
+      
+      <a class="tag" href="/tag/valorant.html">valorant</a>
+      
+      <a class="tag" href="/tag/spyware.html">spyware</a>
+      
+      <a class="tag" href="/tag/analysis.html">analysis</a>
+      
+      <a class="tag" href="/tag/malware-analysis.html">malware-analysis</a>
+      
+  </div>
+  
+  <div class="post-date">
+    Published on 17 Apr 2024
+    
+  </div>
+  
+  <noscript>
+    <div class="post-description">Valorant oyunun spyware iddiaları hakkında bir analiz yazısı</div>
+  </noscript>
+  <div id="animated-post-description" class="post-description" style="display: none;"></div>
+  
+  <style>
+    img {
+        margin: 3% 0;
+    }
+
+    p {
+        margin: 2% 0;
+    }
+
+    .reddit {
+        margin-left: 10%;
+    }
+
+    .sup-for-references {
+        font-size: 11px;
+    }
+
+    .sup-for-references:active ~ .references {
+        color: white;
+    }  
+
+.image-container {
+  position: relative;
+  max-width: 500px; /* İhtiyacınıza göre ayarlayabilirsiniz */
+  margin: auto;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+}
+
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  display: none;
+}
+
+.modal img {
+  max-width: 100%;
+  max-height: 80vh;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  cursor: pointer;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const overlay = document.querySelector(".overlay");
+  const modal = document.querySelector(".modal");
+  const closeButton = document.querySelector(".close");
+  
+  overlay.addEventListener("click", closeModal);
+  closeButton.addEventListener("click", closeModal);
+  
+  document.querySelectorAll(".image-container img").forEach(img => {
+    img.addEventListener("click", openModal);
+  });
+  
+  function openModal() {
+    overlay.style.display = "block";
+    modal.style.display = "block";
+  }
+  
+  function closeModal() {
+    overlay.style.display = "none";
+    modal.style.display = "none";
+  }
+});
+</script>
+
+<h2 id="giriş">Giriş</h2>
+
+<p>Valorant oyunu, çıkışından beri hem oyuncuların ilgisini çeken hem de tartışmalara neden olan bir yapım olmuştur. Özellikle oyunun anti-hile sistemi olan Vanguard’ın, oyuncuların gizlilik haklarını ihlal ettiği ve spyware olarak adlandırılabilecek bir yazılım olduğu iddialarıyla sıkça gündeme gelmiştir. Bu iddialar, oyuncuların güvenlik endişelerini artırmış ve Valorant’ın popülaritesiyle birlikte bu konuda birçok tartışma başlatılmıştır.</p>
+
+<p>Reddit ve diğer sosyal medya platformlarında yayılan bu iddialar, Valorant’ın geliştiricisi olan Riot Games’in, oyuncuların bilgisayarlarında istenmeyen izleme ve kontrol yeteneklerine sahip olduğu yönünde eleştirilmesine neden olmuştur. Ancak, bu iddiaların gerçekliği ve Vanguard’ın gerçekten bir spyware olup olmadığı konusu hala netlik kazanmamıştır. Bu yazıda, Valorant’ın spyware olduğu iddialarını ele alacak ve bu iddiaların ne kadar temellendirilmiş olduğunu araştıracağız.</p>
+
+<h2 id="uyarı">Uyarı</h2>
+
+<p>Bu yazıdaki analiz ve değerlendirmeler, yalnızca araştırma amaçlıdır ve herhangi bir suçlama içermemektedir. Valorant’ın güvenlik önlemleri ve Vanguard anti-hile sistemi hakkındaki iddiaların objektif bir bakış açısıyla incelenmesi amaçlanmıştır. Bu analiz, Riot Games ya da Valorant’ın kullanıcılarına yönelik herhangi bir kötü niyetli davranışı ima etmekten ziyade, topluluğun gündeme getirdiği endişeleri ve eleştirileri anlama ve değerlendirme amacını taşımaktadır.</p>
+
+<h2 id="anti-cheat-yazılımları-nasıl-çalışır">Anti-Cheat Yazılımları nasıl Çalışır?</h2>
+
+<p>Araştırmamıza Anti-Cheat yazılımların nasıl çalıştığını anlayarak başlamamız gerekiyor.</p>
+
+<p>Genel olarak Anti-Cheat yazılımları, oyun içerisinde hile yapılmasını engellemek ve hile yapanları tespit etmek amacıyla geliştirilmiş yazılımlardır. Bu yazılımlar, oyunun çalıştığı cihazın kernel seviyesinde çalışarak, oyun için hazırlanan hileleri tespit etmektir.</p>
+
+<p>Anti-Cheat yazılımların çalışma mantığı ikiye ayrılabilir; server-side (sunucu taraflı) ve client-side (istemci taraflı) çalışma yöntemleri. Server-side sadece oyun sunucusu tarafında çalışır ve gelen data paketlerini denetler. Bu paketler, oyuncuların eylemleri ve durumuyla ilgili paketlerdir. Client-side tabanlı anti-cheat yazılımları ise oyuncunun kendi cihazında çalışan ve sunucuya veri gönderen yazılımlardır.<sup class="sup-for-references"><a href="#source-1">[1]</a></sup></p>
+
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Priv_rings.svg/1024px-Priv_rings.svg.png" /></p>
+
+<p>İlk başlarda Anti-Cheat yazılımları Ring 3 seviyesinde çalışıyordu. Bilindiği gibi ring 3 alanı, <strong>User Mode</strong> olarak geçmektedir. Eğer bu konuya aşina değilseniz hızlı bir şekilde araştırmanızı tavsiye ederim.</p>
+
+<p>Bilindiği üzere User Mode alanında ayrıcalıklar çok kısıtlıdır; işletim sistemi üzerinde her ayrıcalığa sahip olmadığınız ve çok kısıtlı olduğunuz bir alan. Anti-Cheat yazılımları ise bu alanda çalışıyordu. Bu alanda doğrudan donanıma erişim sağlayamadığınız için ve belleğe erişim sağlayamadığınız için anti-cheat yazılımları herhangi bir tarama gerçekleşmeden önce Application Programming Interface (API)’lardan izin alması gerekirdi. Bunlarla beraber bu alanda anti-cheat yazılımları, diğer uygulamara göre izole bir şekilde çalışırdı ve bu yüzden başka bir uygulamaya ait olan datalara müdahale edemez ya da datayı değiştiremezdi.</p>
+
+<p>Fakat Cheater’lar, anti-cheat yazılımların Ring 3 seviyesinde çalıştığını bildikleri için daha sofistike yöntemler geliştirdiler. Yöntemleri ise hazırladıkları hileleri Ring 3 seviyesinde değil Ring 0 alanında çalıştırmaktı yani <strong>Kernel Mode</strong> alanında. Böylece hazırladıkları hileler daha fazla ayrıcalıklara sahip oluyordu ve tespit edilmesi ciddi anlamda zorlaşıyordu. Ring 0 yani Kernel Mode alanı, User Mode alanı gibi kısıtlamalara sahip değildir; bu alana kıyasla daha fazla ayrıcalıklara sahiptir, herhangi bir instruction yürütebilir ve herhangi bir bellek adresini rahatça okuyabilir. Hatta Cheater’lar o kadar ileri seviyeye gitmişler ki, Ring 3 alanında çalışan Anti-Cheat yazılımların data almak için kullandığı system call’ları yani sistem çağrılarını bile hooklayabiliyordı.</p>
+
+<p>Oyun şirketleri ise bu yönteme karşı daha benzer bir sofistike bir yöntem geliştirdiler ve kernel seviyesinde yani Ring 0 alanında çalışan anti-cheat yazılımlar geliştirdiler. Ring 0’da çalışan bu yazılımlar, Ring 3 alanında olduğu gibi sistemi aynı şekilde tarayabiliyor ancak bunu direkt kernel seviyesinde yapıyor yani tamamen yüksek yetkiler ile. Bunun avantajı olduğu gibi de bu blogta baya tartışacağımız dezavantajı da vardır. Anti-Cheat yazılımların Ring 0 alanında çalışma avantajı, tespit edilemesi zor olan hileleri bile kolayca tespit etmesi ve oyunu hileye karşı daha güvenli tutmasıdır. Dezavantajı ise <strong>gizlilik problemi</strong>.</p>
+
+<p>Düşünün ki, eğer bu yazılımlar sizi hilelerden korumak için yüksek yetkiler ile tarama yapıp ve her şeyi okuyabiliyorsa teorik olarak bilgisayarınızdaki her şeye de erişebilir anlamına da geliyor. Bu yazılımlar kernel seviyesinde çalışıyor. Yani yüksek ayrıcalıklarla sizin bilgisayarınızdaki anlık her şeyi okuyabilir ve erişebilirler. Sizlere şu soruyu yönlendirmek isterim, oynadığınız oyunda hilecilere katlanmak istemezsiniz ve bu hilecilere karşı bir önlem alınmasını istersiniz ama bununla beraber gizliliğinizi riske atmak ister miydiniz?</p>
+
+<h2 id="anti-cheat-yazılımların-getirdiği-potansiyel-tehlikeler">Anti-Cheat yazılımların getirdiği Potansiyel Tehlikeler</h2>
+
+<p>Bende dahil oyunlarda neredeyse hepimiz hilecilere karşı bir önlemler alınmasını isteriz. Buna karşın oyun şirketleri de anti-cheat yazılımlarını bizlere sunar ancak bu yazılımlar isteğimizi karşılasa da yanında getirdikleri ciddi sorunlar var; bunlardan biri de yukarıda ele aldığım gizlilik sorunu.</p>
+
+<p>Geçmiş yıllarda anti-cheat yazılımların gizlilik ilkelerini ihlal eden olaylar olmuştur. Bunlardan biri de 2yılında ESEA şirketinden bir geliştiricinin işletim sisteminin kernel seviyesini kullanarak oyuncuların bilgisiyarından gizli ve büyük ölçekte bir bitcoin madenciliği gerçekleştirmesi bu konuya güzel örnektir. Geliştirici, <b>14.000</b> oyuncunun bilgisiyarındaki GPU ile yerleştirdiği mining yazılımıyla yaklaşık 4.000$ elde etti<sup class="sup-for-references"><a href="#source-4">[4]</a></sup> ve bu olay ortaya çıktıktan sonra ESEA şirketi US Regulators (ABD Düzenleyicileri) tarafından <b>1.000.000</b> <a href="https://nj.gov/oag/newsreleases13/pr20131119a.html">para cezası verildi</a>. Bu olaylardan sonra ESEA şirketi bizzat kamuoyundan <a href="https://play.esea.net/news/12692">özür diledi</a> ve ESEA şirketi mining ile elde edilen paraları ödül potları aracılığıyla oyunculara dağıttı ve American Cancer Society (Amerikan Kanser Derneği)’ne <b>$7.427.10</b> bağışladı.<sup class="sup-for-references"><a href="#source-4">[4]</a></sup><sup class="sup-for-references"><a href="#source-5">[5]</a></sup></p>
+
+<p>Bu yazılımlar tamamen yüksek ve ayrıcalıklı yetkiler ise oyuncunun bilgisayarını tarayabilir ve her dataya erişebilir. Bu da sistemde genel bir istikrarsızlığa neden olabileciği gibi gizlilik problemine de neden olur.</p>
+
+<p>Bununla beraber bazı hackerların oyuncuların bilgisayarına girmesine neden olabilecek güvenlik açıklara ya da İşletim sistemi için problemlere neden olabilirler. Anti-Cheat’lar bir driver yani sürücü olarak çalıştığı için sürücü kodundaki küçük bir hata, işletim sistemin <b>Blue Screen of Death (BSOD)</b> benzeri çökmelere neden olurken, sürücü kodunda bulunan ciddi ihmaller veya eksiklikler ise bufferoverflow gibi açıklara neden olabilir.</p>
+
+<p><b>“Ulan beko alt tarafı oyunun güvenliğini sağlıyorlar ne abarttın be güvenlik açığı bilmem ne diye”</b> dediğinizi duyar gibiyim. Gelin reddit’ten bu sorunlara maruz kalmış insanların konularına bir göz atalım:</p>
+
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/r-com1.png?raw=true" class="reddit" style="width: 80%;" /></p>
+
+<p>Burada kullanıcı bilgisiyarı açtığı anda yukarıda bahsettiğim <strong>SYSTEM THREAD EXCEPTION NOT HANDLED</strong> hata koduyla mavi hata ekrana düştüğünü belirtiyor. Çözüm üretmek için Windows’a girmeye ya da windows’u güvenli modda çalıştırmayı denediğini ancak başaramadığını belirtiyor. Son olarak ise format atarak sorunu çözdüğünü belirtiyor.</p>
+
+<p><strong>vgk.sys</strong>, RIOT Games’a ait olan bir Vanguard anti-cheat yazılımın driver yani sürücü dosyasıdır.</p>
+
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/r-com2.png?raw=true" class="reddit" style="width: 80%;" /></p>
+
+<p>Burada ise kullanıcı Counter Strike 2 oyununu oynadığı sürece yine aynı hata koduyla mavi ekrana düştüğünü ve çözüm aradığını belirtiyor. Burada tam olarak anti-cheat yüzünden olduğunu söylemek biraz güç gibi gözüküyor ancak yine de paylaşmak istedim. Ama bu hata nedeninin sürücü kodundan olduğu açıkça belli.</p>
+
+<p>Peki neden sürücüler mavi ekran gibi hatalara neden olur? Anti-Cheat yazılımın kernel seviyesinde çalıştığını birçok defa tekrarladım. Kernel seviyesinde çalışan sürücülerde gerçekleşen <strong>en ufacık</strong> bir hata işletim sistemin çökmesine neden olur. Çünkü işletim sistemin en derinindesiniz. Ring 0 yani kernel mode alanı hatalara karşı çok hassastır. O yüzden kernel seviyesinde çalışıyorsanız çok dikkatli olmanız da gerekir. Oyun şirketleri ise bunları dikkate alarak anti-cheat yazılımları geliştirmeli.</p>
+
+<h2 id="neden-valorant-için-spyware-iddiaları-bulunmakta">Neden Valorant için Spyware iddiaları bulunmakta?</h2>
+
+<p>Valorant için bu iddiaların bulunmasındaki en büyük sebeplerden biri de Çin ülkesine ait olan Tencent şirketinin RIOT Games’ın %100’üne sahip olması, bu iddialara öncülük etmektedir. Tencent şirketi, Şubat 2011’de Riot Games’in yüzde 93 hissesi için 400 milyon yatırım yapmıştı ve 16 Aralık 2015’te kalan yüzde 7 hisse için de belirtilmeyen fiyat ile yatırım yaparak %100 hisseyi almıştır.<sup class="sup-for-references"><a href="#source-3">[3]</a></sup></p>
+
+<p>Tencent şirketi, Çin hükümeti ile yakın ilişkileri olan bir şirkettir ve Çin hükümeti, internet üzerindeki tüm faaliyetleri kontrol etmek istemektedir. Bu durum, Tencent’in RIOT Games’ın %100’üne sahip olması ve Valorant’ın anti-cheat yazılımının kernel seviyesinde çalışması, bu yazılımın Çin hükümeti tarafından kullanılabileceği iddialarına neden olmuştur.</p>
+
+<p>Bu tartışmaların başlangıcını 3-4 yıl öncesinde başladığını görebiliriz. Mesela <a href="https://www.reddit.com/r/privacy/comments/kz872x/is_valorant_malwarespyware/?rdt=41178">r/privacy</a> subreddit’inde denk geldiğim şu konuya bir göz atabiliriz:</p>
+
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/r-com3.png?raw=true" class="reddit" style="width: 80%;" /></p>
+
+<p>İçerikte, Valorant’ın anti-cheat yazılımı olan Vanguard’ın tehlikeli olup olmayacağına dair bir soru sorulmuş. Yine içerikte bu yazılımın arka tarafta sürekli çalıştığı söyleniyor. Peki gerçekten öyle mi?</p>
+
+<p>Bu soruyu araştırmaya öncelikle RIOT’un kendi makalesi olan <a href="https://support-valorant.riotgames.com/hc/tr/articles/360046160933-Vanguard-nedir">‘Vanguard Nedir’</a> ile başlamaya karar verdim. Makalenin başında da kendileri de Vanguad’ın kernel modu sürücüsü olarak çalıştıklarını söylüyorlar. Ancak makalenin şu kısmı çok dikkatimi çekti:</p>
+
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/vanguard-article.png?raw=true" /></p>
+
+<p>Açıkçası bu metinler beni tatmin etmedi. Evet, RIOT makalesinde Vanguard’ın zaten bilgisiyar açılışından itibaren çalıştığını açıkça söylüyor ancak bana soracak olursanız açıklama yetersiz. <b>Gizlilik</b> gibi böyle bir konuyu detaylandırarak oyunculara açıklamak ve güvenini kazanmak yerine böyle kısa açıklama ile konuyu kapatmak sizce de mantıklı mı?</p>
+
+<p>Bu makale bana yetersiz geldiği için tekrardan reddit ortamlarına döndüm ve bu konuda tartışan insanların yorumlarına göz atmaya başladım. Daha sonra r/VALORANT subreddit’inde şu konuya denk geldim:</p>
+
+<blockquote class="reddit-embed-bq" style="height:316px" data-embed-theme="dark" data-embed-height="612"><a href="https://www.reddit.com/r/VALORANT/comments/fzxdl7/anticheat_starts_upon_computer_boot/">Anticheat starts upon computer boot</a><br /> by<a href="https://www.reddit.com/user/DolphinWhacker/">u/DolphinWhacker</a> in<a href="https://www.reddit.com/r/VALORANT/">VALORANT</a></blockquote>
+<script async="" src="https://embed.reddit.com/widgets.js" charset="UTF-8"></script>
+
+<p>Gerçekten r/VALORANT subreddit’inde baya tartışılmış bir konu.</p>
+
+<p>Tartışmayı başlatan kişi, vgk.sys’in bilgisiyar başlangıcından itibaren çalıştığını ve bunu umursamasa da bunun nedenini soruyor ve gerçekten güzel bir soru.</p>
+
+<p>Daha sonra VANGUARD anti-cheat yazılımın lideri olan u/RiotArkem uzun bir cevabına denk geldim:</p>
+
+<blockquote class="reddit-embed-bq" data-embed-theme="dark" data-embed-height="876"><a href="https://www.reddit.com/r/VALORANT/comments/fzxdl7/comment/fn6yqbe/">Comment</a><br /> by<a href="https://www.reddit.com/user/DolphinWhacker/">u/DolphinWhacker</a> from discussion<a href="https://www.reddit.com/r/VALORANT/comments/fzxdl7/anticheat_starts_upon_computer_boot/"><no value=""></no></a><br /> in<a href="https://www.reddit.com/r/VALORANT/">VALORANT</a></blockquote>
+<script async="" src="https://embed.reddit.com/widgets.js" charset="UTF-8"></script>
+
+<p>Bu açıklama, Vanguard üzerine okuduğum makaleye kıyasla daha açıklayıcıydı. Gelin bir detaylı göz atalım!</p>
+
+<p>vgk.sys sürücüsünün gerçekten bilgisiyar başlangıcında çalıştığını söylüyor ancak oyun çalışmadığı sürece hiçbir şeyin taramadığını, sunucularla iletişim kurmadığını ve mümkün olduğunca az sistem kaynağı kullanarak çalıştığını söylüyor ve bu yazılımın istendiği zaman kaldırılabileceği söyleniyor.</p>
+
+<p>Neden başlangıçta çalıştığını ise sistem başlangıcında yüklenmediği sürece bilgisiyarı güvenilir olarak kabul etmediği için ve em önemlisi de anti-cheat yazılımları bypass etmenin yollarından biri olan anti-cheat yazılımların yüklenmesinden önce hemen hilenin yüklenmesi ya da sistem bileşenlerini değiştirerek hileyi eklemek gibi bypass yöntemlerine çözüm olabileceği söylenmiş.</p>
+
+<p>Ayrıca bu sürücünün güvenliğine ve ayrıcalıklarına da değinmiş. Güvenlik olarak güvenlik araştırma ekiplerine incelettiklerini, sürücünün mümkün olduğunda az şeyler yaptığını ve sürücüye en az ayrıcalıklar verdiklerini söylemiş</p>
+
+<p>Son olarak bizim için önemli açıklama ise bu yazılımın hiçbir şekilde oyuncunun bilgisiyar hakkında bir bilgi toplamadığı veya sunuculara göndermediği belirtlmiş ve sadece oyun çalıştığında etkin olabileceği söylenmiş. <br /> <br /></p>
+
+<p>Açıklamaya göz attığımızda orijinal makaleye kıyasla daha açıklayıcı ve güzel duruyor. Şimdi ise bu topladığımız bilgileri analize dökerek bir kontrol edelim.</p>
+
+<h2 id="analizin-gerçekleşmesi">Analizin gerçekleşmesi</h2>
+
+<p>Şimdi temel bilgilerden sonra artık basitçe neler yapabileceğimizi çözdük ve artık yavaştan analize başlayabiliriz.</p>
+
+<p>Öncelikle analize wireshark ile başlamak istedim. RIOT Client uygulaması başlatıldığında nerelere bağlantı kurduğunu görmek istedim ve sonuç korkutucuydu:</p>
+
+<video controls="">
+    <source src="https://github.com/x1nerama/x1nerama.github.io/raw/847f438aba42f3b2508c2803be731d5709f0ef3b/video/videos-for-valorant-topic/wireshark-video.mp4" type="video/mp4" />
+</video>
+
+<p>Göründüğü gibi Client uygulaması çalıştırıldığında düşünüldüğünden daha fazla birçok yere veri gönderiliyor.</p>
+
+<p>Burada gönderilen verilerin içeriğini görmek pek mümkün olmayacaktır çünkü videoda görülebileceği gibi veriler şifrelenmiş halde. Dolayasıyla bunun izinden gitmemiz pek mümkün olmayacaktır. Bu yüzden bende bireysel bağlantıların adreslerinden bir kaçına göz atmaya karar verdim:</p>
+
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/tcpview-for-riotclient.png?raw=true" style="margin-bottom: 0" /></p>
+<div class="image-container"> 
+    <div class="overlay"></div>
+    <div class="modal">
+        <span class="close">&times;</span>
+        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/tcpview-for-riotclient.png?raw=true" />
+    </div>
+    <div align="center">
+        <h4 style="text-align:center;"> Fotoğrafı yakından görmek için üzerine tıklayın. </h4>
+    </div>  
+</div>
+
+<p>Verilerin nereye gönderildiğine dair bir iz sürmeye çalıştığımda verilerin nereye gönderildiğine dair bir sonuca varamadım ancak <a href="https://www.youtube.com/@pcsecuritychannel">The PC Security Channel</a> adlı kanalın <a href="https://www.youtube.com/watch?v=UqLI1xKc-L4">‘Is Valorant Spyware?’</a> videosunda analizini izlediğimde kendisinin birçok IP adresinin Amazon sunucularına ait olduğunu belirtiyor. Ayrıca bu konuyu hazırlarken ilham aldığım bahsi geçen videoya da göz atabilirsiniz. Gerçekten güzel ve açıklayıcı bir analiz gerçekleştiriyor.</p>
+
+<p>Bağlantı sayılarına buradan da göz attığımızda çok kadar fazla bağlantı olduğunu görebiliyoruz ve maalesef bu iç açıcı bir şey değil. Kendi kendime bunun abarttığımı düşündüm ve bilgisiyarımda yüklü olan Epic Games uygulaması için de kontrol etmek istedim ve sonuç:</p>
+
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/tcpview-for-epicgames.png?raw=true" style="margin-bottom: 0" /></p>
+<div class="image-container"> 
+    <div class="overlay"></div>
+    <div class="modal">
+        <span class="close">&times;</span>
+        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/tcpview-for-epicgames.png?raw=true" />
+    </div>
+    <div align="center">
+        <h4 style="text-align:center;"> Fotoğrafı yakından görmek için üzerine tıklayın. </h4>
+    </div>  
+</div>
+
+<p>Göründüğü gibi RIOT Client uygulamasına kıyasla daha az bir bağlantı var. Yani RIOT Client uygulamasının cidden fazla veri gönderimi yaptığını anlayabiliyoruz. <br /> <br /></p>
+
+<p>Daha sonra yönümü .sys dosyasına çevirdim ve <b>Process Explorer</b> aracılığıyla vgk.sys’e kısaca bakmak istedim:</p>
+
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/sys-in-pe.png?raw=true" style="margin-bottom: 0" /></p>
+<div class="image-container"> 
+    <div class="overlay"></div>
+    <div class="modal">
+        <span class="close">&times;</span>
+        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/sys-in-pe.png?raw=true" />
+    </div>
+    <div align="center">
+        <h4 style="text-align:center;"> Fotoğrafı yakından görmek için üzerine tıklayın. </h4>
+    </div>  
+</div>
+
+<p>Aynı zamanda vgk.sys’in durumunu <strong>driverquery</strong> aracı ile daha hızlı kontrol edebiliriz:</p>
+
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/driverquery-result.png?raw=true" style="margin-bottom: 0" /></p>
+<div class="image-container"> 
+    <div class="overlay"></div>
+    <div class="modal">
+        <span class="close">&times;</span>
+        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/driverquery-result.png?raw=true" />
+    </div>
+    <div align="center">
+        <h4 style="text-align:center;"> Fotoğrafı yakından görmek için üzerine tıklayın. </h4>
+    </div>  
+</div>
+
+<p>Fakat bir sorun var. Şuan işletim sisteminde RIOT’un herhangi bir uygulaması çalışmıyor - arka planda bile -. Bu, Riot Vanguard için de geçerli:</p>
+
+<video controls="">
+    <source src="https://github.com/x1nerama/x1nerama.github.io/raw/main/video/videos-for-valorant-topic/process-explorer.mp4" type="video/mp4" />
+</video>
+
+<p>İşletim sistemimde RIOT’un tüm uygulamaları başlangıçta başlaması kapalı. Ancak yine de vgk.sys’in çalıştığını tespit ettim. Şimdi ise akıllara şu soru takılıyor, <strong>“Sadece oyunlarda hileleri engelleyen bir yazılım, ilgili oyunun kapalı olmasına rağmen neden arka planda çalışıyor?”</strong>.</p>
+
+<p>RIOT’un makalesinde zaten arka planda çalıştığını belirtse de RIOT ile ilgili tüm uygulamaların kapalı olmasına rağmen bu kernel sürücüsünün yine arka planda çalışması çok olanaksız. Oyun tamamen kapalı ise oyunlarda hileden koruyan bir yazılım beni neyden koruyabilir? <br /> <br /></p>
+
+<p>Araştırmalara, yukarıda Vanguard’ın eski lideri Arkhem’in bahsettiği şu kısmı ele alara devam etmek istiyorum:</p>
+
+<blockquote>
+  <p>Yes we run a driver at system startup, it doesn’t scan anything (unless the game is running), it’s designed to take up as few system resources as possible and it doesn’t communicate to our servers. You can remove it at anytime.</p>
+</blockquote>
+
+<p>Yazılımın istendiği zaman kaldırabileceği belirtilmiş. Bunu tekrar okuduktan sonra Vanguard’ı kaldırdım ardından işletim sistemini yeniden başlattım ve vgk.sys’in yine sistemde olup olmadığını kontrol ettim ve sonuç:</p>
+
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/driverquery-result-2.png?raw=true" style="margin-bottom: 0" /></p>
+<div class="image-container"> 
+    <div class="overlay"></div>
+    <div class="modal">
+        <span class="close">&times;</span>
+        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/driverquery-result-2.png?raw=true" />
+    </div>
+</div>
+
+<p>Gerçekten de Vanguard yazılımı kaldırıldığında vgk.sys sistemden kaldırılıyor. Bunu doğrulamış olduk. <br /> <br /></p>
+
+<h2 id="vgksys-sürücüsünü-analiz-etme">vgk.sys Sürücüsünü Analiz Etme</h2>
+
+<p>vgk.sys sürücüsünü yakından analiz etmeye başlayacaktım ancak maalesef bunun izinden süremedim. Çünkü RIOT hiçbir şekilde vgk.sys’i analiz etmemize fırsat vermediğini öğrendim.</p>
+
+<p>İlk başta VALORANT oyununu sanal makineye kurdum ve sistemi yeniden başlattıktan sonra VANGUARD yazılımın başlatılmadığını fark ettim. Hatalardan olabileceğini düşünerek çeşitli yollar denedim ancak olmadı:</p>
+
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/valorant-in-vm.png?raw=true" style="margin-bottom: 0" /></p>
+<div class="image-container"> 
+    <div class="overlay"></div>
+    <div class="modal">
+        <span class="close">&times;</span>
+        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/valorant-in-vm.png?raw=true" />
+    </div>
+</div>
+
+<p>Sanal makinede valorant çalıştırmak istediğimde karşıma çıkan ekran buydu. Bunun sebebi ise vgk.sys sürücüsünün başlatılmaması.</p>
+
+<p>Sanal makinelerde hiçbir şekilde vgk.sys sürücüsünü başlatılmıyor ve analizde fark ettiğim bir diğer şey ise sanal makine olmasa bile eğer işletim sisteminizde debugging aktifse vgk.sys çalıştırılmıyor. Yani ana makinenizde çalışan vgk.sys dosyasını analiz etmek için debugging aktifleştirseniz bile kendini devre dışı bırakacaktır. <br /> <br /></p>
+
+<p>Dinamik analizine gidemediğim için statik analize yönelmeye karar verdim ve .sys dosyasının kullandığı fonksiyonlara göz atmak istedim:</p>
+
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/used-function.png?raw=true" style="margin-bottom: 0" /></p>
+<div class="image-container"> 
+    <div class="overlay"></div>
+    <div class="modal">
+        <span class="close">&times;</span>
+        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/used-function.png?raw=true" />
+    </div>
+</div>
+
+<p>API’lara göz attığımızda vgk.sys sürücüsü oyuncunun bilgisiyarın çalışma ortamını kontrol edebilecek ve sistem saat ve sistem dizinini elde edebilecek API’lar kullandığı göze çarpmaktadır. Tabi ki dinamik analiz gerçekleştiremediğimiz bunların ne amaçla kullandığını da bilemeyiz.</p>
+
+<p>Eğer fonksiyonların tamamına siz de göz atmak isterseniz aşağıya listenin tamamını ekliyorum:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ZwClose	
+KeInitializeSpinLock	
+KeAcquireSpinLockAtDpcLevel	
+KeAcquireSpinLockRaiseToDpc	
+KeReleaseSpinLock	
+KeReleaseSpinLockFromDpcLevel	
+ExAllocatePoolWithTag	
+KeLowerIrql	
+KfRaiseIrql	
+KeInitializeDpc	
+KeInitializeTimer	
+KeSetTimer	
+MmMapLockedPagesSpecifyCache	
+MmUnmapLockedPages	
+MmAllocatePagesForMdl	
+MmFreePagesFromMdl	
+IoFreeMdl	
+IoAllocateWorkItem	
+IoQueueWorkItem	
+IoInitializeWorkItem	
+RtlDuplicateUnicodeString	
+ObfDereferenceObject	
+KeBugCheckEx	
+_stricmp	
+__C_specific_handler	
+KeIpiGenericCall	
+ExFreePoolWithTag	
+ProbeForRead	
+IoGetCurrentProcess	
+wcscpy_s	
+RtlInitUnicodeString	
+RtlTimeToTimeFields	
+KeAreAllApcsDisabled	
+ExSystemTimeToLocalTime	
+ZwWriteFile	
+IoCreateFileEx	
+ZwFlushBuffersFile	
+swprintf_s	
+vswprintf_s	
+_vsnwprintf	
+KeInitializeApc	
+KeInsertQueueApc	
+wcscat_s	
+ZwReadFile	
+ZwQuerySystemInformation	
+IoGetStackLimits	
+strchr	
+RtlPrefixUnicodeString	
+RtlMultiByteToUnicodeN	
+MmHighestUserAddress	
+ObReferenceObjectByHandle	
+IoFileObjectType	
+strnlen	
+</code></pre></div></div>
+<p>Dediğim gibi dinamik olarak analiz yapamadığımız için burada kullanılan fonksiyonların ne işe yaradığını söylemek pek mümkün olmayacaktır.</p>
+
+<h1 id="sonuç">Sonuç</h1>
+
+<p>Analiz sonucunda, Vanguard’ın sürücüsü olan vgk.sys’in davranışlarını değerlendirdiğinde, Valorant oyununun spyware olabileceği iddialarının daha yakın olduğu görülmektedir. Ancak bu iddiaların doğru olup olmadığını kesin olarak söylemek için daha fazla analiz yapılması gerekmektedir.</p>
+
+<video preload="auto" poster="https://pbs.twimg.com/tweet_video_thumb/D5aj3tfW0AIiSxo.jpg" src="https://video.twimg.com/tweet_video/D5aj3tfW0AIiSxo.mp4" type="video/mp4" autoplay="" controls=""></video>
+
+<h1 id="references">References</h1>
+
+<ul>
+  <li><a href="https://helda.helsinki.fi/server/api/core/bitstreams/89d7c14b-58e0-441f-a0de-862254f95551/content" id="source-1"><b>[1] - University of HELSINKI: Comparative Study of Anti-cheat Methods in Video Games </b></a></li>
+  <li><a href="https://www.schellman.com/blog/cybersecurity/what-is-anti-cheat" id="source-2"><b>[2] - Schellman: Understanding Anti-Cheat</b></a></li>
+  <li><a href="https://en.wikipedia.org/wiki/Riot_Games#History" id="source-3"><b>[3] - EN Wikipedia: Riot Games </b></a></li>
+  <li><a href="https://www.theregister.com/2013/11/20/esea_gaming_bitcoin_fine/" id="source-4"><b>[4] - TheRegister: Gaming co ESEA hit by $1m fine for hidden Bitcoin mining enslaver</b></a></li>
+  <li><a href="https://www.engadget.com/valorant-vanguard-riot-games-security-interview-video-170025435.html" id="source-5"><b>[5] - Engadget: A closer look at Valorant’s always-on anti-cheat system</b></a></li>
+</ul>
+
+</div>
+
+
+<div class="comments">
+<div id="disqus_thread"></div>
+<script>
+ var disqus_config = function () {
+     this.page.url = 'http://localhost:8080/2024/04/17/Is-Valorant-Spyware.html';
+     this.page.identifier = '/2024/04/17/Is Valorant Spyware';
+     this.page.title = 'Is Valorant Spyware?';
+ };
+
+ (function() {  // REQUIRED CONFIGURATION VARIABLE: EDIT THE SHORTNAME BELOW
+     var d = document, s = d.createElement('script');
+
+     s.src = '//bekoo-github-io.disqus.com/embed.js';
+
+     s.setAttribute('data-timestamp', +new Date());
+     (d.head || d.body).appendChild(s);
+ })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+</div>
+
+
+
+
+<div class="related">
+  <h2>related posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2023/12/31/Bypassing-Ptrace.html">
+            Bypassing ptrace with Radare2 in Linux
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2023/08/08/MD-0x0-=_-Process-Injection.html">
+            MD 0x0 | Process Injection
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2023/04/16/Conditionals-and-Unconditionals-in-Assembly.html">
+            Conditionals and Loops in Assembly
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+  
+  <h2>all tags</h2>
+  <div class="tag-cloud"><a href="/tag/analysis.html" class="set-5">analysis</a> <a href="/tag/bypassing.html" class="set-5">bypassing</a> <a href="/tag/malware.html" class="set-5">malware</a> <a href="/tag/malware-analysis.html" class="set-5">malware-analysis</a> <a href="/tag/malware-development.html" class="set-5">malware-development</a> <a href="/tag/nasm.html" class="set-5">nasm</a> <a href="/tag/process-injection.html" class="set-5">process-injection</a> <a href="/tag/ptrace.html" class="set-5">ptrace</a> <a href="/tag/radare2.html" class="set-5">radare2</a> <a href="/tag/reverse-engineering.html" class="set-5">reverse-engineering</a> <a href="/tag/spyware.html" class="set-5">spyware</a> <a href="/tag/valorant.html" class="set-5">valorant</a> <a href="/tag/x86-assembly.html" class="set-5">x86-assembly</a></div>
+  
+
+
+
+
+<script>
+  let i = 0;
+  const text = 'Valorant oyunun spyware iddiaları hakkında bir analiz yazısı';
+  const speed = parseInt('50');
+  
+  function typeWriter() {
+    if (i < text.length) {
+      document.getElementById('animated-post-description').innerHTML += text.charAt(i);
+      i++;
+      setTimeout(typeWriter, speed);
+    }
+  }
+
+  document.getElementById('animated-post-description').style.display = 'initial';
+  typeWriter();
+
+  // Image modal
+  var $imgs = [];
+  $('img').each(function(idx) {
+    var obj = {
+      src: $(this).attr('src')
+    }
+    $imgs.push(obj);
+    var elem = $(this);
+    $(this).click(function() {
+      $('.modal').magnificPopup('open', idx);
+    });
+  });
+
+  $('.modal').magnificPopup({
+    items: $imgs,
+    type: 'image',
+    closeOnContentClick: true,
+    mainClass: 'mfp-img-mobile',
+    image: {
+      verticalFit: true
+    }
+    
+  });
+</script>
+
+      </div>
+    </main><footer class="site-footer">
+  <div class="wrapper">
+    <div class="credits"><a href="https://github.com/bitbrain/jekyll-dash">dash</a> theme for Jekyll by <a href="https://github.com/bitbrain">bitbrain</a> made with <i class="fas fa-heart"></i><div class="toggleWrapper">
+    <input type="checkbox" class="dn" id="theme-toggle" onclick="modeSwitcher()" checked />
+    <label for="theme-toggle" class="toggle">
+    <span class="toggle__handler">
+      <span class="crater crater--1"></span>
+      <span class="crater crater--2"></span>
+      <span class="crater crater--3"></span>
+    </span>
+        <span class="star star--1"></span>
+        <span class="star star--2"></span>
+        <span class="star star--3"></span>
+        <span class="star star--4"></span>
+        <span class="star star--5"></span>
+        <span class="star star--6"></span>
+    </label>
+</div>
+<script type="text/javascript">
+const theme = localStorage.getItem('theme');
+
+if (theme === "light") {
+    document.documentElement.setAttribute('data-theme', 'light');
+} else {
+    document.documentElement.setAttribute('data-theme', 'dark');
+}
+const userPrefers = getComputedStyle(document.documentElement).getPropertyValue('content');
+
+function activateDarkTheme() {
+    document.getElementById('theme-toggle').checked = true;
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.documentElement.classList.add('theme--dark');
+    document.documentElement.classList.remove('theme--light');
+	document.getElementById("theme-toggle").className = 'light';
+	window.localStorage.setItem('theme', 'dark');
+}
+
+function activateLightTheme() {
+    document.getElementById('theme-toggle').checked = false;
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.documentElement.classList.add('theme--light');
+    document.documentElement.classList.remove('theme--dark');
+	document.getElementById("theme-toggle").className = 'dark';
+	window.localStorage.setItem('theme', 'light');
+}
+
+if (theme === "dark") {
+    activateDarkTheme();
+} else if (theme === "light") {
+    activateLightTheme();
+} else if  (userPrefers === "light") {
+    activateDarkTheme();
+} else {
+    activateDarkTheme();
+}
+
+function modeSwitcher() {
+	let currentMode = document.documentElement.getAttribute('data-theme');
+	if (currentMode === "dark") {
+	    activateLightTheme();
+	} else {
+	    activateDarkTheme();
+	}
+}
+</script></div>
+  </div>
+</footer>
+
+
+<script>
+      window.FontAwesomeConfig = {
+        searchPseudoElements: true
+      }
+    </script>
+  </body>
+
+</html>

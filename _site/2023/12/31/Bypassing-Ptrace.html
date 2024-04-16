@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html class="direction--ltr"lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Bypassing ptrace with Radare2 in Linux | bekoo’s blog</title>
+<meta name="generator" content="Jekyll v3.9.5" />
+<meta property="og:title" content="Bypassing ptrace with Radare2 in Linux" />
+<meta name="author" content="bekoo" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Radare2 Kullanarak Linux Üzerinde Ptrace Bypass Etme" />
+<meta property="og:description" content="Radare2 Kullanarak Linux Üzerinde Ptrace Bypass Etme" />
+<link rel="canonical" href="http://localhost:8080/2023/12/31/Bypassing-Ptrace.html" />
+<meta property="og:url" content="http://localhost:8080/2023/12/31/Bypassing-Ptrace.html" />
+<meta property="og:site_name" content="bekoo’s blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-12-31T00:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Bypassing ptrace with Radare2 in Linux" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"bekoo"},"dateModified":"2023-12-31T00:00:00+03:00","datePublished":"2023-12-31T00:00:00+03:00","description":"Radare2 Kullanarak Linux Üzerinde Ptrace Bypass Etme","headline":"Bypassing ptrace with Radare2 in Linux","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:8080/2023/12/31/Bypassing-Ptrace.html"},"url":"http://localhost:8080/2023/12/31/Bypassing-Ptrace.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="stylesheet" href="/assets/css/magnific-popup.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:8080/feed.xml" title="bekoo&apos;s blog" /><script src="https://code.jquery.com/jquery-3.2.0.min.js"></script> 
+  <script src="/assets/js/jquery.magnific-popup.js"></script>
+</head>
+<body><div class="site-header">
+  <div class="wrapper">
+    <a class="site-title" rel="author" href="/">bekoo&#39;s blog<b class="command_prompt"></b><b class="blinking_cursor">_</b></a>
+    <span class="social_links">
+        
+        
+        <a class="color--hover" href=""><i class="fab fa-"></i></a>
+        
+        
+        
+        <a class="color--hover" href=""><i class="fab fa-"></i></a>
+        
+        
+        
+        <a class="color--hover" href=""><i class="fab fa-"></i></a>
+        
+        
+    </span>
+    <style>
+        .about-link {
+          font-size: 20px;
+          color: #637AFE;
+        }
+
+        @media only screen and (max-width: 768px) {
+          .about-link {
+            font-size: 16px;
+          }
+        }
+    </style>
+    <div class="site-title" style="float: right;">
+        <a href="/about/about.html" class="about-link">About</a>
+    </div>
+  </div>
+</div>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+  <div class="author-box">
+
+
+<img src="https://avatars.githubusercontent.com/u/101501854?v=4" class="author-avatar" alt="Avatar" style="width: 20%"/>
+<div class="description">"Everything open-source if you can read Assembly."
+</div>
+
+</div>
+
+
+<div class="post">
+  <h1 class="post-title">Bypassing ptrace with Radare2 in Linux</h1>
+  
+  <div class="post-tags">
+      
+      <a class="tag" href="/tag/bypassing.html">bypassing</a>
+      
+      <a class="tag" href="/tag/ptrace.html">ptrace</a>
+      
+      <a class="tag" href="/tag/radare2.html">radare2</a>
+      
+  </div>
+  
+  <div class="post-date">
+    Published on 31 Dec 2023
+    
+  </div>
+  
+  <noscript>
+    <div class="post-description">Radare2 Kullanarak Linux Üzerinde Ptrace Bypass Etme</div>
+  </noscript>
+  <div id="animated-post-description" class="post-description" style="display: none;"></div>
+  
+  <style>
+    img, iframe {
+        margin-top: 2%;
+        margin-bottom: 2%;
+    }
+</style>
+
+<p>Merhabalar. Bu konumda ptrace’in nasıl bypass edilebileceğiniden bahsedeceğim.</p>
+
+<p><code class="language-plaintext highlighter-rouge">ptrace</code>, bir process’in diğer bir process’i debug etmesini sağlayan bir <strong>sistem çağrısıdır</strong>. Bu sistem çağrısı sayesinde bir process’in diğer process’inin memory’sine erişebiliriz. Bu sayede process’in memory’sindeki verileri okuyabilir, yazabilir ve değiştirebiliriz.</p>
+
+<p>ptrace, genellikle bir işlemin yürütme zamanında izlenmesi ve kontrol edilmesi amacıyla kullanılır. Bu, hata ayıklama (debugging), sistem çağrılarını izleme, işlemi duraklatma, kaynak izleme ve benzeri geliştirme ve analiz amaçları için yaygın olarak kullanılan bir sistem aracıdır.</p>
+
+<h2 id="ptracein-kullanımı">Ptrace’in Kullanımı</h2>
+
+<p>C ile aşağıdaki basit kod ile ptrace’in kullanımı hakkında bilgi sahibi olabiliriz:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;sys/ptrace.h&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">ptrace</span><span class="p">(</span><span class="n">PTRACE_TRACEME</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Dostum sanırım Debugging yapıyorsun hadi seni bir çıkışa alalım</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Debugging yok Security var!</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Programıma baktığımızda ilk aşamada bir <code class="language-plaintext highlighter-rouge">PTRACE_TRACEME</code> parametresi ile <code class="language-plaintext highlighter-rouge">ptrace</code> çağrısı yapıldığını görüyoruz. Bu parametre, process’in kendisini izlemek için kullanacağımızı belirtir. Bu fonksiyonun geri dönüş değeri 0’dan küçükse, işlemi izlemek için izin verilmediği anlamına gelir. Bu durumda programımız <strong>Dostum sanırım Debugging yapıyorsun hadi seni bir çıkışa alalım</strong> çıktısını verir. Eğer geri dönüş değeri 0 ise <strong>Debugging yok Security var!</strong> çıktısını verir.</p>
+
+<h2 id="fonksiyon-parametreleri">Fonksiyon Parametreleri</h2>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">long</span> <span class="nf">ptrace</span><span class="p">(</span><span class="k">enum</span> <span class="n">__ptrace_request</span> <span class="n">request</span><span class="p">,</span> <span class="n">pid_t</span> <span class="n">pid</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">addr</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">);</span>
+</code></pre></div></div>
+<p><br /></p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">enum</span> <span class="n">__ptrace_request</span> <span class="n">request</span>
+</code></pre></div></div>
+
+<p>ilk parametre, ptrace’in hangi işlemi yapacağını belirten bir değerdir. Biz örnek senaryo için <code class="language-plaintext highlighter-rouge">PTRACE_TRACEME</code> kullandık. Bu parametre, Process’in kendisini izlemek için kullanacağımızı belirtir. Yani ikinci bir process değil o an çalıştırılacak process’i izlemeye alacaktır. 
+<br /> <br /></p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pid_t</span> <span class="n">pid</span>
+</code></pre></div></div>
+<p>İkinci parametre, işlem kimliğidir. Bu değer, işlemi izlemek isteyen işlem tarafından kullanılır.
+<br /> <br /></p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="o">*</span><span class="n">addr</span>
+</code></pre></div></div>
+<p>Üçüncü parametre, işlemin adresidir. Bu değer, işlemi izlemek isteyen işlem tarafından kullanılır.
+<br /> <br /></p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="o">*</span><span class="n">data</span>
+</code></pre></div></div>
+<p>Dördüncü parametre, işlemin verisidir. Bu değer, işlemi izlemek isteyen işlem tarafından kullanılır.</p>
+
+<h2 id="ptracein-bypass-edilmesi">Ptrace’in Bypass Edilmesi</h2>
+
+<p>Şimdi ise önemli kısma geldik. Kali Linux’ta <code class="language-plaintext highlighter-rouge">radare2 -w &lt;program&gt;</code> komutuyla programımızı açıyoruz. Daha sonra <code class="language-plaintext highlighter-rouge">aaa</code> komutuyla programımızı analiz ediyoruz. <code class="language-plaintext highlighter-rouge">afl</code> komutuyla fonksiyonlarımızı görüntülüyoruz:</p>
+
+<p><img src="https://raw.githubusercontent.com/x1nerama/x1nerama.github.io/main/images/photos-for-ptrace-blog/photo1.png" /></p>
+
+<p>Fonksiyonlarda <strong>main</strong> ve <strong>ptrace</strong> görmemiz yeterli olacaktır. Şimdi ise <code class="language-plaintext highlighter-rouge">s main</code> komutuyla main fonksiyonuna gidelim ve <code class="language-plaintext highlighter-rouge">pdf</code> komutuyla main fonksiyonumuzu görüntülüyelim:</p>
+
+<p><img src="https://raw.githubusercontent.com/x1nerama/x1nerama.github.io/main/images/photos-for-ptrace-blog/photo2.png" /></p>
+
+<p>main içerisine baktığımızda ilk olarak prelog dediğimiz işlemin gerçekleştiğini görmekteyiz. Daha sonra ptrace fonksiyonun çağırıldığını görüyoruz ancak ondan önce bu fonksiyon için parametreler hazırlanıyor ve tüm parametrelere 0 değeri verilmiş. Fonksiyonun çağırılmasından sonra ise rax register’ın <code class="language-plaintext highlighter-rouge">test</code> instruction ile test edildiğini görmekteyiz.</p>
+
+<p>Daha sonra <code class="language-plaintext highlighter-rouge">jns</code> (Jump if not Sign) ile eğer test edilen sonuç negatif bir sayı değil ise <strong>( rax &gt; 0 )</strong> <strong>0x00001186</strong> adresine atlanıyor. Bu atlanılan kısımda <strong>Debugging yok Security Var!</strong> mesajı bastırılıyor. Yani bu kısım debugging edilmediğinde atlanılan bir kısım.</p>
+
+<p>Eğer bu işlem başarısız olunursa yani sonuç negatif bir sayı ise <strong>0x00001170</strong> adresinden devam ediyor. Burası ise programın debugging edildiğinde atlanılan kısım. Bu kısımda ise <strong>Dostum sanırım Debugging yapıyorsun hadi seni bir çıkışa alalım</strong> mesajı bastırılıyor ve program bitiriliyor. Yani bu kısmın decompiler’ı şu şekilde olabilir:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">long</span> <span class="n">rax</span> <span class="o">=</span> <span class="n">ptrace</span><span class="p">(</span><span class="n">PTRACE_TRACEME</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">rax</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Debugging yok Security var!</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">"Dostum sanırım Debugging yapıyorsun hadi seni bir çıkışa alalım</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Kodların source code’larını bilmediğimizi varsayarsak şuan biz bu programı Assembly kodları ile nasıl çalıştığını kabaca biliyoruz. bypass etmeden önce direkt programı çalıştıralım ve ne olduğuna bakalım:</p>
+
+<p><img src="https://raw.githubusercontent.com/x1nerama/x1nerama.github.io/main/images/photos-for-ptrace-blog/photo4.png" /></p>
+
+<p>Göründüğü gibi debugger ile programı çalıştırdığımızda <strong>“Dostum sanırım Debugging yapıyorsun hadi seni bir çıkışa alalım”</strong> mesajını alıyoruz. Şimdi ise bypass etmeye çalışalım.</p>
+
+<p>Basit bir ptrace bypass etmek ile ilgili bloglarda genellikle rax register’ın değeri 0 yapılarak anlatılır. Bu da işe yarayan bir yöntemdir ancak ben burada farklı olarak sizlere farklı bir yöntem göstereceğim. Ayrıca bu yöntemin reverse engineering için sizlere daha iyi bir anlayış sağlayacağını ümit ediyorum.</p>
+
+<p>Yapacağımız şey oldukça basit. Sadece karşılaştırmada kullanılan <code class="language-plaintext highlighter-rouge">jns</code> komutunu <code class="language-plaintext highlighter-rouge">js</code> olarak değiştirmek. Bunu neden yaptığımızı bu bypass sürecinde daha iyi anlayacağız. Let’s go!</p>
+
+<p>Öncelikle programı çalıştırmadan <code class="language-plaintext highlighter-rouge">s</code> komutu ile <strong>0x0000116e</strong> adresine gidelim. Burası <code class="language-plaintext highlighter-rouge">jns</code> ile değerin karşılaştırma yapıldığı kısım:</p>
+
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-ptrace-blog/photoo3.png?raw=true" /></p>
+
+<p>Ardından buradaki assembly kodunu <code class="language-plaintext highlighter-rouge">js</code> olarak değiştirelim. Bunun için <code class="language-plaintext highlighter-rouge">wx 0x78</code> komutunu kullanacağız. <strong>0x78</strong> değeri <code class="language-plaintext highlighter-rouge">js</code> instruction’a karşılık gelmektedir:</p>
+
+<p><img src="https://raw.githubusercontent.com/x1nerama/x1nerama.github.io/main/images/photos-for-ptrace-blog/photo6.png" /></p>
+
+<p>Göründüğü gibi <code class="language-plaintext highlighter-rouge">jns</code> instruction’ı <code class="language-plaintext highlighter-rouge">js</code> instruction’ına çevrilmiş. Şimdi ise <code class="language-plaintext highlighter-rouge">dc</code> komutuyla programımızı çalıştıralım. Ancak ondan önce disassemble ettiğimiz main’in son haline bir göz atalım:</p>
+
+<p><img src="https://raw.githubusercontent.com/x1nerama/x1nerama.github.io/main/images/photos-for-ptrace-blog/photo7.png" /></p>
+
+<p>main’in son haline baktığımızda fonksiyonun geri dönüş adresini karşılaştırdığımız kısımda <code class="language-plaintext highlighter-rouge">jns</code> değil <code class="language-plaintext highlighter-rouge">js</code> görmekteyiz. Böylece yapılacak işlemler tam tersine dönmüş oldu:</p>
+
+<p><img src="https://raw.githubusercontent.com/x1nerama/x1nerama.github.io/main/images/photos-for-ptrace-blog/photo8.png" /></p>
+
+<p>Göründüğü gibi debugger içerisinde programı çalıştırdığımızda <strong>“Debugging yok Security var!”</strong> mesajını alıyoruz. Bu da bize ptrace’in bypass edildiğini gösteriyor. Yaptığımız işlemden sonra programın decompiler’ı şu şekilde olabilir:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">long</span> <span class="n">rax</span> <span class="o">=</span> <span class="n">ptrace</span><span class="p">(</span><span class="n">PTRACE_TRACEME</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">rax</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Debugging yok Security var!</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">"Dostum sanırım Debugging yapıyorsun hadi seni bir çıkışa alalım</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Programı debugger ile çalıştırdığımız için bu if koşulun içerisine girecektir çünkü rax, -1 değerini alacaktır. <code class="language-plaintext highlighter-rouge">js</code> Instruction’u negatif değerleri kontrol etmek için kullanılır.</p>
+
+<p>Bu değişikliklerin ardından program için potansiyel bir sorun oluşmakta. Size şunu sormak istiyorum debug etmeden normal şartlarda bu programı çalıştırdığımızda sizce ne olur? Gelin bir de buna bakalım:</p>
+
+<p><img src="https://raw.githubusercontent.com/x1nerama/x1nerama.github.io/main/images/photos-for-ptrace-blog/photo9.png" /></p>
+
+<p>Normal şekilde programı başlattığımızda hata mesajımızla karşılaşıyoruz. Zaten bunun sebebini detaylandırdım. Programı debugger ile çalıştırmadığımız için 0 değerinde kalıyor. Programı reverse ettiğimizde koşulu <code class="language-plaintext highlighter-rouge">js</code> olarak değiştirmiştik. Dolayasıyla programı çalıştırdığımızda hata mesajını almamak için rax’ın negatif bir değer alması gerekiyor; bunun için de debugger ile çalıştırılması gerekir.</p>
+
+<p>Bir sonraki blogta görüşmek üzere. İyi çalışın iyi reverse yapın efenimm</p>
+
+<video preload="auto" poster="https://pbs.twimg.com/tweet_video_thumb/D5aj3tfW0AIiSxo.jpg" src="https://video.twimg.com/tweet_video/D5aj3tfW0AIiSxo.mp4" type="video/mp4" autoplay="" controls=""></video>
+
+</div>
+
+
+<div class="comments">
+<div id="disqus_thread"></div>
+<script>
+ var disqus_config = function () {
+     this.page.url = 'http://localhost:8080/2023/12/31/Bypassing-Ptrace.html';
+     this.page.identifier = '/2023/12/31/Bypassing Ptrace';
+     this.page.title = 'Bypassing ptrace with Radare2 in Linux';
+ };
+
+ (function() {  // REQUIRED CONFIGURATION VARIABLE: EDIT THE SHORTNAME BELOW
+     var d = document, s = d.createElement('script');
+
+     s.src = '//bekoo-github-io.disqus.com/embed.js';
+
+     s.setAttribute('data-timestamp', +new Date());
+     (d.head || d.body).appendChild(s);
+ })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+</div>
+
+
+
+
+<div class="related">
+  <h2>related posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2024/04/17/Is-Valorant-Spyware.html">
+            Is Valorant Spyware?
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2023/08/08/MD-0x0-=_-Process-Injection.html">
+            MD 0x0 | Process Injection
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2023/04/16/Conditionals-and-Unconditionals-in-Assembly.html">
+            Conditionals and Loops in Assembly
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+  
+  <h2>all tags</h2>
+  <div class="tag-cloud"><a href="/tag/analysis.html" class="set-5">analysis</a> <a href="/tag/bypassing.html" class="set-5">bypassing</a> <a href="/tag/malware.html" class="set-5">malware</a> <a href="/tag/malware-analysis.html" class="set-5">malware-analysis</a> <a href="/tag/malware-development.html" class="set-5">malware-development</a> <a href="/tag/nasm.html" class="set-5">nasm</a> <a href="/tag/process-injection.html" class="set-5">process-injection</a> <a href="/tag/ptrace.html" class="set-5">ptrace</a> <a href="/tag/radare2.html" class="set-5">radare2</a> <a href="/tag/reverse-engineering.html" class="set-5">reverse-engineering</a> <a href="/tag/spyware.html" class="set-5">spyware</a> <a href="/tag/valorant.html" class="set-5">valorant</a> <a href="/tag/x86-assembly.html" class="set-5">x86-assembly</a></div>
+  
+
+
+
+
+<script>
+  let i = 0;
+  const text = 'Radare2 Kullanarak Linux Üzerinde Ptrace Bypass Etme';
+  const speed = parseInt('50');
+  
+  function typeWriter() {
+    if (i < text.length) {
+      document.getElementById('animated-post-description').innerHTML += text.charAt(i);
+      i++;
+      setTimeout(typeWriter, speed);
+    }
+  }
+
+  document.getElementById('animated-post-description').style.display = 'initial';
+  typeWriter();
+
+  // Image modal
+  var $imgs = [];
+  $('img').each(function(idx) {
+    var obj = {
+      src: $(this).attr('src')
+    }
+    $imgs.push(obj);
+    var elem = $(this);
+    $(this).click(function() {
+      $('.modal').magnificPopup('open', idx);
+    });
+  });
+
+  $('.modal').magnificPopup({
+    items: $imgs,
+    type: 'image',
+    closeOnContentClick: true,
+    mainClass: 'mfp-img-mobile',
+    image: {
+      verticalFit: true
+    }
+    
+  });
+</script>
+
+      </div>
+    </main><footer class="site-footer">
+  <div class="wrapper">
+    <div class="credits"><a href="https://github.com/bitbrain/jekyll-dash">dash</a> theme for Jekyll by <a href="https://github.com/bitbrain">bitbrain</a> made with <i class="fas fa-heart"></i><div class="toggleWrapper">
+    <input type="checkbox" class="dn" id="theme-toggle" onclick="modeSwitcher()" checked />
+    <label for="theme-toggle" class="toggle">
+    <span class="toggle__handler">
+      <span class="crater crater--1"></span>
+      <span class="crater crater--2"></span>
+      <span class="crater crater--3"></span>
+    </span>
+        <span class="star star--1"></span>
+        <span class="star star--2"></span>
+        <span class="star star--3"></span>
+        <span class="star star--4"></span>
+        <span class="star star--5"></span>
+        <span class="star star--6"></span>
+    </label>
+</div>
+<script type="text/javascript">
+const theme = localStorage.getItem('theme');
+
+if (theme === "light") {
+    document.documentElement.setAttribute('data-theme', 'light');
+} else {
+    document.documentElement.setAttribute('data-theme', 'dark');
+}
+const userPrefers = getComputedStyle(document.documentElement).getPropertyValue('content');
+
+function activateDarkTheme() {
+    document.getElementById('theme-toggle').checked = true;
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.documentElement.classList.add('theme--dark');
+    document.documentElement.classList.remove('theme--light');
+	document.getElementById("theme-toggle").className = 'light';
+	window.localStorage.setItem('theme', 'dark');
+}
+
+function activateLightTheme() {
+    document.getElementById('theme-toggle').checked = false;
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.documentElement.classList.add('theme--light');
+    document.documentElement.classList.remove('theme--dark');
+	document.getElementById("theme-toggle").className = 'dark';
+	window.localStorage.setItem('theme', 'light');
+}
+
+if (theme === "dark") {
+    activateDarkTheme();
+} else if (theme === "light") {
+    activateLightTheme();
+} else if  (userPrefers === "light") {
+    activateDarkTheme();
+} else {
+    activateDarkTheme();
+}
+
+function modeSwitcher() {
+	let currentMode = document.documentElement.getAttribute('data-theme');
+	if (currentMode === "dark") {
+	    activateLightTheme();
+	} else {
+	    activateDarkTheme();
+	}
+}
+</script></div>
+  </div>
+</footer>
+
+
+<script>
+      window.FontAwesomeConfig = {
+        searchPseudoElements: true
+      }
+    </script>
+  </body>
+
+</html>

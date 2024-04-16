@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html class="direction--ltr"lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Conditionals and Loops in Assembly | bekoo’s blog</title>
+<meta name="generator" content="Jekyll v3.9.5" />
+<meta property="og:title" content="Conditionals and Loops in Assembly" />
+<meta name="author" content="bekoo" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Process Injection Attacks" />
+<meta property="og:description" content="Process Injection Attacks" />
+<link rel="canonical" href="http://localhost:8080/2023/04/16/Conditionals-and-Unconditionals-in-Assembly.html" />
+<meta property="og:url" content="http://localhost:8080/2023/04/16/Conditionals-and-Unconditionals-in-Assembly.html" />
+<meta property="og:site_name" content="bekoo’s blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-04-16T00:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Conditionals and Loops in Assembly" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"bekoo"},"dateModified":"2023-04-16T00:00:00+03:00","datePublished":"2023-04-16T00:00:00+03:00","description":"Process Injection Attacks","headline":"Conditionals and Loops in Assembly","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:8080/2023/04/16/Conditionals-and-Unconditionals-in-Assembly.html"},"url":"http://localhost:8080/2023/04/16/Conditionals-and-Unconditionals-in-Assembly.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="stylesheet" href="/assets/css/magnific-popup.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:8080/feed.xml" title="bekoo&apos;s blog" /><script src="https://code.jquery.com/jquery-3.2.0.min.js"></script> 
+  <script src="/assets/js/jquery.magnific-popup.js"></script>
+</head>
+<body><div class="site-header">
+  <div class="wrapper">
+    <a class="site-title" rel="author" href="/">bekoo&#39;s blog<b class="command_prompt"></b><b class="blinking_cursor">_</b></a>
+    <span class="social_links">
+        
+        
+        <a class="color--hover" href=""><i class="fab fa-"></i></a>
+        
+        
+        
+        <a class="color--hover" href=""><i class="fab fa-"></i></a>
+        
+        
+        
+        <a class="color--hover" href=""><i class="fab fa-"></i></a>
+        
+        
+    </span>
+    <style>
+        .about-link {
+          font-size: 20px;
+          color: #637AFE;
+        }
+
+        @media only screen and (max-width: 768px) {
+          .about-link {
+            font-size: 16px;
+          }
+        }
+    </style>
+    <div class="site-title" style="float: right;">
+        <a href="/about/about.html" class="about-link">About</a>
+    </div>
+  </div>
+</div>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+  <div class="author-box">
+
+
+<img src="https://avatars.githubusercontent.com/u/101501854?v=4" class="author-avatar" alt="Avatar" style="width: 20%"/>
+<div class="description">"Everything open-source if you can read Assembly."
+</div>
+
+</div>
+
+
+<div class="post">
+  <h1 class="post-title">Conditionals and Loops in Assembly</h1>
+  
+  <div class="post-tags">
+      
+      <a class="tag" href="/tag/x86-assembly.html">x86-assembly</a>
+      
+      <a class="tag" href="/tag/nasm.html">nasm</a>
+      
+  </div>
+  
+  <div class="post-date">
+    Published on 16 Apr 2023
+    
+  </div>
+  
+  <noscript>
+    <div class="post-description">Process Injection Attacks</div>
+  </noscript>
+  <div id="animated-post-description" class="post-description" style="display: none;"></div>
+  
+  <p>Merhabalar. bu blogumda Assembly’de döngülerden ve Koşullu ve Koşulsuz karşılaştırmaları ele alacağım. Bu iki konuyu neden tek bir çatı altında anlattığımı ilerideki dakikalarda bahsedeceğim.</p>
+
+<h2 id="0x0--conditionals-karşılaştırmalar">0x0 – Conditionals (Karşılaştırmalar)</h2>
+<p>Teorik olarak karşılaştırmalardan bahsetmeyeceğim ancak ufak bir tanım yapmak gerekirse, belirtilen koşula bağlı olarak programın akışını değiştirilmesini sağlar.</p>
+
+<p>Yüksek seviyeli birçok dilde karşılaştırmalar için if-else kullanılır bunu zaten biliyorsunuzdur. Assembly’de karşılaştırmalar diğer dillere göre farklıdır.</p>
+
+<p>Assembly’de karşılaştırma durumu ikiye ayrılır: Conditional Jump (Koşullu Atlama) ve Unconditional Jump (Koşulsuz Atlama) olarak ikiye ayrılır. Bu konuda ikisini de detaylandırmaya çalışacağım.</p>
+
+<p>Conditional Jump yani koşullu zıplamanın isminden de anlaşıldığı gibi koşulun sağlanması durumunda programın akışını değiştirmesini sağlar. Unconditional Jump yani koşulsuz zıplama ise direkt bir koşul olmadan programın akışını değiştirir. Özellikle Binary Exploitation tarafıyla ilgileniyorsanız bufferoverflow saldırılarında unconditional jump önemli bir konudur programın akışını değiştirmek açısından.</p>
+
+<h2 id="0x00---cmp-instruction">0x00 - CMP Instruction</h2>
+<p>Assembly’de karşılaştırma yapmak için cmp Instruction’u kullanıyoruz. Bu cmp Instruction’u iki işleneni karşılaştırmak için kullanılır. Program bu Instruction’u kullanırken, iki işlenenin eşit olup olmadığını anlamak için birbirinden çıkarır. ‘Çıkarmak’ derken ikisi arasında bir çıkarma işlemi yapar. Bu karşılaştırma sonucunu ZF (Zero Flag) ile anlayabiliriz. Eğer cmp sonucunda Zero Flag 0 olarak resetlenmişse karşılaştıranların eşit olmadığını gösterir ancak Zero flag 1 olarak setlenirse iki tarafın eşit olduğunu gösterir.</p>
+
+<p>Burada Zero Flag’ın ne olduğunu anlamamız gerekiyor. Zero Flag, herhangi bir işlem sonucunun sıfır olması durumunda 1 değerini alır. Ancak herhangi bir işlem sonucu sıfır ile sonuçlanmazsa 0 ile resetlenir.</p>
+
+<p>Konu biraz karışık olduğu için örnek kod ile detaylandıralım:​</p>
+
+<p>Kod:</p>
+
+<pre><code class="language-asm">section .data
+    msg: db "Assembly with bekoo",0
+    len: equ $ - msg
+
+section .text
+    global _start
+
+_start:
+    mov ah,5    ; ah register'a 5 yükle
+    mov al,5    ; al register'a 5 yükle
+    cmp ah,al   ; ah ile al register'ı karşılaştır
+    jz _printMessage  ; karşılaştırma sonucu 0 ise _printMessage fonksiyonuna git
+
+_exit:
+    ; programı bitir
+    mov eax,1
+    xor ebx,ebx
+    int 0x80
+
+_printMessage:
+    ; msg'ı ekrana bastır
+    mov eax,4
+    mov ebx,1
+    mov ecx,msg
+    mov edx,len
+    int 0x80
+
+    ;  _exit fonksiyonuna git
+    jmp _exit
+</code></pre>
+
+<p>Bu programda ah ile al register’a 5 değerini gönderilir. Ardından yukarıda bahsettiğim cmp aracılığıyla karşılaştırma yapılır. Eğer bu karşılaştırma sonucu 0 ile sonuçlanırsa program _printMessage adlı fonksiyona gönderiliyor değil ise _exit fonksiyonuna gidip program bitirilir.</p>
+
+<p>Burada karşılaştırmanın 0 olması demek, karşılaştırılan iki değerin de eşit olduğunu gösterir. Mesela ah register’a 3 ve al register’a 5 gönderip tekrar karşılaştırmaya tabii tuttuğumuzda Zero Flag set edilmez. Çünkü cmp Instruction’ın yaptığı çıkartma işlemi sonucu 0 olmayacak.</p>
+
+<p>Şimdi ise karşılaştırma sonucunda Zero Flag, gerçekten set edilmiş mi gdb ile ona bakalım:</p>
+
+<p>Kod:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb-peda<span class="nv">$ </span>disas _start
+Dump of assembler code <span class="k">for function </span>_start:
+   0x0000000000401000 &lt;+0&gt;:    mov    ah,0x5
+   0x0000000000401002 &lt;+2&gt;:    mov    al,0x5
+   0x0000000000401004 &lt;+4&gt;:    cmp    ah,al
+   0x0000000000401006 &lt;+6&gt;:    je     0x401011 &lt;_printMessage&gt;
+End of assembler dump.
+</code></pre></div></div>
+
+<p>gdb ile _start içeriğine baktığımızda bu kodlar bizi karşılıyor. Şimdi ise break *0x0000000000401006 yazıp karşılaştırmanın sonucuna bakalım. Programın breakpoint koyduğum kısma dikkat edin. Program tam _printMessage adlı fonksiyona gitmeden duracak:</p>
+
+<p>Kod:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb-peda<span class="nv">$ </span>disas
+Dump of assembler code <span class="k">for function </span>_start:
+   0x0000000000401000 &lt;+0&gt;:    mov    ah,0x5
+   0x0000000000401002 &lt;+2&gt;:    mov    al,0x5
+   0x0000000000401004 &lt;+4&gt;:    cmp    ah,al
+<span class="o">=&gt;</span> 0x0000000000401006 &lt;+6&gt;:    je     0x401011 &lt;_printMessage&gt;
+End of assembler dump.
+</code></pre></div></div>
+
+<p>Programın nerede olduğunu =&gt; işareti ile anlayabiliriz. Bu işaret, çalıştırılacak kodu gösterir. Şimdi ise info registers $eflags ile hangi flag’ların set edildiğine bakalım:</p>
+
+<p>Kod:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb-peda<span class="nv">$ </span>i r <span class="nv">$eflags</span>
+eflags         0x246               <span class="o">[</span> PF ZF IF <span class="o">]</span>
+</code></pre></div></div>
+
+<p>eflags register’ın içerisinde gördüğünüz flag’lar, set edilen flag’lardır. Dolayasıyla programın şuan ki kısmında PF, ZF ve IF flag’ları set edilmiş olduğunu görebiliyoruz. Yani programı devam ettirdiğimizde, jz karşılaşmayı sağladığı için _printMessage adlı fonksiyona gidecek ve mesajı ekrana bastıracak.</p>
+
+<p>jz veya jmp gibi şeyler kafanızı karıştırmasın şimdi ise bunları detaylandıracağım. Burada sadece anlamız gereken şey cmp’ın mantığı ve Zero Flag’ın ne işe yaradığı.</p>
+
+<h2> 0x01 - Conditional Jump (Koşullu Atlama) </h2>
+
+<p>Koşullu zıplamanın zaten adıyla ne olduğunu anlamışsınızdır. Belirli koşulun sağlanması durumunda programın akışını değiştirmesini sağlar.</p>
+
+<p>Koşullu işlemler için bir çok Instruction bulunmaktadır. Koşullar için kullanılan genellike arimetiksel Instruction’lardır. Bu konumda ise sadece bunlara yer vereceğim.</p>
+
+<p>Bu kadar şeyden sonra yukarıdaki örnek Assembly koduna tekrar dönelim:</p>
+
+<p>Kod:</p>
+<pre><code class="language-asm">_start:
+    mov ah,5    ; ah register'a 5 yükle
+    mov al,5    ; al register'a 5 yükle
+    cmp ah,al   ; ah ile al register'ı karşılaştır
+    jz _printMessage  ; karşılaştırma sonucu 0 ise _printMessage fonksiyonuna git
+</code></pre>
+
+<p>Bu kodda JZ Instruction’u kullandım. Siz burada JZ değil de JE’de kullansanız program aynı sonucu gösterir.</p>
+
+<h2> 0x02 - Unconditional Jump (Koşulsuz Atlama) </h2>
+
+<p>Yep, şimdi ise asıl önemli konuya geldik.</p>
+
+<p>Conditional için koşullu olarak programın akışını değiştirdiğini söylemiştim. Unconditional’da ise koşula bağlı olmadan direkt programın akışını değiştirir.</p>
+
+<p>Unconditional için sadece jmp Instruction kullanılır. Örnek Assembly kodunu ele alayım:
+​
+Kod:</p>
+
+<pre><code class="language-asm">_printMessage:
+    mov eax,4
+    mov ebx,1
+    mov ecx,msg
+    mov edx,len
+    int 0x80
+
+    jmp _exit
+</code></pre>
+
+<p>_printMessage adlı fonksiyon içerisine baktığımızda write syscall ile bir ekrana bastırma işlemi yapılıyor ardından jmp aracılığıyla program, _exit fonksiyona gidiyor ve program sonlanıyor.</p>
+
+<p>Yani kısaca jmp ile koşula bağlı olmadan programın akışını değiştirebilirsiniz.</p>
+
+<h2> 0x1 – Loops </h2>
+
+<p>Gel gelelim asıl konumuza, döngülerrr.</p>
+
+<p>Bilirsiniz döngüler, programlamada dillerinde önemli bir konudur. Assembly’de ise bambaşka bir yeri var.</p>
+
+<p>Eğer Assembly ile döngü oluşturmak isterseniz ya yukarıda bahsettiğim koşullu atlama yöntemi ile ya da loop Instruction’u ile yapabilirsiniz. Bu konu da ikisinden de bahsedeceğim.</p>
+
+<h2> 0x10 - Loop Instruction </h2>
+
+<p>loop Instruction’u, döngüler için kullandığımız bir komuttur. İşlevli bir Instruction olsa da kendi görüşüme göre pek yaygın bir kullanımı yok. Daha çok yukarıda bahsettiğim, koşullu atlamalar ile döngüler oluşturmak daha yaygındır.</p>
+
+<p>Her şeyden önce loop Instruction’un çalışma mantığını anlamak gerek. Bu Instruction, ecx (Extended Control Register) register’ına verilen değere göre komutu çalıştırır. Peki, ‘neden ecx register? Farklı register’a değer veremez miyiz?’ diye bir soru gelebilir, Hayır. Eğer loop instruction ile çalışacaksanız sadece ecx’e değer vererek döngü sayısını belirleyebilirsiniz. ecx’in işlemcide döngünün sayacını tutmak gibi görevleri vardır.</p>
+
+<p>Aynı zamanda loop instruction, her çalıştığında ecx’den bir değer azaltır. Mesela siz bir mesajı 10 defa ekrana bastırmak istiyorsunuz ve ecx’e 10 değerini verdiniz. loop komutu her çalıştığında ecx’i 1 azaltır. Kafanız karışmasın örnek ile detaylandıracağım.</p>
+
+<p>Şimdi ise basit bir örnek yapalım. Örneğimiz, “bekoo” mesajını 10 kere bastırmak olsun:
+​
+Kod:</p>
+
+<pre><code class="language-asm">BITS 32
+
+section .data
+    msg: db "bekoo", 0
+    len: equ $ - msg
+
+section .text
+    global _start
+
+_start:
+    mov ecx,10 ; döngü sayısı 10 olarak belirtildi
+    jmp _loop   ; programı _loop fonksiyona yönelt
+
+_exit:
+    ; programı bitir
+    mov eax,1
+    xor ebx,ebx
+    int 0x80
+
+_loop:
+    push ecx ; ecx'in değerini stack' gönder
+    ; ecx'in değerini stack'e gönderme sebebimiz, kodun devamında ekrana bastırma işlemi için ecx'i kullanacağız dolayasıyla bu değeri kaybetmemek için stack'e gönderiyoruz.
+    
+    ; mesajı ekrana bastır
+    mov eax,4
+    mov ebx,1
+    mov ecx,msg
+    mov edx,len
+    int 0x80
+
+    pop ecx ; stack'e gönderilen değeri al
+    loop _loop  ; _başa dön
+
+    cmp ecx,0 ; ecx'in değeri 0 ile karşılaştırılıyor
+    jmp _exit   ; eğer ecx'in değeri 0 olmuşsa jmp ile programı _exit fonksiyona yönelt
+</code></pre>
+
+<p>Bu program, 10 kez ‘bekoo’ mesajını ekrana bastırır.</p>
+
+<p>Programda başta ecx’e 10 değeri gönderilir. Buradaki 10, döngünün kaç defa çalışacağını temsil eder. Siz buraya 10 değil de mesela 3 girseniz 3 defa çalışacaktır. Ardından jmp aracılığıyla program, _loop fonksiyonuna yönlendiriliyor. Bu fonksiyon içerisinde ise mesaj bastırılmadan hemen önce ecx’in değeri stack’e gönderiliyor. Bunun sebebi, ilerideki kodlarda write syscall ile ekrana mesaj bastırma işlemi gerçekleştirelecek. Eğer ecx’in değeri stack’e gönderilmeden direkt mesajı ekrana bastırırsak, döngü sayısını kaybedebiliriz.</p>
+
+<p>Mesaj ekrana bastırıldıktan sonra pop aracılığıyla stack’e gönderilen değer geri alınıyor ve loop instruction ile bu işlemler tekrar ediyor. Taaa ki, ecx register içerisinde değer 0 olana kadar. Hatırlayın, loop instruction’u ecx’a bağlı çalışır ve her çalıştığında ecx’den 1 değer azaltır.</p>
+
+<p>Özellikle bu kodda, conditionals ve unconditionals konuların daha anlaşılır olması için jmp ve cmp komutlarını da dahil ettim.</p>
+
+<p>Arka plana bakmak için gdb kullanalım:</p>
+
+<p>Kod:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb-peda<span class="nv">$ </span>disas _start
+Dump of assembler code <span class="k">for function </span>_start:
+   0x0000000000401000 &lt;+0&gt;:    mov    ecx,0xa
+   0x0000000000401005 &lt;+5&gt;:    jmp    0x401010 &lt;_loop&gt;
+End of assembler dump.
+</code></pre></div></div>
+
+<p>_start fonksiyonu disassemble ettiğimiz zaman bu kodları görüyoruz. Yukarıda bahsettiğim gibi, ecx’e hexdecimal olarak 10 gönderiliyor ve program jmp ile _loop’a yönlendiriliyor. Şimdi ise _loop’u disassemble edelim:</p>
+
+<p>Kod:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb-peda<span class="nv">$ </span>disas _loop
+Dump of assembler code <span class="k">for function </span>_loop:
+   0x0000000000401010 &lt;+0&gt;:     push   rcx
+   0x0000000000401011 &lt;+1&gt;:     mov    eax,0x4
+   0x0000000000401016 &lt;+6&gt;:     mov    ebx,0x1
+   0x000000000040101b &lt;+11&gt;:    mov    ecx,0x402000
+   0x0000000000401020 &lt;+16&gt;:    mov    edx,0xf
+   0x0000000000401025 &lt;+21&gt;:    int    0x80
+   0x0000000000401027 &lt;+23&gt;:    pop    rcx
+   0x0000000000401028 &lt;+24&gt;:    loop   0x401010 &lt;_loop&gt;
+   0x000000000040102a &lt;+26&gt;:    cmp    ecx,0x0
+   0x000000000040102d &lt;+29&gt;:    jmp    0x401007 &lt;_exit&gt;
+End of assembler dump.
+</code></pre></div></div>
+
+<p>_loop içerisine başta baktığımızda başta rcx değeri - program arka planda rcx kullanmış. Burada ecx’in değeri bulunmaktadır - stack’e gönderildiği ardından ekrana bastırma işlemi yapıldığı görülmektedir. Daha sonra pop ile stack’e gönderilen değer geri alınıyor ve loop komutu çalıştırılıyor.</p>
+
+<p>loop instruction’un her çalıştığında ecx’den bir değer azaltığını söylemiştim. Şimdi ise canlı canlı bir de buradan bakalım. Başta break *0x0000000000401028 ile loop komutunun olduğu yerde programı durduralım ve ardından çalıştıralım:</p>
+
+<p>Kod:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb-peda<span class="nv">$ </span>disas
+Dump of assembler code <span class="k">for function </span>_loop:
+   0x0000000000401010 &lt;+0&gt;:   push   rcx
+   0x0000000000401011 &lt;+1&gt;:   mov    eax,0x4
+   0x0000000000401016 &lt;+6&gt;:   mov    ebx,0x1
+   0x000000000040101b &lt;+11&gt;:  mov    ecx,0x402000
+   0x0000000000401020 &lt;+16&gt;:  mov    edx,0xf
+   0x0000000000401025 &lt;+21&gt;:  int    0x80
+   0x0000000000401027 &lt;+23&gt;:  pop    rcx
+<span class="o">=&gt;</span> 0x0000000000401028 &lt;+24&gt;:  loop   0x401010 &lt;_loop&gt;
+   0x000000000040102a &lt;+26&gt;:  cmp    ecx,0x0
+   0x000000000040102d &lt;+29&gt;:  jmp    0x401007 &lt;_exit&gt;
+End of assembler dump.
+</code></pre></div></div>
+
+<p>Program, tam loop komutu çalıştırılmadan hemen durdu. Tam burada info registers $ecx aracılığıyla ecx’in durumuna bir bakalım:</p>
+
+<p>Kod:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb-peda<span class="nv">$ </span>info registers <span class="nv">$ecx</span>
+ecx            0xa                 0xa
+</code></pre></div></div>
+
+<p>0xa’nın decimal karşılığı 10’dur. Dolayasıyla şuan ecx’in içerisinde 10 değeri var. Şimdi programı ni aracılığıyla devam ettirelim ve loop komutu çalıştırıldıktan sonra tekrar bakalım:</p>
+
+<p>Kod:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb-peda<span class="nv">$ </span>disas
+Dump of assembler code <span class="k">for function </span>_loop:
+<span class="o">=&gt;</span> 0x0000000000401010 &lt;+0&gt;:    push   rcx
+   0x0000000000401011 &lt;+1&gt;:    mov    eax,0x4
+   0x0000000000401016 &lt;+6&gt;:    mov    ebx,0x1
+   0x000000000040101b &lt;+11&gt;:   mov    ecx,0x402000
+   0x0000000000401020 &lt;+16&gt;:   mov    edx,0xf
+   0x0000000000401025 &lt;+21&gt;:   int    0x80
+   0x0000000000401027 &lt;+23&gt;:   pop    rcx
+   0x0000000000401028 &lt;+24&gt;:   loop   0x401010 &lt;_loop&gt;
+   0x000000000040102a &lt;+26&gt;:   cmp    ecx,0x0
+   0x000000000040102d &lt;+29&gt;:   jmp    0x401007 &lt;_exit&gt;
+End of assembler dump.
+</code></pre></div></div>
+
+<p>Göründüğü gibi, _loop fonksiyonun başına tekrar dönüldü. Aynı şekilde tekrar info registers $ecx ile ecx’in durumuna tekrar bakalım:</p>
+
+<p>Kod:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb-peda<span class="nv">$ </span>info registers <span class="nv">$ecx</span>
+ecx            0x9                 0x9
+</code></pre></div></div>
+
+<p>Programın şuan ki kısmında ise ecx’in içerisinde 9 değeri var. Yani ecx’in 1 değer azaltıldığını görebiliyoruz. Bu program böyle devam edecek ve en sonunda 0 olduğunda program bitecek.</p>
+
+<p>Genel olarak loop instruction’un çalışma mantığı bu şekilde. Şimdi ise diğer konuya geçelim.</p>
+
+<h2> 0x11 - Loops with Conditionals </h2>
+
+<p>Şimdi ise en çok tercih ettiğimiz yönteme geldik.</p>
+
+<p>Koşullarla döngü oluşturmak sıklıkla tercih edilen bir yöntemdir.</p>
+
+<p>Konuyu aydınlatmak için basit bir örnek yapalım. Yukarıdaki uygulamanın tersini yapalım. Bu sefer ecx’i 0 değerinden başlatalım ve 10 olana kadar ‘bekoo’ mesajını ekrana bastırsın:</p>
+
+<p>Kod:</p>
+
+<pre><code class="language-asm">section .data
+        msg: db "bekoo", 0
+        len: equ $ - msg
+
+section .text
+        global _start
+
+_start:
+        mov ecx,1
+        jmp _loop
+
+_exit:
+        mov eax,1
+        xor ebx,ebx
+        int 0x80
+
+_loop:
+        cmp ecx, 10 ; ecx'in değeri 10 ile karşılaştırılıyor
+        jz _exit  ; eğer ecx'in değeri 10 ile eşitse, program _exit fonksiyonuna yönlendirilerek program bitiriliyor
+        
+        ; bu kısımda msg ekrana bastırılır
+        mov eax,4  
+        mov ebx,1
+        mov ecx,msg
+        mov edx,len
+         int 0x80
+        jmp _loop ; _loop'un başına dön
+</code></pre>
+
+<p>Aslında bu program, loop instruction konusunda örnek olarak verdiğim assembly kodunun tam tersi. Loop instruction’u verilen değeri azaltırken burada arttırma yapılarak koşullar ile programı yönetiyoruz.</p>
+
+</div>
+
+
+<div class="comments">
+<div id="disqus_thread"></div>
+<script>
+ var disqus_config = function () {
+     this.page.url = 'http://localhost:8080/2023/04/16/Conditionals-and-Unconditionals-in-Assembly.html';
+     this.page.identifier = '/2023/04/16/Conditionals and Unconditionals in Assembly';
+     this.page.title = 'Conditionals and Loops in Assembly';
+ };
+
+ (function() {  // REQUIRED CONFIGURATION VARIABLE: EDIT THE SHORTNAME BELOW
+     var d = document, s = d.createElement('script');
+
+     s.src = '//bekoo-github-io.disqus.com/embed.js';
+
+     s.setAttribute('data-timestamp', +new Date());
+     (d.head || d.body).appendChild(s);
+ })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+</div>
+
+
+
+
+<div class="related">
+  <h2>related posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2024/04/17/Is-Valorant-Spyware.html">
+            Is Valorant Spyware?
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2023/12/31/Bypassing-Ptrace.html">
+            Bypassing ptrace with Radare2 in Linux
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2023/08/08/MD-0x0-=_-Process-Injection.html">
+            MD 0x0 | Process Injection
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+  
+  <h2>all tags</h2>
+  <div class="tag-cloud"><a href="/tag/analysis.html" class="set-5">analysis</a> <a href="/tag/bypassing.html" class="set-5">bypassing</a> <a href="/tag/malware.html" class="set-5">malware</a> <a href="/tag/malware-analysis.html" class="set-5">malware-analysis</a> <a href="/tag/malware-development.html" class="set-5">malware-development</a> <a href="/tag/nasm.html" class="set-5">nasm</a> <a href="/tag/process-injection.html" class="set-5">process-injection</a> <a href="/tag/ptrace.html" class="set-5">ptrace</a> <a href="/tag/radare2.html" class="set-5">radare2</a> <a href="/tag/reverse-engineering.html" class="set-5">reverse-engineering</a> <a href="/tag/spyware.html" class="set-5">spyware</a> <a href="/tag/valorant.html" class="set-5">valorant</a> <a href="/tag/x86-assembly.html" class="set-5">x86-assembly</a></div>
+  
+
+
+
+
+<script>
+  let i = 0;
+  const text = 'Process Injection Attacks';
+  const speed = parseInt('50');
+  
+  function typeWriter() {
+    if (i < text.length) {
+      document.getElementById('animated-post-description').innerHTML += text.charAt(i);
+      i++;
+      setTimeout(typeWriter, speed);
+    }
+  }
+
+  document.getElementById('animated-post-description').style.display = 'initial';
+  typeWriter();
+
+  // Image modal
+  var $imgs = [];
+  $('img').each(function(idx) {
+    var obj = {
+      src: $(this).attr('src')
+    }
+    $imgs.push(obj);
+    var elem = $(this);
+    $(this).click(function() {
+      $('.modal').magnificPopup('open', idx);
+    });
+  });
+
+  $('.modal').magnificPopup({
+    items: $imgs,
+    type: 'image',
+    closeOnContentClick: true,
+    mainClass: 'mfp-img-mobile',
+    image: {
+      verticalFit: true
+    }
+    
+  });
+</script>
+
+      </div>
+    </main><footer class="site-footer">
+  <div class="wrapper">
+    <div class="credits"><a href="https://github.com/bitbrain/jekyll-dash">dash</a> theme for Jekyll by <a href="https://github.com/bitbrain">bitbrain</a> made with <i class="fas fa-heart"></i><div class="toggleWrapper">
+    <input type="checkbox" class="dn" id="theme-toggle" onclick="modeSwitcher()" checked />
+    <label for="theme-toggle" class="toggle">
+    <span class="toggle__handler">
+      <span class="crater crater--1"></span>
+      <span class="crater crater--2"></span>
+      <span class="crater crater--3"></span>
+    </span>
+        <span class="star star--1"></span>
+        <span class="star star--2"></span>
+        <span class="star star--3"></span>
+        <span class="star star--4"></span>
+        <span class="star star--5"></span>
+        <span class="star star--6"></span>
+    </label>
+</div>
+<script type="text/javascript">
+const theme = localStorage.getItem('theme');
+
+if (theme === "light") {
+    document.documentElement.setAttribute('data-theme', 'light');
+} else {
+    document.documentElement.setAttribute('data-theme', 'dark');
+}
+const userPrefers = getComputedStyle(document.documentElement).getPropertyValue('content');
+
+function activateDarkTheme() {
+    document.getElementById('theme-toggle').checked = true;
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.documentElement.classList.add('theme--dark');
+    document.documentElement.classList.remove('theme--light');
+	document.getElementById("theme-toggle").className = 'light';
+	window.localStorage.setItem('theme', 'dark');
+}
+
+function activateLightTheme() {
+    document.getElementById('theme-toggle').checked = false;
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.documentElement.classList.add('theme--light');
+    document.documentElement.classList.remove('theme--dark');
+	document.getElementById("theme-toggle").className = 'dark';
+	window.localStorage.setItem('theme', 'light');
+}
+
+if (theme === "dark") {
+    activateDarkTheme();
+} else if (theme === "light") {
+    activateLightTheme();
+} else if  (userPrefers === "light") {
+    activateDarkTheme();
+} else {
+    activateDarkTheme();
+}
+
+function modeSwitcher() {
+	let currentMode = document.documentElement.getAttribute('data-theme');
+	if (currentMode === "dark") {
+	    activateLightTheme();
+	} else {
+	    activateDarkTheme();
+	}
+}
+</script></div>
+  </div>
+</footer>
+
+
+<script>
+      window.FontAwesomeConfig = {
+        searchPseudoElements: true
+      }
+    </script>
+  </body>
+
+</html>
