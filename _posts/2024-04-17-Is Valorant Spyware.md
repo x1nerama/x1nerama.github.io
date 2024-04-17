@@ -26,6 +26,11 @@ tags: valorant spyware analysis malware-analysis
         color: white;
     }  
 
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
 .image-container {
   position: relative;
   max-width: 500px; /* İhtiyacınıza göre ayarlayabilirsiniz */
@@ -68,27 +73,27 @@ tags: valorant spyware analysis malware-analysis
 </style>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  const overlay = document.querySelector(".overlay");
-  const modal = document.querySelector(".modal");
-  const closeButton = document.querySelector(".close");
-  
-  overlay.addEventListener("click", closeModal);
-  closeButton.addEventListener("click", closeModal);
-  
-  document.querySelectorAll(".image-container img").forEach(img => {
-    img.addEventListener("click", openModal);
-  });
-  
-  function openModal() {
-    overlay.style.display = "block";
-    modal.style.display = "block";
-  }
-  
-  function closeModal() {
-    overlay.style.display = "none";
-    modal.style.display = "none";
-  }
+        document.addEventListener("DOMContentLoaded", function() {
+    const overlay = document.querySelector(".overlay");
+    const modal = document.querySelector(".modal");
+    const closeButton = document.querySelector(".close");
+    const image = document.querySelector(".image");
+
+    overlay.addEventListener("click", closeModal);
+    closeButton.addEventListener("click", closeModal);
+
+    image.addEventListener("click", openModal);
+    image.addEventListener("touchstart", openModal);
+
+    function openModal() {
+        overlay.style.display = "block";
+        modal.style.display = "block";
+    }
+
+    function closeModal() {
+        overlay.style.display = "none";
+        modal.style.display = "none";
+    }
 });
 </script>
 
@@ -210,9 +215,7 @@ Burada gönderilen verilerin içeriğini görmek pek mümkün olmayacaktır çü
         <span class="close">&times;</span>
         <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/tcpview-for-riotclient.png?raw=true">
     </div>
-    <div align="center">
-        <h4 style="text-align:center;"> Fotoğrafı yakından görmek için üzerine tıklayın. </h4>
-    </div>  
+
 </div>  
 
 Verilerin nereye gönderildiğine dair bir iz sürmeye çalıştığımda sonuca varamadım ancak <a href="https://www.youtube.com/@pcsecuritychannel">The PC Security Channel</a> adlı kanalın <a href="https://www.youtube.com/watch?v=UqLI1xKc-L4">'Is Valorant Spyware?'</a> videosunun analizinde kendisinin birçok IP adresinin Amazon sunucularına ait olduğunu belirtiyor. Ayrıca bu konuyu hazırlarken ilham aldığım bahsi geçen videoya da göz atabilirsiniz. Gerçekten güzel ve açıklayıcı bir analiz gerçekleştiriyor.
@@ -227,9 +230,6 @@ Bağlantı sayılarına buradan da göz attığımızda çok kadar fazla bağlan
         <span class="close">&times;</span>
         <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/tcpview-for-epicgames.png?raw=true">
     </div>
-    <div align="center">
-        <h4 style="text-align:center;"> Fotoğrafı yakından görmek için üzerine tıklayın. </h4>
-    </div>  
 </div>
 
 Göründüğü gibi RIOT Client uygulamasına kıyasla daha az bir bağlantı var. Yani RIOT Client uygulamasının cidden fazla veri gönderimi yaptığını anlayabiliyoruz. <br/> <br/>
@@ -243,9 +243,6 @@ Daha sonra yönümü .sys dosyasına çevirdim ve <b>Process Explorer</b> aracı
         <span class="close">&times;</span>
         <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/sys-in-pe.png?raw=true">
     </div>
-    <div align="center">
-        <h4 style="text-align:center;"> Fotoğrafı yakından görmek için üzerine tıklayın. </h4>
-    </div>  
 </div>
 
 Aynı zamanda vgk.sys'in durumunu **driverquery** aracı ile daha hızlı kontrol edebiliriz:
@@ -257,9 +254,6 @@ Aynı zamanda vgk.sys'in durumunu **driverquery** aracı ile daha hızlı kontro
         <span class="close">&times;</span>
         <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/driverquery-result.png?raw=true">
     </div>
-    <div align="center">
-        <h4 style="text-align:center;"> Fotoğrafı yakından görmek için üzerine tıklayın. </h4>
-    </div>  
 </div>
 
 Fakat bir sorun var. Şuan işletim sisteminde RIOT'un herhangi bir uygulaması çalışmıyor - arka planda bile -. Bu, Riot Vanguard için de geçerli:

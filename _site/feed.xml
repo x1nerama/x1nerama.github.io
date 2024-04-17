@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.5">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2024-04-17T13:28:32+03:00</updated><id>/feed.xml</id><title type="html">bekoo’s blog</title><subtitle>&quot;Everything open-source if you can read Assembly.&quot;
-</subtitle><author><name>bekoo</name></author><entry><title type="html">Is Valorant Spyware?</title><link href="/2024/04/17/Is-Valorant-Spyware.html" rel="alternate" type="text/html" title="Is Valorant Spyware?" /><published>2024-04-17T00:00:00+03:00</published><updated>2024-04-17T00:00:00+03:00</updated><id>/2024/04/17/Is%20Valorant%20Spyware</id><content type="html" xml:base="/2024/04/17/Is-Valorant-Spyware.html"><![CDATA[<style>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.5">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2024-04-17T13:57:39+03:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">bekoo’s blog</title><subtitle>&quot;Everything open-source if you can read Assembly.&quot;
+</subtitle><author><name>bekoo</name></author><entry><title type="html">Is Valorant Spyware?</title><link href="http://localhost:4000/2024/04/17/Is-Valorant-Spyware.html" rel="alternate" type="text/html" title="Is Valorant Spyware?" /><published>2024-04-17T00:00:00+03:00</published><updated>2024-04-17T00:00:00+03:00</updated><id>http://localhost:4000/2024/04/17/Is%20Valorant%20Spyware</id><content type="html" xml:base="http://localhost:4000/2024/04/17/Is-Valorant-Spyware.html"><![CDATA[<style>
     img {
         margin: 3% 0;
     }
@@ -19,6 +19,11 @@
     .sup-for-references:active ~ .references {
         color: white;
     }  
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
 
 .image-container {
   position: relative;
@@ -62,27 +67,27 @@
 </style>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  const overlay = document.querySelector(".overlay");
-  const modal = document.querySelector(".modal");
-  const closeButton = document.querySelector(".close");
-  
-  overlay.addEventListener("click", closeModal);
-  closeButton.addEventListener("click", closeModal);
-  
-  document.querySelectorAll(".image-container img").forEach(img => {
-    img.addEventListener("click", openModal);
-  });
-  
-  function openModal() {
-    overlay.style.display = "block";
-    modal.style.display = "block";
-  }
-  
-  function closeModal() {
-    overlay.style.display = "none";
-    modal.style.display = "none";
-  }
+        document.addEventListener("DOMContentLoaded", function() {
+    const overlay = document.querySelector(".overlay");
+    const modal = document.querySelector(".modal");
+    const closeButton = document.querySelector(".close");
+    const image = document.querySelector(".image");
+
+    overlay.addEventListener("click", closeModal);
+    closeButton.addEventListener("click", closeModal);
+
+    image.addEventListener("click", openModal);
+    image.addEventListener("touchstart", openModal);
+
+    function openModal() {
+        overlay.style.display = "block";
+        modal.style.display = "block";
+    }
+
+    function closeModal() {
+        overlay.style.display = "none";
+        modal.style.display = "none";
+    }
 });
 </script>
 
@@ -205,9 +210,7 @@ document.addEventListener("DOMContentLoaded", function() {
         <span class="close">&times;</span>
         <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/tcpview-for-riotclient.png?raw=true" />
     </div>
-    <div align="center">
-        <h4 style="text-align:center;"> Fotoğrafı yakından görmek için üzerine tıklayın. </h4>
-    </div>  
+
 </div>
 
 <p>Verilerin nereye gönderildiğine dair bir iz sürmeye çalıştığımda sonuca varamadım ancak <a href="https://www.youtube.com/@pcsecuritychannel">The PC Security Channel</a> adlı kanalın <a href="https://www.youtube.com/watch?v=UqLI1xKc-L4">‘Is Valorant Spyware?’</a> videosunun analizinde kendisinin birçok IP adresinin Amazon sunucularına ait olduğunu belirtiyor. Ayrıca bu konuyu hazırlarken ilham aldığım bahsi geçen videoya da göz atabilirsiniz. Gerçekten güzel ve açıklayıcı bir analiz gerçekleştiriyor.</p>
@@ -388,7 +391,7 @@ strnlen
   <li><a href="https://www.schellman.com/blog/cybersecurity/what-is-anti-cheat" id="source-2"><b>[2] - Schellman: Understanding Anti-Cheat</b></a></li>
   <li><a href="https://en.wikipedia.org/wiki/Riot_Games#History" id="source-3"><b>[3] - EN Wikipedia: Riot Games </b></a></li>
   <li><a href="https://www.theregister.com/2013/11/20/esea_gaming_bitcoin_fine/" id="source-4"><b>[4] - TheRegister: Gaming co ESEA hit by $1m fine for hidden Bitcoin mining enslaver</b></a></li>
-</ul>]]></content><author><name>bekoo</name></author><category term="valorant" /><category term="spyware" /><category term="analysis" /><category term="malware-analysis" /><summary type="html"><![CDATA[Valorant'ın spyware iddiaları hakkında bir analiz yazısı]]></summary></entry><entry><title type="html">Bypassing ptrace with Radare2 in Linux</title><link href="/2023/12/31/Bypassing-Ptrace.html" rel="alternate" type="text/html" title="Bypassing ptrace with Radare2 in Linux" /><published>2023-12-31T00:00:00+03:00</published><updated>2023-12-31T00:00:00+03:00</updated><id>/2023/12/31/Bypassing%20Ptrace</id><content type="html" xml:base="/2023/12/31/Bypassing-Ptrace.html"><![CDATA[<style>
+</ul>]]></content><author><name>bekoo</name></author><category term="valorant" /><category term="spyware" /><category term="analysis" /><category term="malware-analysis" /><summary type="html"><![CDATA[Valorant'ın spyware iddiaları hakkında bir analiz yazısı]]></summary></entry><entry><title type="html">Bypassing ptrace with Radare2 in Linux</title><link href="http://localhost:4000/2023/12/31/Bypassing-Ptrace.html" rel="alternate" type="text/html" title="Bypassing ptrace with Radare2 in Linux" /><published>2023-12-31T00:00:00+03:00</published><updated>2023-12-31T00:00:00+03:00</updated><id>http://localhost:4000/2023/12/31/Bypassing%20Ptrace</id><content type="html" xml:base="http://localhost:4000/2023/12/31/Bypassing-Ptrace.html"><![CDATA[<style>
     img, iframe {
         margin-top: 2%;
         margin-bottom: 2%;
@@ -519,7 +522,7 @@ strnlen
 
 <p>Bir sonraki blogta görüşmek üzere. İyi çalışın iyi reverse yapın efenimm</p>
 
-<video preload="auto" poster="https://pbs.twimg.com/tweet_video_thumb/D5aj3tfW0AIiSxo.jpg" src="https://video.twimg.com/tweet_video/D5aj3tfW0AIiSxo.mp4" type="video/mp4" autoplay="" controls=""></video>]]></content><author><name>bekoo</name></author><category term="bypassing" /><category term="ptrace" /><category term="radare2" /><summary type="html"><![CDATA[Radare2 Kullanarak Linux Üzerinde Ptrace Bypass Etme]]></summary></entry><entry><title type="html">MD 0x0 | Process Injection</title><link href="/2023/08/08/MD-0x0-=_-Process-Injection.html" rel="alternate" type="text/html" title="MD 0x0 | Process Injection" /><published>2023-08-08T00:00:00+03:00</published><updated>2023-08-08T00:00:00+03:00</updated><id>/2023/08/08/MD%200x0%20=_%20Process%20Injection</id><content type="html" xml:base="/2023/08/08/MD-0x0-=_-Process-Injection.html"><![CDATA[<style>
+<video preload="auto" poster="https://pbs.twimg.com/tweet_video_thumb/D5aj3tfW0AIiSxo.jpg" src="https://video.twimg.com/tweet_video/D5aj3tfW0AIiSxo.mp4" type="video/mp4" autoplay="" controls=""></video>]]></content><author><name>bekoo</name></author><category term="bypassing" /><category term="ptrace" /><category term="radare2" /><summary type="html"><![CDATA[Radare2 Kullanarak Linux Üzerinde Ptrace Bypass Etme]]></summary></entry><entry><title type="html">MD 0x0 | Process Injection</title><link href="http://localhost:4000/2023/08/08/MD-0x0-=_-Process-Injection.html" rel="alternate" type="text/html" title="MD 0x0 | Process Injection" /><published>2023-08-08T00:00:00+03:00</published><updated>2023-08-08T00:00:00+03:00</updated><id>http://localhost:4000/2023/08/08/MD%200x0%20=_%20Process%20Injection</id><content type="html" xml:base="http://localhost:4000/2023/08/08/MD-0x0-=_-Process-Injection.html"><![CDATA[<style>
     h4 {
         /* in this blogs use h4 tags is description for images. */
         text-align: center;
@@ -979,7 +982,7 @@ OR
 
 <p>Bu serimiz bu kadardı. Umarım gerçekten siz okuyuculara bir şey katabilmişimdir..</p>
 
-<p>Diğer seride görüşmek üzere!</p>]]></content><author><name>bekoo</name></author><category term="malware" /><category term="malware-development" /><category term="reverse-engineering" /><category term="process-injection" /><summary type="html"><![CDATA[Process Injection Attacks]]></summary></entry><entry><title type="html">Conditionals and Loops in Assembly</title><link href="/2023/04/16/Conditionals-and-Unconditionals-in-Assembly.html" rel="alternate" type="text/html" title="Conditionals and Loops in Assembly" /><published>2023-04-16T00:00:00+03:00</published><updated>2023-04-16T00:00:00+03:00</updated><id>/2023/04/16/Conditionals%20and%20Unconditionals%20in%20Assembly</id><content type="html" xml:base="/2023/04/16/Conditionals-and-Unconditionals-in-Assembly.html"><![CDATA[<p>Merhabalar. bu blogumda Assembly’de döngülerden ve Koşullu ve Koşulsuz karşılaştırmaları ele alacağım. Bu iki konuyu neden tek bir çatı altında anlattığımı ilerideki dakikalarda bahsedeceğim.</p>
+<p>Diğer seride görüşmek üzere!</p>]]></content><author><name>bekoo</name></author><category term="malware" /><category term="malware-development" /><category term="reverse-engineering" /><category term="process-injection" /><summary type="html"><![CDATA[Process Injection Attacks]]></summary></entry><entry><title type="html">Conditionals and Loops in Assembly</title><link href="http://localhost:4000/2023/04/16/Conditionals-and-Unconditionals-in-Assembly.html" rel="alternate" type="text/html" title="Conditionals and Loops in Assembly" /><published>2023-04-16T00:00:00+03:00</published><updated>2023-04-16T00:00:00+03:00</updated><id>http://localhost:4000/2023/04/16/Conditionals%20and%20Unconditionals%20in%20Assembly</id><content type="html" xml:base="http://localhost:4000/2023/04/16/Conditionals-and-Unconditionals-in-Assembly.html"><![CDATA[<p>Merhabalar. bu blogumda Assembly’de döngülerden ve Koşullu ve Koşulsuz karşılaştırmaları ele alacağım. Bu iki konuyu neden tek bir çatı altında anlattığımı ilerideki dakikalarda bahsedeceğim.</p>
 
 <h2 id="0x0--conditionals-karşılaştırmalar">0x0 – Conditionals (Karşılaştırmalar)</h2>
 <p>Teorik olarak karşılaştırmalardan bahsetmeyeceğim ancak ufak bir tanım yapmak gerekirse, belirtilen koşula bağlı olarak programın akışını değiştirilmesini sağlar.</p>

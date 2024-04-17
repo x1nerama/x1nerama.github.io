@@ -10,17 +10,19 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="Valorant’ın spyware iddiaları hakkında bir analiz yazısı" />
 <meta property="og:description" content="Valorant’ın spyware iddiaları hakkında bir analiz yazısı" />
+<link rel="canonical" href="http://localhost:4000/2024/04/17/Is-Valorant-Spyware.html" />
+<meta property="og:url" content="http://localhost:4000/2024/04/17/Is-Valorant-Spyware.html" />
 <meta property="og:site_name" content="bekoo’s blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2024-04-17T00:00:00+03:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Is Valorant Spyware?" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"bekoo"},"dateModified":"2024-04-17T00:00:00+03:00","datePublished":"2024-04-17T00:00:00+03:00","description":"Valorant’ın spyware iddiaları hakkında bir analiz yazısı","headline":"Is Valorant Spyware?","mainEntityOfPage":{"@type":"WebPage","@id":"/2024/04/17/Is-Valorant-Spyware.html"},"url":"/2024/04/17/Is-Valorant-Spyware.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"bekoo"},"dateModified":"2024-04-17T00:00:00+03:00","datePublished":"2024-04-17T00:00:00+03:00","description":"Valorant’ın spyware iddiaları hakkında bir analiz yazısı","headline":"Is Valorant Spyware?","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2024/04/17/Is-Valorant-Spyware.html"},"url":"http://localhost:4000/2024/04/17/Is-Valorant-Spyware.html"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/css/style.css">
   <link rel="icon" type="image/png" href="/assets/favicon.png" />
-  <link rel="stylesheet" href="/assets/css/magnific-popup.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="bekoo&apos;s blog" /><script src="https://code.jquery.com/jquery-3.2.0.min.js"></script> 
+  <link rel="stylesheet" href="/assets/css/magnific-popup.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="bekoo&apos;s blog" /><script src="https://code.jquery.com/jquery-3.2.0.min.js"></script> 
   <script src="/assets/js/jquery.magnific-popup.js"></script>
 </head>
 <body><div class="site-header">
@@ -117,6 +119,11 @@
         color: white;
     }  
 
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
 .image-container {
   position: relative;
   max-width: 500px; /* İhtiyacınıza göre ayarlayabilirsiniz */
@@ -159,27 +166,27 @@
 </style>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  const overlay = document.querySelector(".overlay");
-  const modal = document.querySelector(".modal");
-  const closeButton = document.querySelector(".close");
-  
-  overlay.addEventListener("click", closeModal);
-  closeButton.addEventListener("click", closeModal);
-  
-  document.querySelectorAll(".image-container img").forEach(img => {
-    img.addEventListener("click", openModal);
-  });
-  
-  function openModal() {
-    overlay.style.display = "block";
-    modal.style.display = "block";
-  }
-  
-  function closeModal() {
-    overlay.style.display = "none";
-    modal.style.display = "none";
-  }
+        document.addEventListener("DOMContentLoaded", function() {
+    const overlay = document.querySelector(".overlay");
+    const modal = document.querySelector(".modal");
+    const closeButton = document.querySelector(".close");
+    const image = document.querySelector(".image");
+
+    overlay.addEventListener("click", closeModal);
+    closeButton.addEventListener("click", closeModal);
+
+    image.addEventListener("click", openModal);
+    image.addEventListener("touchstart", openModal);
+
+    function openModal() {
+        overlay.style.display = "block";
+        modal.style.display = "block";
+    }
+
+    function closeModal() {
+        overlay.style.display = "none";
+        modal.style.display = "none";
+    }
 });
 </script>
 
@@ -302,9 +309,7 @@ document.addEventListener("DOMContentLoaded", function() {
         <span class="close">&times;</span>
         <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/tcpview-for-riotclient.png?raw=true" />
     </div>
-    <div align="center">
-        <h4 style="text-align:center;"> Fotoğrafı yakından görmek için üzerine tıklayın. </h4>
-    </div>  
+
 </div>
 
 <p>Verilerin nereye gönderildiğine dair bir iz sürmeye çalıştığımda sonuca varamadım ancak <a href="https://www.youtube.com/@pcsecuritychannel">The PC Security Channel</a> adlı kanalın <a href="https://www.youtube.com/watch?v=UqLI1xKc-L4">‘Is Valorant Spyware?’</a> videosunun analizinde kendisinin birçok IP adresinin Amazon sunucularına ait olduğunu belirtiyor. Ayrıca bu konuyu hazırlarken ilham aldığım bahsi geçen videoya da göz atabilirsiniz. Gerçekten güzel ve açıklayıcı bir analiz gerçekleştiriyor.</p>
@@ -494,7 +499,7 @@ strnlen
 <div id="disqus_thread"></div>
 <script>
  var disqus_config = function () {
-     this.page.url = '/2024/04/17/Is-Valorant-Spyware.html';
+     this.page.url = 'http://localhost:4000/2024/04/17/Is-Valorant-Spyware.html';
      this.page.identifier = '/2024/04/17/Is Valorant Spyware';
      this.page.title = 'Is Valorant Spyware?';
  };
