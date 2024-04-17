@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.5">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2024-04-17T13:25:53+03:00</updated><id>/feed.xml</id><title type="html">bekoo’s blog</title><subtitle>&quot;Everything open-source if you can read Assembly.&quot;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.5">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2024-04-17T13:28:32+03:00</updated><id>/feed.xml</id><title type="html">bekoo’s blog</title><subtitle>&quot;Everything open-source if you can read Assembly.&quot;
 </subtitle><author><name>bekoo</name></author><entry><title type="html">Is Valorant Spyware?</title><link href="/2024/04/17/Is-Valorant-Spyware.html" rel="alternate" type="text/html" title="Is Valorant Spyware?" /><published>2024-04-17T00:00:00+03:00</published><updated>2024-04-17T00:00:00+03:00</updated><id>/2024/04/17/Is%20Valorant%20Spyware</id><content type="html" xml:base="/2024/04/17/Is-Valorant-Spyware.html"><![CDATA[<style>
     img {
         margin: 3% 0;
@@ -73,17 +73,10 @@ document.addEventListener("DOMContentLoaded", function() {
   document.querySelectorAll(".image-container img").forEach(img => {
     img.addEventListener("click", openModal);
   });
-
+  
   function openModal() {
     overlay.style.display = "block";
     modal.style.display = "block";
-
-    modal.style.width = "100%";
-    modal.style.height = "100%";
-    modal.style.top = "0";
-    modal.style.left = "0";
-    modal.style.position = "fixed";
-    modal.style.overflow = "auto";
   }
   
   function closeModal() {
