@@ -78,12 +78,18 @@ document.addEventListener("DOMContentLoaded", function() {
   
   document.querySelectorAll(".image-container img").forEach(img => {
     img.addEventListener("click", openModal);
-    img.addEventListener("touchstart", openModal); // Dokunmatik olayı dinleyelim
   });
-  
+
   function openModal() {
     overlay.style.display = "block";
     modal.style.display = "block";
+
+    modal.style.width = "100%";
+    modal.style.height = "100%";
+    modal.style.top = "0";
+    modal.style.left = "0";
+    modal.style.position = "fixed";
+    modal.style.overflow = "auto";
   }
   
   function closeModal() {
@@ -92,6 +98,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 });
 </script>
+
 
 ## Giriş
 
