@@ -380,8 +380,11 @@ Dediğim gibi dinamik olarak analiz yapamadığımız için burada kullanılan f
 
 # Sonuç
 
-Analiz sonucunda, Vanguard'ın sürücüsü olan vgk.sys'in davranışlarını değerlendirdiğinde, Valorant oyununun spyware olabileceği daha yakın olduğu görülmektedir. Bu, daha derin analizler ile doğrulanabilir. Ancak, RIOT'un bu konuda daha şeffaf olması gerektiğini düşünüyorum. RIOT'un, Vanguard'ın ne yaptığı ve nasıl çalıştığı hakkında daha fazla bilgi vermesi gerekmektedir. 
+Analiz sonucunda, Vanguard'ın sürücüsü olan vgk.sys'in davranışlarını değerlendirdiğimizde, Valorant oyununun spyware olabileceği daha yakın olduğu düşünüyorum. Ancak, bu sonuç daha derin analizlerle doğrulanabilir veya reddedilebilir. Ayrıca RIOT'un bu konuda daha şeffaf olması gerektiğini düşünüyorum. Özellikle, Vanguard'ın ne yaptığı ve nasıl çalıştığı konusunda daha fazla bilgi sağlamaları önemlidir. Kullanıcıların gizlilik ve güvenlik endişelerini gidermek için RIOT'un daha açık bir iletişim politikası benimsemesi gerektiğini düşünüyorum.
 
+<br/>
+
+Umarım sizler için faydalı bir konu olmuştur. Diğer konuda görüşmek üzere!
 
  <video preload="auto" poster="https://pbs.twimg.com/tweet_video_thumb/D5aj3tfW0AIiSxo.jpg" src="https://video.twimg.com/tweet_video/D5aj3tfW0AIiSxo.mp4" type="video/mp4" autoplay="" controls=""></video>
 
