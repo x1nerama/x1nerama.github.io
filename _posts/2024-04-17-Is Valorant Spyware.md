@@ -99,37 +99,37 @@ body {
 
 ## Giriş
 
-Valorant oyunu, çıkışından beri hem oyuncuların ilgisini çeken hem de tartışmalara neden olan bir yapım olmuştur. Özellikle oyunun anti-hile sistemi olan Vanguard'ın, oyuncuların gizlilik haklarını ihlal ettiği ve spyware olarak adlandırılabilecek bir yazılım olduğu iddialarıyla sıkça gündeme gelmiştir. Bu iddialar, oyuncuların güvenlik endişelerini artırmış ve Valorant'ın popülaritesiyle birlikte bu konuda birçok tartışma başlatılmıştır.
+Valorant oyunu, çıkışından beri hem oyuncuların ilgisini çeken hem de tartışmalara neden olan bir yapım olmuştur. Özellikle oyunun anti-cheat sistemi olan Vanguard'ın, oyuncuların gizlilik haklarını ihlal ettiği ve spyware olarak adlandırılabilecek bir yazılım olduğu iddialarıyla sıkça gündeme gelmiştir. Bu iddialar, oyuncuların güvenlik endişelerini artırmış ve Valorant'ın popülaritesiyle birlikte bu konuda birçok tartışma başlatılmıştır.
 
 Reddit ve diğer sosyal medya platformlarında yayılan bu iddialar, Valorant'ın geliştiricisi olan Riot Games'in, oyuncuların bilgisayarlarında istenmeyen izleme ve kontrol yeteneklerine sahip olduğu yönünde eleştirilmesine neden olmuştur. Ancak, bu iddiaların gerçekliği ve Vanguard'ın gerçekten bir spyware olup olmadığı konusu hala netlik kazanmamıştır. Bu yazıda, Valorant'ın spyware olduğu iddialarını ele alacak ve bu iddiala bir göz atacağız.
 
 ## Uyarı
 
-Bu yazıdaki analiz ve değerlendirmeler, yalnızca araştırma amaçlıdır ve herhangi bir suçlama içermemektedir. Valorant'ın güvenlik önlemleri ve Vanguard anti-hile sistemi hakkındaki iddiaların objektif bir bakış açısıyla incelenmesi amaçlanmıştır. Bu analiz, Riot Games ya da Valorant'ın kullanıcılarına yönelik herhangi bir kötü niyetli davranışı ima etmekten ziyade, topluluğun gündeme getirdiği endişeleri ve eleştirileri anlama ve değerlendirme amacını taşımaktadır. 
+Bu yazıdaki analiz ve değerlendirmeler, yalnızca araştırma amaçlıdır ve herhangi bir suçlama içermemektedir. Valorant'ın güvenlik önlemleri ve Vanguard anti-cheat sistemi hakkındaki iddiaların objektif bir bakış açısıyla incelenmesi amaçlanmıştır. Bu analiz, Riot Games ya da Valorant'ın kullanıcılarına yönelik herhangi bir kötü niyetli davranışı ima etmekten ziyade, topluluğun gündeme getirdiği endişeleri ve eleştirileri anlama ve değerlendirme amacını taşımaktadır. 
 
 ## Anti-Cheat Yazılımları nasıl Çalışır?
 
 Araştırmamıza Anti-Cheat yazılımların nasıl çalıştığını anlayarak başlamamız gerekiyor.
 
-Genel olarak Anti-Cheat yazılımları, oyun içerisinde hile yapılmasını engellemek ve hile yapanları tespit etmek amacıyla geliştirilmiş yazılımlardır. Bu yazılımlar, oyunun çalıştığı cihazın kernel seviyesinde çalışarak, oyun için hazırlanan hileleri tespit etmektir.
+Genel olarak Anti-Cheat yazılımları, oyun içerisinde hile yapılmasını engellemek ve hile yapanları tespit etmek amacıyla geliştirilmiş yazılımlardır.  
 
-Anti-Cheat yazılımların çalışma mantığı ikiye ayrılabilir; server-side (sunucu taraflı) ve client-side (istemci taraflı) çalışma yöntemleri.<sup class="sup-for-references"><a href="#source-1">[1]</a></sup>
+Bu yazılımların çalışma mantığını ikiye ayırabiliriz: **server-side** (sunucu taraflı) ve **client-side** (istemci taraflı) çalışma yöntemleri.<sup class="sup-for-references"><a href="#source-1">[1]</a></sup>
 
-Server-side anti-cheat yazılımları, genellikle oyuncunun oyun sunucusuna gönderdiği verileri izler ve analiz eder. Bu veriler, oyuncunun oyunu nasıl oynadığı, hangi komutları gönderdiği, ne kadar hızlı tepki verdiği gibi bilgileri içerebilir. Amacı, oyuncunun normal oyun davranışları ile potansiyel hile kullanımı arasındaki farkları tespit etmektir.
+Server-side tabanlı anti-cheat yazılımları, genellikle oyuncunun oyun sunucusuna gönderdiği verileri izler ve analiz eder. Bu veriler, oyuncunun oyunu nasıl oynadığı, hangi komutları gönderdiği, ne kadar hızlı tepki verdiği gibi bilgileri içerebilir. Amacı, oyuncunun normal oyun davranışları ile potansiyel hile kullanımı arasındaki farkları tespit etmektir.
 
-Client-side anti-cheat yazılımları ise oyuncunun kendi cihazında çalışır ve genellikle oyunun belleğini ve process'in memory'sini izleyebilir. Oyuncunun bilgisayarında çalışan hile programlarını tespit etmeye çalışır ve bunları engellemeye veya raporlamaya yönelik çeşitli teknikler kullanır.
+Client-side tabanlı anti-cheat yazılımları ise oyuncunun kendi bilgisayarında çalışır ve oyuncunun bilgisayarına tamamen erişimi olabilir. Böylece oyuncunun bilgisayarında çalışan hile programlarını tespit etmeye çalışır ve bunları engellemeye veya raporlamaya yönelik çeşitli teknikler kullanabilir. Ayrıca bu yazılımlar kernel seviyesinde tam yetkili ve erişimli olarak çalışır. Yani oyuncunun bilgisayarına tamamen hakimdir.
 
-Her iki tür anti-cheat yazılımının avantajları ve dezavantajları vardır. Server-side anti-cheat yazılımları genellikle daha güvenilirdir çünkü sunucu tarafında çalışırlar ve oyuncuların kendi bilgisayarlarında yapabilecekleri manipülasyonlara daha az açıktır. Ancak, bazı hile programları bu tür yazılımları atlatmak için geliştirilmiş teknikler kullanabilir. Client-side anti-cheat yazılımları ise oyuncunun bilgisayarında daha kapsamlı bir kontrol sağlayabilir ancak bazı durumlarda yanlış pozitif sonuçlar verebilir veya oyuncunun gizliliği konusunda endişelere neden olabilir.
+Her iki tür anti-cheat yazılımının avantajları ve dezavantajları vardır. Server-side anti-cheat yazılımları genellikle daha güvenilirdir çünkü sunucu tarafında çalışırlar ve oyuncuların kendi bilgisayarlarında yapabilecekleri manipülasyonlara daha az açıktır. Client-side tabanlı anti-cheat yazılımları ise oyuncunun bilgisayarında daha kapsamlı bir kontrol sağlayabilir ve bu, bu yazıda sıkça tartışacağımız gizlilik ihlallerine veya oyuncunun güvenliği konusunda endişelere neden olabilir.
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Priv_rings.svg/1024px-Priv_rings.svg.png">
 
 İlk başlarda Anti-Cheat yazılımları Ring 3 seviyesinde çalışıyordu. Bilindiği gibi ring 3 alanı, **User Mode** olarak geçmektedir. Eğer bu konuya aşina değilseniz hızlı bir şekilde araştırmanızı tavsiye ederim.
 
-Bilindiği üzere User Mode alanında ayrıcalıklar çok kısıtlıdır; işletim sistemi üzerinde her ayrıcalığa sahip olmadığınız ve çok kısıtlı olduğunuz bir alan. Anti-Cheat yazılımları ise bu alanda çalışıyordu. Bu alanda doğrudan donanıma erişim sağlayamadığınız için ve belleğe erişim sağlayamadığınız için anti-cheat yazılımları herhangi bir tarama gerçekleşmeden önce Application Programming Interface (API)'lardan izin alması gerekirdi. Bunlarla beraber bu alanda anti-cheat yazılımları, diğer uygulamara göre izole bir şekilde çalışırdı ve bu yüzden başka bir uygulamaya ait olan datalara müdahale edemez ya da datayı değiştiremezdi.<sup class="sup-for-references"><a href="#source-2">[2]</a></sup>
+User Mode alanında ayrıcalıklar çok kısıtlıdır; işletim sistemi üzerinde her ayrıcalığa sahip olmadığınız ve çok kısıtlı olduğunuz bir alan. Anti-Cheat yazılımları ise bu alanda çalışıyordu. Bu alanda doğrudan donanıma erişim sağlayamadığınız için ve belleğe erişim sağlayamadığınız için anti-cheat yazılımları herhangi bir tarama gerçekleşmeden önce gerekli izinlere sahip olması gerekirdi. Bunlarla beraber bu alanda anti-cheat yazılımları, diğer uygulamara göre izole bir şekilde çalışırdı ve bu yüzden başka bir uygulamaya ait olan datalara müdahale edemez ya da datayı değiştiremezdi.<sup class="sup-for-references"><a href="#source-2">[2]</a></sup>
 
-Fakat Cheater'lar, anti-cheat yazılımların Ring 3 seviyesinde çalıştığını bildikleri için daha sofistike yöntemler geliştirdiler. Yöntemleri ise hazırladıkları hileleri Ring 3 seviyesinde değil Ring 0 alanında çalıştırmaktı yani **Kernel Mode** alanında. Böylece hazırladıkları hileler daha fazla ayrıcalıklara sahip oluyordu ve tespit edilmesi ciddi anlamda zorlaşıyordu. Ring 0 yani Kernel Mode alanı, User Mode alanı gibi kısıtlamalara sahip değildir; bu alana kıyasla daha fazla ayrıcalıklara sahiptir, herhangi bir instruction yürütebilir ve herhangi bir bellek adresini rahatça okuyabilir. Hatta Cheater'lar o kadar ileri seviyeye gitmişler ki, Ring 3 alanında çalışan Anti-Cheat yazılımların data almak için kullandığı system call'ları yani sistem çağrılarını bile hooklayabiliyordı.<sup class="sup-for-references"><a href="#source-2">[2]</a></sup>
+Fakat Cheater'lar, anti-cheat yazılımların Ring 3 seviyesinde çalıştığını bildikleri için daha sofistike yöntemler geliştirdiler. Yöntemleri ise hazırladıkları hileleri Ring 3 seviyesinde değil Ring 0 alanında çalıştırmaktı yani **Kernel Mode** alanında. Böylece hazırladıkları hileler daha fazla ayrıcalıklara sahip oluyordu ve tespit edilmesi ciddi anlamda zorlaşıyordu. Ring 0 yani Kernel Mode alanı, User Mode alanı gibi kısıtlamalara sahip değildir. User mode alana kıyasla daha fazla ayrıcalıklara sahiptir; herhangi bir instruction yürütülebilir ve herhangi bir bellek adresini rahatça okunabilir veya en önemlisi donanımla iletişime geçilebilir. Hatta Cheater'lar o kadar ileri seviyeye gitmişler ki, Ring 3 alanında çalışan Anti-Cheat yazılımlara ait verileri almak için bu yazılımların kullandığı system call'ları bile hooklayabiliyordı.<sup class="sup-for-references"><a href="#source-2">[2]</a></sup>
 
-Oyun şirketleri ise bu yönteme karşı daha benzer bir sofistike bir yöntem geliştirdiler ve kernel seviyesinde yani Ring 0 alanında çalışan anti-cheat yazılımlar geliştirdiler. Ring 0'da çalışan bu yazılımlar, Ring 3 alanında olduğu gibi sistemi aynı şekilde tarayabiliyor ancak bunu direkt kernel seviyesinde yapıyor yani tamamen yüksek yetkiler ile. Bunun avantajı olduğu gibi de bu blogta baya tartışacağımız dezavantajı da vardır. Anti-Cheat yazılımların Ring 0 alanında çalışma avantajı, tespit edilemesi zor olan hileleri bile kolayca tespit etmesi ve oyunu hileye karşı daha güvenli tutmasıdır. Dezavantajı ise **gizlilik problemi**.
+Oyun şirketleri ise bu yönteme karşı bir cevap vermesi gerekiyordu ve User mode alanında kısıtlı bir şekilde çalışan anti-cheat yazılımlarını kernel seviyesinde yani Ring 0 alanına taşıdılar. Ring 0'da çalışan bu yazılımlar, Ring 3 alanında olduğu gibi sistemi aynı şekilde tarayabiliyor ancak bunu direkt kernel seviyesinde yapıyor yani tamamen yüksek yetkiler ile. Bunun avantajı olduğu gibi de bu blogta baya tartışacağımız dezavantajı da vardır. Anti-Cheat yazılımların Ring 0 alanında çalışma avantajı, tespit edilemesi zor olan hileleri bile kolayca tespit etmesi ve oyunu hileye karşı daha güvenli tutmasıdır. Dezavantajı ise **gizlilik problemi**.
 
 Düşünün ki, eğer bu yazılımlar sizi hilelerden korumak için yüksek yetkiler ile tarama yapıp ve her şeyi okuyabiliyorsa teorik olarak bilgisayarınızdaki her şeye de erişebilir anlamına da geliyor. Bu yazılımlar kernel seviyesinde çalışıyor. Yani yüksek ayrıcalıklarla sizin bilgisayarınızdaki anlık her şeyi okuyabilir ve erişebilirler. Sizlere şu soruyu yönlendirmek isterim, oynadığınız oyunda hilecilere katlanmak istemezsiniz ve bu hilecilere karşı bir önlem alınmasını istersiniz ama bununla beraber gizliliğinizi riske atmak ister miydiniz?
 
@@ -137,20 +137,18 @@ Düşünün ki, eğer bu yazılımlar sizi hilelerden korumak için yüksek yetk
 
 Bende dahil oyunlarda neredeyse hepimiz hilecilere karşı bir önlemler alınmasını isteriz. Buna karşın oyun şirketleri de anti-cheat yazılımlarını bizlere sunar ancak bu yazılımlar isteğimizi karşılasa da yanında getirdikleri ciddi sorunlar var; bunlardan biri de yukarıda ele aldığım gizlilik sorunu.
 
-Geçmiş yıllarda anti-cheat yazılımların gizlilik ilkelerini ihlal eden olaylar olmuştur. Bunlardan biri de 2013 yılında ESEA şirketinden bir geliştiricinin işletim sisteminin kernel seviyesini kullanarak oyuncuların bilgisiyarından gizli ve büyük ölçekte bir bitcoin madenciliği gerçekleştirmesi bu konuya güzel örnektir. Geliştirici, <b>14.000</b> oyuncunun bilgisiyarındaki GPU ile yerleştirdiği mining yazılımıyla yaklaşık 4.000$ elde etti<sup class="sup-for-references"><a href="#source-3">[3]</a></sup> ve bu olay ortaya çıktıktan sonra ESEA şirketi US Regulators (ABD Düzenleyicileri) tarafından <b>1.000.000</b> <a href="https://nj.gov/oag/newsreleases13/pr20131119a.html">para cezası verildi</a>. Bu olaylardan sonra ESEA şirketi bizzat kamuoyundan <a href="https://play.esea.net/news/12692">özür diledi</a> ve ESEA şirketi mining ile elde edilen paraları ödül potları aracılığıyla oyunculara dağıttı ve American Cancer Society (Amerikan Kanser Derneği)'ne <b>$7.427.10</b> bağışladı.<sup class="sup-for-references"><a href="#source-3">[3]</a></sup>
+Geçmiş yıllarda anti-cheat yazılımların gizlilik ilkelerini ihlal eden olaylar olmuştur. Bunlardan biri de 2013 yılında ESEA şirketinden bir geliştiricinin işletim sisteminin kernel seviyesini kullanarak oyuncuların bilgisayarından gizli ve büyük ölçekte bir bitcoin madenciliği gerçekleştirmesi bu konuya güzel örnektir. Geliştirici, <b>14.000</b> oyuncunun bilgisayarındaki GPU ile yerleştirdiği mining yazılımıyla yaklaşık 4.000$ elde etti<sup class="sup-for-references"><a href="#source-3">[3]</a></sup> ve bu olay ortaya çıktıktan sonra ESEA şirketi US Regulators (ABD Düzenleyicileri) tarafından <b>1.000.000</b> <a href="https://nj.gov/oag/newsreleases13/pr20131119a.html">para cezası verildi</a>. Bu olaylardan sonra ESEA şirketi bizzat kamuoyundan <a href="https://play.esea.net/news/12692">özür diledi</a> ve ESEA şirketi mining ile elde edilen paraları ödül potları aracılığıyla oyunculara dağıttı ve American Cancer Society (Amerikan Kanser Derneği)'ne <b>$7.427.10</b> bağışladı.<sup class="sup-for-references"><a href="#source-3">[3]</a></sup>
 
 
 Bu yazılımlar tamamen yüksek ve ayrıcalıklı yetkiler ise oyuncunun bilgisayarını tarayabilir ve her dataya erişebilir. Bu da sistemde genel bir istikrarsızlığa neden olabileciği gibi gizlilik problemine de neden olur. 
 
-Bununla beraber bazı hackerların oyuncuların bilgisayarına girmesine neden olabilecek güvenlik açıklara ya da İşletim sistemi için problemlere neden olabilirler. Anti-Cheat'lar bir driver yani sürücü olarak çalıştığı için sürücü kodundaki küçük bir hata, işletim sistemin <b>Blue Screen of Death (BSOD)</b> benzeri çökmelere neden olurken, sürücü kodunda bulunan ciddi ihmaller veya eksiklikler ise bufferoverflow gibi açıklara neden olabilir.
+Bununla beraber bazı hackerların oyuncuların bilgisayarına girmesine neden olabilecek güvenlik açıklara ya da İşletim sistemi için problemlere neden olabilirler. Anti-Cheat yazılımları kernel sürücüsü olarak çalıştığı için sürücüde bulunan kodda küçük bir hata, işletim sistemin <b>Blue Screen of Death (BSOD)</b> benzeri çökmelere neden olurken, sürücü kodunda bulunan ciddi ihmaller veya eksiklikler ise bufferoverflow gibi açıklara neden olabilir.
 
 <b>"Ulan beko alt tarafı oyunun güvenliğini sağlıyorlar ne abarttın be güvenlik açığı bilmem ne diye"</b> dediğinizi duyar gibiyim. Gelin reddit'ten bu sorunlara maruz kalmış insanların konularına bir göz atalım:
 
 <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/r-com1.png?raw=true" class="reddit" style="width: 80%;">
 
-Burada kullanıcı bilgisiyarı açtığı anda yukarıda bahsettiğim **SYSTEM THREAD EXCEPTION NOT HANDLED** hata koduyla mavi hata ekrana düştüğünü belirtiyor. Çözüm üretmek için Windows'a girmeye ya da windows'u güvenli modda çalıştırmayı denediğini ancak başaramadığını belirtiyor. Son olarak ise format atarak sorunu çözdüğünü belirtiyor.
-
-**vgk.sys**, RIOT Games'a ait olan bir Vanguard anti-cheat yazılımın driver yani sürücü dosyasıdır.
+Burada kullanıcı bilgisayarı açtığı anda yukarıda bahsettiğim **SYSTEM THREAD EXCEPTION NOT HANDLED** hata koduyla mavi hata ekrana düştüğünü belirtiyor. Çözüm üretmek için Windows'u başlatmayı ya da windows'u güvenli modda çalıştırmayı denediğini ancak başaramadığını belirtiyor. Son olarak ise format atarak sorunu çözdüğünü belirtiyor. (Not: **vgk.sys**, RIOT Games'a ait olan bir Vanguard anti-cheat yazılımın driver yani sürücü dosyasıdır.)
 
 <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/r-com2.png?raw=true" class="reddit" style="width: 80%;">
 
@@ -174,7 +172,7 @@ Bu soruyu araştırmaya öncelikle RIOT'un kendi makalesi olan <a href="https://
 
 <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/vanguard-article.png?raw=true">
 
-Açıkçası bu metinler beni tatmin etmedi. Evet, RIOT makalesinde Vanguard'ın zaten bilgisiyar açılışından itibaren çalıştığını açıkça söylüyor ancak bana soracak olursanız açıklama yetersiz. <b>Gizlilik</b> gibi böyle bir konuyu detaylandırarak oyunculara açıklamak ve güvenini kazanmak yerine böyle kısa açıklama ile konuyu kapatmak sizce de mantıklı mı? 
+Açıkçası bu metinler beni tatmin etmedi. Evet, RIOT makalesinde Vanguard'ın zaten bilgisayar açılışından itibaren çalıştığını açıkça söylüyor ancak bana soracak olursanız açıklama yetersiz. <b>Gizlilik</b> gibi böyle bir konuyu detaylandırarak oyunculara açıklamak ve güvenini kazanmak yerine böyle kısa açıklama ile konuyu kapatmak sizce de mantıklı mı? 
 
 Bu makale bana yetersiz geldiği için tekrardan reddit ortamlarına döndüm ve tekrar araştırmaya başladım. Daha sonra r/VALORANT subreddit'inde şu konuya denk geldim:
 
@@ -182,7 +180,7 @@ Bu makale bana yetersiz geldiği için tekrardan reddit ortamlarına döndüm ve
 
 Gerçekten r/VALORANT subreddit'inde baya tartışılmış bir konu.
 
-Tartışmayı başlatan kişi, vgk.sys'in bilgisiyar başlangıcından itibaren çalıştığını ve bunu umursamasa da bunun nedenini soruyor ve gerçekten güzel bir soru.
+Tartışmayı başlatan kişi, vgk.sys'in bilgisayar başlangıcından itibaren çalıştığını ve bunu umursamasa da bunun nedenini soruyor ve gerçekten güzel bir soru.
 
 Daha sonra VANGUARD anti-cheat yazılımın eski lideri olan u/RiotArkem uzun bir cevabına denk geldim. Cevap şöyle:
 
@@ -190,13 +188,13 @@ Daha sonra VANGUARD anti-cheat yazılımın eski lideri olan u/RiotArkem uzun bi
 
 Bu açıklama, Vanguard üzerine okuduğum makaleye kıyasla daha açıklayıcıydı. Bir göz atalım.
 
-vgk.sys sürücüsünün gerçekten bilgisiyar başlangıcında çalıştığını söylüyor ancak oyun çalışmadığı sürece hiçbir şeyin taramadığını, sunucularla iletişim kurmadığını ve mümkün olduğunca az sistem kaynağı kullanarak çalıştığını söylüyor ve bu yazılımın istendiği zaman kaldırılabileceği söyleniyor.
+vgk.sys sürücüsünün gerçekten bilgisayar başlangıcında çalıştığını söylüyor ancak oyun çalışmadığı sürece hiçbir şeyin taramadığını, sunucularla iletişim kurmadığını ve mümkün olduğunca az sistem kaynağı kullanarak çalıştığını söylüyor ve bu yazılımın istendiği zaman kaldırılabileceği söyleniyor.
 
-Neden başlangıçta çalıştığını ise sistem başlangıcında yüklenmediği sürece bilgisiyarı güvenilir olarak kabul etmediği için ve em önemlisi de anti-cheat yazılımları bypass etmenin yollarından biri olan anti-cheat yazılımların yüklenmesinden önce hemen hilenin yüklenmesi ya da sistem bileşenlerini değiştirerek hileyi eklemek gibi bypass yöntemlerine çözüm olabileceği söylenmiş.
+Neden başlangıçta çalıştığını ise sistem başlangıcında yüklenmediği sürece bilgisayarı güvenilir olarak kabul etmediği için ve en önemlisi de anti-cheat yazılımları bypass etmenin yollarından biri olan anti-cheat yazılımların yüklenmesinden önce hemen hilenin yüklenmesi ya da sistem bileşenlerini değiştirerek hileyi eklemek gibi bypass yöntemlerine çözüm olabileceği söylenmiş.
 
-Ayrıca bu sürücünün güvenliğine ve ayrıcalıklarına da değinmiş. Güvenlik olarak güvenlik araştırma ekiplerine incelettiklerini, sürücünün mümkün olduğunda az şeyler yaptığını ve sürücüye en az ayrıcalıklar verdiklerini söylemiş
+Ayrıca bu sürücünün güvenliğine ve ayrıcalıklarına da değinmiş. Güvenlik olarak, güvenlik araştırma ekiplerine incelettiklerini, sürücünün mümkün olduğunda az şeyler yaptığını ve sürücüye en az ayrıcalıklar verdiklerini söylemiş
 
-Son olarak bizim için önemli açıklama ise bu yazılımın hiçbir şekilde oyuncunun bilgisiyar hakkında bir bilgi toplamadığı veya sunuculara göndermediği belirtlmiş ve sadece oyun çalıştığında etkin olabileceği söylenmiş. <br/> <br/>
+Son olarak bizim için önemli açıklama ise bu yazılımın hiçbir şekilde oyuncunun bilgisayar hakkında bir bilgi toplamadığı veya sunuculara göndermediği belirtlmiş ve sadece oyun çalıştığında etkin olabileceği söylenmiş. <br/> <br/>
 
 Açıklamaya göz attığımızda orijinal makaleye kıyasla daha açıklayıcı ve güzel duruyor. Şimdi ise bu topladığımız bilgileri analize dökerek bir kontrol edelim. 
 
@@ -212,7 +210,7 @@ Açıklamaya göz attığımızda orijinal makaleye kıyasla daha açıklayıcı
 
 Göründüğü gibi Client uygulaması çalıştırıldığında düşünüldüğünden daha fazla birçok yere veri gönderiliyor.
 
-Burada gönderilen verilerin içeriğini görmek pek mümkün olmayacaktır çünkü videoda görülebileceği gibi veriler şifrelenmiş halde. Dolayasıyla bunun izinden gitmemiz pek mümkün olmayacaktır. Bu yüzden bende bireysel bağlantıların adreslerinden bir kaçına göz atmaya karar verdim:
+Burada gönderilen verilerin içeriğini göremeyiz çünkü videoda görülebileceği gibi veriler şifrelenmiş halde. Dolayasıyla bunun izinden gitmemiz pek mümkün olmayacaktır. Bu yüzden bende bireysel bağlantıların adreslerinden bir kaçına göz atmaya karar verdim:
 
 <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/tcpview-for-riotclient.png?raw=true" style="margin-bottom: 0">
 <div class="image-container"> 
@@ -227,7 +225,7 @@ Burada gönderilen verilerin içeriğini görmek pek mümkün olmayacaktır çü
 Verilerin nereye gönderildiğine dair bir iz sürmeye çalıştığımda sonuca varamadım ancak <a href="https://www.youtube.com/@pcsecuritychannel">The PC Security Channel</a> adlı kanalın <a href="https://www.youtube.com/watch?v=UqLI1xKc-L4">'Is Valorant Spyware?'</a> videosunun analizinde kendisinin birçok IP adresinin Amazon sunucularına ait olduğunu belirtiyor. Ayrıca bu konuyu hazırlarken ilham aldığım bahsi geçen videoya da göz atabilirsiniz. Gerçekten güzel ve açıklayıcı bir analiz gerçekleştiriyor.
 
 
-Bağlantı sayılarına buradan da göz attığımızda çok kadar fazla bağlantı olduğunu görebiliyoruz ve maalesef bu iç açıcı bir şey değil. Kendi kendime bunun abarttığımı düşündüm ve bilgisiyarımda yüklü olan Epic Games uygulaması için de kontrol etmek istedim ve sonuç:
+Bağlantı sayılarına buradan da göz attığımızda çok kadar fazla bağlantı olduğunu görebiliyoruz ve maalesef bu iç açıcı bir şey değil. Kendi kendime bunun abarttığımı düşündüm ve bilgisayarımda yüklü olan Epic Games uygulaması için de kontrol etmek istedim ve sonuç:
 
 <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/tcpview-for-epicgames.png?raw=true" style="margin-bottom: 0">
 <div class="image-container"> 
@@ -291,7 +289,7 @@ Gerçekten de Vanguard yazılımı kaldırıldığında vgk.sys sistemden kaldı
 
 ## vgk.sys Sürücüsünü Analiz Etme
 
-vgk.sys sürücüsünü yakından analiz etmeye başlayacaktım ancak maalesef bunun izinden süremedim. Çünkü RIOT hiçbir şekilde vgk.sys'i analiz etmemize fırsat vermediğini öğrendim.
+vgk.sys sürücüsünü yakından analiz etmeye başlayacaktım ancak maalesef bunun izinden süremedim. Çünkü RIOT'un hiçbir şekilde vgk.sys'i analiz etmemize fırsat vermediğini öğrendim.
 
 İlk başta VALORANT oyununu sanal makineye kurdum ve sistemi yeniden başlattıktan sonra VANGUARD yazılımın başlatılmadığını fark ettim. Hatalardan olabileceğini düşünerek çeşitli yollar denedim ancak olmadı:
 
@@ -319,7 +317,7 @@ Dinamik analizine gidemediğim için statik analize yönelmeye karar verdim ve .
     </div>
 </div>
 
-API'lara göz attığımızda vgk.sys sürücüsü oyuncunun bilgisiyarın çalışma ortamını kontrol edebilecek ve sistem saat ve sistem dizinini elde edebilecek API'lar kullandığı göze çarpmaktadır. Tabi ki dinamik analiz gerçekleştiremediğimiz bunların ne amaçla kullandığını da bilemeyiz. 
+API'lara göz attığımızda vgk.sys sürücüsü oyuncunun bilgisayarın çalışma ortamını kontrol edebileceğini, sistem saat ve sistem dizinini elde edebilecek API'lar kullandığı gözüme çarptı. Tabi ki dinamik analiz gerçekleştiremediğimiz bunların ne amaçla kullandığını da bilemeyiz. 
 
 Eğer fonksiyonların tamamına siz de göz atmak isterseniz aşağıya listenin tamamını ekliyorum:
 
@@ -382,7 +380,7 @@ Dediğim gibi dinamik olarak analiz yapamadığımız için burada kullanılan f
 
 # Sonuç
 
-Analiz sonucunda, Vanguard'ın sürücüsü olan vgk.sys'in davranışlarını değerlendirdiğinde, Valorant oyununun spyware olabileceği iddialarının daha yakın olduğu görülmektedir. Ancak bu iddiaların doğru olup olmadığını kesin olarak söylemek için daha fazla analiz yapılması gerekmektedir.
+Analiz sonucunda, Vanguard'ın sürücüsü olan vgk.sys'in davranışlarını değerlendirdiğinde, Valorant oyununun spyware olabileceği daha yakın olduğu görülmektedir. Bu, daha derin analizler ile doğrulanabilir. Ancak, RIOT'un bu konuda daha şeffaf olması gerektiğini düşünüyorum. RIOT'un, Vanguard'ın ne yaptığı ve nasıl çalıştığı hakkında daha fazla bilgi vermesi gerekmektedir. 
 
 
  <video preload="auto" poster="https://pbs.twimg.com/tweet_video_thumb/D5aj3tfW0AIiSxo.jpg" src="https://video.twimg.com/tweet_video/D5aj3tfW0AIiSxo.mp4" type="video/mp4" autoplay="" controls=""></video>
