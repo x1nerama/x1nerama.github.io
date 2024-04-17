@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.5">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2024-04-17T13:57:39+03:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">bekoo’s blog</title><subtitle>&quot;Everything open-source if you can read Assembly.&quot;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.5">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2024-04-17T14:21:00+03:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">bekoo’s blog</title><subtitle>&quot;Everything open-source if you can read Assembly.&quot;
 </subtitle><author><name>bekoo</name></author><entry><title type="html">Is Valorant Spyware?</title><link href="http://localhost:4000/2024/04/17/Is-Valorant-Spyware.html" rel="alternate" type="text/html" title="Is Valorant Spyware?" /><published>2024-04-17T00:00:00+03:00</published><updated>2024-04-17T00:00:00+03:00</updated><id>http://localhost:4000/2024/04/17/Is%20Valorant%20Spyware</id><content type="html" xml:base="http://localhost:4000/2024/04/17/Is-Valorant-Spyware.html"><![CDATA[<style>
     img {
         margin: 3% 0;
@@ -224,9 +224,6 @@ body {
         <span class="close">&times;</span>
         <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/tcpview-for-epicgames.png?raw=true" />
     </div>
-    <div align="center">
-        <h4 style="text-align:center;"> Fotoğrafı yakından görmek için üzerine tıklayın. </h4>
-    </div>  
 </div>
 
 <p>Göründüğü gibi RIOT Client uygulamasına kıyasla daha az bir bağlantı var. Yani RIOT Client uygulamasının cidden fazla veri gönderimi yaptığını anlayabiliyoruz. <br /> <br /></p>
@@ -240,9 +237,6 @@ body {
         <span class="close">&times;</span>
         <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/sys-in-pe.png?raw=true" />
     </div>
-    <div align="center">
-        <h4 style="text-align:center;"> Fotoğrafı yakından görmek için üzerine tıklayın. </h4>
-    </div>  
 </div>
 
 <p>Aynı zamanda vgk.sys’in durumunu <strong>driverquery</strong> aracı ile daha hızlı kontrol edebiliriz:</p>
@@ -254,9 +248,6 @@ body {
         <span class="close">&times;</span>
         <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/driverquery-result.png?raw=true" />
     </div>
-    <div align="center">
-        <h4 style="text-align:center;"> Fotoğrafı yakından görmek için üzerine tıklayın. </h4>
-    </div>  
 </div>
 
 <p>Fakat bir sorun var. Şuan işletim sisteminde RIOT’un herhangi bir uygulaması çalışmıyor - arka planda bile -. Bu, Riot Vanguard için de geçerli:</p>
