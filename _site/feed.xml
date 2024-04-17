@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.5">Jekyll</generator><link href="http://localhost:8080/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:8080/" rel="alternate" type="text/html" /><updated>2024-04-17T01:16:54+03:00</updated><id>http://localhost:8080/feed.xml</id><title type="html">bekoo’s blog</title><subtitle>&quot;Everything open-source if you can read Assembly.&quot;
-</subtitle><author><name>bekoo</name></author><entry><title type="html">Is Valorant Spyware?</title><link href="http://localhost:8080/2024/04/17/Is-Valorant-Spyware.html" rel="alternate" type="text/html" title="Is Valorant Spyware?" /><published>2024-04-17T00:00:00+03:00</published><updated>2024-04-17T00:00:00+03:00</updated><id>http://localhost:8080/2024/04/17/Is%20Valorant%20Spyware</id><content type="html" xml:base="http://localhost:8080/2024/04/17/Is-Valorant-Spyware.html"><![CDATA[<style>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.5">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2024-04-17T13:16:17+03:00</updated><id>/feed.xml</id><title type="html">bekoo’s blog</title><subtitle>&quot;Everything open-source if you can read Assembly.&quot;
+</subtitle><author><name>bekoo</name></author><entry><title type="html">Is Valorant Spyware?</title><link href="/2024/04/17/Is-Valorant-Spyware.html" rel="alternate" type="text/html" title="Is Valorant Spyware?" /><published>2024-04-17T00:00:00+03:00</published><updated>2024-04-17T00:00:00+03:00</updated><id>/2024/04/17/Is%20Valorant%20Spyware</id><content type="html" xml:base="/2024/04/17/Is-Valorant-Spyware.html"><![CDATA[<style>
     img {
         margin: 3% 0;
     }
@@ -72,6 +72,7 @@ document.addEventListener("DOMContentLoaded", function() {
   
   document.querySelectorAll(".image-container img").forEach(img => {
     img.addEventListener("click", openModal);
+    img.addEventListener("touchstart", openModal); // Dokunmatik olayı dinleyelim
   });
   
   function openModal() {
@@ -90,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <p>Valorant oyunu, çıkışından beri hem oyuncuların ilgisini çeken hem de tartışmalara neden olan bir yapım olmuştur. Özellikle oyunun anti-hile sistemi olan Vanguard’ın, oyuncuların gizlilik haklarını ihlal ettiği ve spyware olarak adlandırılabilecek bir yazılım olduğu iddialarıyla sıkça gündeme gelmiştir. Bu iddialar, oyuncuların güvenlik endişelerini artırmış ve Valorant’ın popülaritesiyle birlikte bu konuda birçok tartışma başlatılmıştır.</p>
 
-<p>Reddit ve diğer sosyal medya platformlarında yayılan bu iddialar, Valorant’ın geliştiricisi olan Riot Games’in, oyuncuların bilgisayarlarında istenmeyen izleme ve kontrol yeteneklerine sahip olduğu yönünde eleştirilmesine neden olmuştur. Ancak, bu iddiaların gerçekliği ve Vanguard’ın gerçekten bir spyware olup olmadığı konusu hala netlik kazanmamıştır. Bu yazıda, Valorant’ın spyware olduğu iddialarını ele alacak ve bu iddiaların ne kadar temellendirilmiş olduğunu araştıracağız.</p>
+<p>Reddit ve diğer sosyal medya platformlarında yayılan bu iddialar, Valorant’ın geliştiricisi olan Riot Games’in, oyuncuların bilgisayarlarında istenmeyen izleme ve kontrol yeteneklerine sahip olduğu yönünde eleştirilmesine neden olmuştur. Ancak, bu iddiaların gerçekliği ve Vanguard’ın gerçekten bir spyware olup olmadığı konusu hala netlik kazanmamıştır. Bu yazıda, Valorant’ın spyware olduğu iddialarını ele alacak ve bu iddiala bir göz atacağız.</p>
 
 <h2 id="uyarı">Uyarı</h2>
 
@@ -128,13 +129,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <p><b>“Ulan beko alt tarafı oyunun güvenliğini sağlıyorlar ne abarttın be güvenlik açığı bilmem ne diye”</b> dediğinizi duyar gibiyim. Gelin reddit’ten bu sorunlara maruz kalmış insanların konularına bir göz atalım:</p>
 
-<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/r-com1.png?raw=true" class="reddit" style="width: 80%;" /></p>
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/r-com1.png?raw=true" class="reddit" style="width: 80%;" /></p>
 
 <p>Burada kullanıcı bilgisiyarı açtığı anda yukarıda bahsettiğim <strong>SYSTEM THREAD EXCEPTION NOT HANDLED</strong> hata koduyla mavi hata ekrana düştüğünü belirtiyor. Çözüm üretmek için Windows’a girmeye ya da windows’u güvenli modda çalıştırmayı denediğini ancak başaramadığını belirtiyor. Son olarak ise format atarak sorunu çözdüğünü belirtiyor.</p>
 
 <p><strong>vgk.sys</strong>, RIOT Games’a ait olan bir Vanguard anti-cheat yazılımın driver yani sürücü dosyasıdır.</p>
 
-<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/r-com2.png?raw=true" class="reddit" style="width: 80%;" /></p>
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/r-com2.png?raw=true" class="reddit" style="width: 80%;" /></p>
 
 <p>Burada ise kullanıcı Counter Strike 2 oyununu oynadığı sürece yine aynı hata koduyla mavi ekrana düştüğünü ve çözüm aradığını belirtiyor. Burada tam olarak anti-cheat yüzünden olduğunu söylemek biraz güç gibi gözüküyor ancak yine de paylaşmak istedim. Ama bu hata nedeninin sürücü kodundan olduğu açıkça belli.</p>
 
@@ -148,13 +149,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <p>Bu tartışmaların başlangıcını 3-4 yıl öncesinde başladığını görebiliriz. Mesela <a href="https://www.reddit.com/r/privacy/comments/kz872x/is_valorant_malwarespyware/?rdt=41178">r/privacy</a> subreddit’inde denk geldiğim şu konuya bir göz atabiliriz:</p>
 
-<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/r-com3.png?raw=true" class="reddit" style="width: 80%;" /></p>
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/r-com3.png?raw=true" class="reddit" style="width: 80%;" /></p>
 
 <p>İçerikte, Valorant’ın anti-cheat yazılımı olan Vanguard’ın tehlikeli olup olmayacağına dair bir soru sorulmuş. Yine içerikte bu yazılımın arka tarafta sürekli çalıştığı söyleniyor. Peki gerçekten öyle mi?</p>
 
 <p>Bu soruyu araştırmaya öncelikle RIOT’un kendi makalesi olan <a href="https://support-valorant.riotgames.com/hc/tr/articles/360046160933-Vanguard-nedir">‘Vanguard Nedir’</a> ile başlamaya karar verdim. Makalenin başında da kendileri de Vanguad’ın kernel modu sürücüsü olarak çalıştıklarını söylüyorlar. Ancak makalenin şu kısmı çok dikkatimi çekti:</p>
 
-<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/vanguard-article.png?raw=true" /></p>
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/vanguard-article.png?raw=true" /></p>
 
 <p>Açıkçası bu metinler beni tatmin etmedi. Evet, RIOT makalesinde Vanguard’ın zaten bilgisiyar açılışından itibaren çalıştığını açıkça söylüyor ancak bana soracak olursanız açıklama yetersiz. <b>Gizlilik</b> gibi böyle bir konuyu detaylandırarak oyunculara açıklamak ve güvenini kazanmak yerine böyle kısa açıklama ile konuyu kapatmak sizce de mantıklı mı?</p>
 
@@ -191,35 +192,35 @@ document.addEventListener("DOMContentLoaded", function() {
 <p>Öncelikle analize wireshark ile başlamak istedim. RIOT Client uygulaması başlatıldığında nerelere bağlantı kurduğunu görmek istedim ve sonuç korkutucuydu:</p>
 
 <video controls="">
-    <source src="https://github.com/x1nerama/x1nerama.github.io/raw/847f438aba42f3b2508c2803be731d5709f0ef3b/video/videos-for-valorant-topic/wireshark-video.mp4" type="video/mp4" />
+    <source src="https://github.com/x1nerama/x1nerama.github.io/raw/main/video/videos-for-valorant-topic/wireshark-video.mp4" type="video/mp4" />
 </video>
 
 <p>Göründüğü gibi Client uygulaması çalıştırıldığında düşünüldüğünden daha fazla birçok yere veri gönderiliyor.</p>
 
 <p>Burada gönderilen verilerin içeriğini görmek pek mümkün olmayacaktır çünkü videoda görülebileceği gibi veriler şifrelenmiş halde. Dolayasıyla bunun izinden gitmemiz pek mümkün olmayacaktır. Bu yüzden bende bireysel bağlantıların adreslerinden bir kaçına göz atmaya karar verdim:</p>
 
-<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/tcpview-for-riotclient.png?raw=true" style="margin-bottom: 0" /></p>
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/tcpview-for-riotclient.png?raw=true" style="margin-bottom: 0" /></p>
 <div class="image-container"> 
     <div class="overlay"></div>
     <div class="modal">
         <span class="close">&times;</span>
-        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/tcpview-for-riotclient.png?raw=true" />
+        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/tcpview-for-riotclient.png?raw=true" />
     </div>
     <div align="center">
         <h4 style="text-align:center;"> Fotoğrafı yakından görmek için üzerine tıklayın. </h4>
     </div>  
 </div>
 
-<p>Verilerin nereye gönderildiğine dair bir iz sürmeye çalıştığımda verilerin nereye gönderildiğine dair bir sonuca varamadım ancak <a href="https://www.youtube.com/@pcsecuritychannel">The PC Security Channel</a> adlı kanalın <a href="https://www.youtube.com/watch?v=UqLI1xKc-L4">‘Is Valorant Spyware?’</a> videosunda analizini izlediğimde kendisinin birçok IP adresinin Amazon sunucularına ait olduğunu belirtiyor. Ayrıca bu konuyu hazırlarken ilham aldığım bahsi geçen videoya da göz atabilirsiniz. Gerçekten güzel ve açıklayıcı bir analiz gerçekleştiriyor.</p>
+<p>Verilerin nereye gönderildiğine dair bir iz sürmeye çalıştığımda sonuca varamadım ancak <a href="https://www.youtube.com/@pcsecuritychannel">The PC Security Channel</a> adlı kanalın <a href="https://www.youtube.com/watch?v=UqLI1xKc-L4">‘Is Valorant Spyware?’</a> videosunun analizinde kendisinin birçok IP adresinin Amazon sunucularına ait olduğunu belirtiyor. Ayrıca bu konuyu hazırlarken ilham aldığım bahsi geçen videoya da göz atabilirsiniz. Gerçekten güzel ve açıklayıcı bir analiz gerçekleştiriyor.</p>
 
 <p>Bağlantı sayılarına buradan da göz attığımızda çok kadar fazla bağlantı olduğunu görebiliyoruz ve maalesef bu iç açıcı bir şey değil. Kendi kendime bunun abarttığımı düşündüm ve bilgisiyarımda yüklü olan Epic Games uygulaması için de kontrol etmek istedim ve sonuç:</p>
 
-<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/tcpview-for-epicgames.png?raw=true" style="margin-bottom: 0" /></p>
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/tcpview-for-epicgames.png?raw=true" style="margin-bottom: 0" /></p>
 <div class="image-container"> 
     <div class="overlay"></div>
     <div class="modal">
         <span class="close">&times;</span>
-        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/tcpview-for-epicgames.png?raw=true" />
+        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/tcpview-for-epicgames.png?raw=true" />
     </div>
     <div align="center">
         <h4 style="text-align:center;"> Fotoğrafı yakından görmek için üzerine tıklayın. </h4>
@@ -230,12 +231,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <p>Daha sonra yönümü .sys dosyasına çevirdim ve <b>Process Explorer</b> aracılığıyla vgk.sys’e kısaca bakmak istedim:</p>
 
-<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/sys-in-pe.png?raw=true" style="margin-bottom: 0" /></p>
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/sys-in-pe.png?raw=true" style="margin-bottom: 0" /></p>
 <div class="image-container"> 
     <div class="overlay"></div>
     <div class="modal">
         <span class="close">&times;</span>
-        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/sys-in-pe.png?raw=true" />
+        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/sys-in-pe.png?raw=true" />
     </div>
     <div align="center">
         <h4 style="text-align:center;"> Fotoğrafı yakından görmek için üzerine tıklayın. </h4>
@@ -244,12 +245,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <p>Aynı zamanda vgk.sys’in durumunu <strong>driverquery</strong> aracı ile daha hızlı kontrol edebiliriz:</p>
 
-<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/driverquery-result.png?raw=true" style="margin-bottom: 0" /></p>
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/driverquery-result.png?raw=true" style="margin-bottom: 0" /></p>
 <div class="image-container"> 
     <div class="overlay"></div>
     <div class="modal">
         <span class="close">&times;</span>
-        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/driverquery-result.png?raw=true" />
+        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/driverquery-result.png?raw=true" />
     </div>
     <div align="center">
         <h4 style="text-align:center;"> Fotoğrafı yakından görmek için üzerine tıklayın. </h4>
@@ -274,12 +275,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <p>Yazılımın istendiği zaman kaldırabileceği belirtilmiş. Bunu tekrar okuduktan sonra Vanguard’ı kaldırdım ardından işletim sistemini yeniden başlattım ve vgk.sys’in yine sistemde olup olmadığını kontrol ettim ve sonuç:</p>
 
-<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/driverquery-result-2.png?raw=true" style="margin-bottom: 0" /></p>
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/driverquery-result-2.png?raw=true" style="margin-bottom: 0" /></p>
 <div class="image-container"> 
     <div class="overlay"></div>
     <div class="modal">
         <span class="close">&times;</span>
-        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/driverquery-result-2.png?raw=true" />
+        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/driverquery-result-2.png?raw=true" />
     </div>
 </div>
 
@@ -291,12 +292,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <p>İlk başta VALORANT oyununu sanal makineye kurdum ve sistemi yeniden başlattıktan sonra VANGUARD yazılımın başlatılmadığını fark ettim. Hatalardan olabileceğini düşünerek çeşitli yollar denedim ancak olmadı:</p>
 
-<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/valorant-in-vm.png?raw=true" style="margin-bottom: 0" /></p>
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/valorant-in-vm.png?raw=true" style="margin-bottom: 0" /></p>
 <div class="image-container"> 
     <div class="overlay"></div>
     <div class="modal">
         <span class="close">&times;</span>
-        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/valorant-in-vm.png?raw=true" />
+        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/valorant-in-vm.png?raw=true" />
     </div>
 </div>
 
@@ -306,12 +307,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <p>Dinamik analizine gidemediğim için statik analize yönelmeye karar verdim ve .sys dosyasının kullandığı fonksiyonlara göz atmak istedim:</p>
 
-<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/used-function.png?raw=true" style="margin-bottom: 0" /></p>
+<p><img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/used-function.png?raw=true" style="margin-bottom: 0" /></p>
 <div class="image-container"> 
     <div class="overlay"></div>
     <div class="modal">
         <span class="close">&times;</span>
-        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/used-function.png?raw=true" />
+        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/used-function.png?raw=true" />
     </div>
 </div>
 
@@ -388,8 +389,7 @@ strnlen
   <li><a href="https://www.schellman.com/blog/cybersecurity/what-is-anti-cheat" id="source-2"><b>[2] - Schellman: Understanding Anti-Cheat</b></a></li>
   <li><a href="https://en.wikipedia.org/wiki/Riot_Games#History" id="source-3"><b>[3] - EN Wikipedia: Riot Games </b></a></li>
   <li><a href="https://www.theregister.com/2013/11/20/esea_gaming_bitcoin_fine/" id="source-4"><b>[4] - TheRegister: Gaming co ESEA hit by $1m fine for hidden Bitcoin mining enslaver</b></a></li>
-  <li><a href="https://www.engadget.com/valorant-vanguard-riot-games-security-interview-video-170025435.html" id="source-5"><b>[5] - Engadget: A closer look at Valorant’s always-on anti-cheat system</b></a></li>
-</ul>]]></content><author><name>bekoo</name></author><category term="valorant" /><category term="spyware" /><category term="analysis" /><category term="malware-analysis" /><summary type="html"><![CDATA[Valorant oyunun spyware iddiaları hakkında bir analiz yazısı]]></summary></entry><entry><title type="html">Bypassing ptrace with Radare2 in Linux</title><link href="http://localhost:8080/2023/12/31/Bypassing-Ptrace.html" rel="alternate" type="text/html" title="Bypassing ptrace with Radare2 in Linux" /><published>2023-12-31T00:00:00+03:00</published><updated>2023-12-31T00:00:00+03:00</updated><id>http://localhost:8080/2023/12/31/Bypassing%20Ptrace</id><content type="html" xml:base="http://localhost:8080/2023/12/31/Bypassing-Ptrace.html"><![CDATA[<style>
+</ul>]]></content><author><name>bekoo</name></author><category term="valorant" /><category term="spyware" /><category term="analysis" /><category term="malware-analysis" /><summary type="html"><![CDATA[Valorant'ın spyware iddiaları hakkında bir analiz yazısı]]></summary></entry><entry><title type="html">Bypassing ptrace with Radare2 in Linux</title><link href="/2023/12/31/Bypassing-Ptrace.html" rel="alternate" type="text/html" title="Bypassing ptrace with Radare2 in Linux" /><published>2023-12-31T00:00:00+03:00</published><updated>2023-12-31T00:00:00+03:00</updated><id>/2023/12/31/Bypassing%20Ptrace</id><content type="html" xml:base="/2023/12/31/Bypassing-Ptrace.html"><![CDATA[<style>
     img, iframe {
         margin-top: 2%;
         margin-bottom: 2%;
@@ -520,7 +520,7 @@ strnlen
 
 <p>Bir sonraki blogta görüşmek üzere. İyi çalışın iyi reverse yapın efenimm</p>
 
-<video preload="auto" poster="https://pbs.twimg.com/tweet_video_thumb/D5aj3tfW0AIiSxo.jpg" src="https://video.twimg.com/tweet_video/D5aj3tfW0AIiSxo.mp4" type="video/mp4" autoplay="" controls=""></video>]]></content><author><name>bekoo</name></author><category term="bypassing" /><category term="ptrace" /><category term="radare2" /><summary type="html"><![CDATA[Radare2 Kullanarak Linux Üzerinde Ptrace Bypass Etme]]></summary></entry><entry><title type="html">MD 0x0 | Process Injection</title><link href="http://localhost:8080/2023/08/08/MD-0x0-=_-Process-Injection.html" rel="alternate" type="text/html" title="MD 0x0 | Process Injection" /><published>2023-08-08T00:00:00+03:00</published><updated>2023-08-08T00:00:00+03:00</updated><id>http://localhost:8080/2023/08/08/MD%200x0%20=_%20Process%20Injection</id><content type="html" xml:base="http://localhost:8080/2023/08/08/MD-0x0-=_-Process-Injection.html"><![CDATA[<style>
+<video preload="auto" poster="https://pbs.twimg.com/tweet_video_thumb/D5aj3tfW0AIiSxo.jpg" src="https://video.twimg.com/tweet_video/D5aj3tfW0AIiSxo.mp4" type="video/mp4" autoplay="" controls=""></video>]]></content><author><name>bekoo</name></author><category term="bypassing" /><category term="ptrace" /><category term="radare2" /><summary type="html"><![CDATA[Radare2 Kullanarak Linux Üzerinde Ptrace Bypass Etme]]></summary></entry><entry><title type="html">MD 0x0 | Process Injection</title><link href="/2023/08/08/MD-0x0-=_-Process-Injection.html" rel="alternate" type="text/html" title="MD 0x0 | Process Injection" /><published>2023-08-08T00:00:00+03:00</published><updated>2023-08-08T00:00:00+03:00</updated><id>/2023/08/08/MD%200x0%20=_%20Process%20Injection</id><content type="html" xml:base="/2023/08/08/MD-0x0-=_-Process-Injection.html"><![CDATA[<style>
     h4 {
         /* in this blogs use h4 tags is description for images. */
         text-align: center;
@@ -980,7 +980,7 @@ OR
 
 <p>Bu serimiz bu kadardı. Umarım gerçekten siz okuyuculara bir şey katabilmişimdir..</p>
 
-<p>Diğer seride görüşmek üzere!</p>]]></content><author><name>bekoo</name></author><category term="malware" /><category term="malware-development" /><category term="reverse-engineering" /><category term="process-injection" /><summary type="html"><![CDATA[Process Injection Attacks]]></summary></entry><entry><title type="html">Conditionals and Loops in Assembly</title><link href="http://localhost:8080/2023/04/16/Conditionals-and-Unconditionals-in-Assembly.html" rel="alternate" type="text/html" title="Conditionals and Loops in Assembly" /><published>2023-04-16T00:00:00+03:00</published><updated>2023-04-16T00:00:00+03:00</updated><id>http://localhost:8080/2023/04/16/Conditionals%20and%20Unconditionals%20in%20Assembly</id><content type="html" xml:base="http://localhost:8080/2023/04/16/Conditionals-and-Unconditionals-in-Assembly.html"><![CDATA[<p>Merhabalar. bu blogumda Assembly’de döngülerden ve Koşullu ve Koşulsuz karşılaştırmaları ele alacağım. Bu iki konuyu neden tek bir çatı altında anlattığımı ilerideki dakikalarda bahsedeceğim.</p>
+<p>Diğer seride görüşmek üzere!</p>]]></content><author><name>bekoo</name></author><category term="malware" /><category term="malware-development" /><category term="reverse-engineering" /><category term="process-injection" /><summary type="html"><![CDATA[Process Injection Attacks]]></summary></entry><entry><title type="html">Conditionals and Loops in Assembly</title><link href="/2023/04/16/Conditionals-and-Unconditionals-in-Assembly.html" rel="alternate" type="text/html" title="Conditionals and Loops in Assembly" /><published>2023-04-16T00:00:00+03:00</published><updated>2023-04-16T00:00:00+03:00</updated><id>/2023/04/16/Conditionals%20and%20Unconditionals%20in%20Assembly</id><content type="html" xml:base="/2023/04/16/Conditionals-and-Unconditionals-in-Assembly.html"><![CDATA[<p>Merhabalar. bu blogumda Assembly’de döngülerden ve Koşullu ve Koşulsuz karşılaştırmaları ele alacağım. Bu iki konuyu neden tek bir çatı altında anlattığımı ilerideki dakikalarda bahsedeceğim.</p>
 
 <h2 id="0x0--conditionals-karşılaştırmalar">0x0 – Conditionals (Karşılaştırmalar)</h2>
 <p>Teorik olarak karşılaştırmalardan bahsetmeyeceğim ancak ufak bir tanım yapmak gerekirse, belirtilen koşula bağlı olarak programın akışını değiştirilmesini sağlar.</p>

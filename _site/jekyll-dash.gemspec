@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-#try 
+
 Gem::Specification.new do |spec|
   spec.name          = "jekyll-dash"
   spec.version       = "1.3.4"
