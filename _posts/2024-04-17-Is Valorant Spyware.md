@@ -78,6 +78,7 @@ document.addEventListener("DOMContentLoaded", function() {
   
   document.querySelectorAll(".image-container img").forEach(img => {
     img.addEventListener("click", openModal);
+    img.addEventListener("touchstart", openModal); // Dokunmatik olayı dinleyelim
   });
   
   function openModal() {
