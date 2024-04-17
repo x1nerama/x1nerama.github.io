@@ -33,7 +33,7 @@ body {
 
 .image-container {
   position: relative;
-  max-width: 500px; /* İhtiyacınıza göre ayarlayabilirsiniz */
+  max-width: 500px;
   margin: auto;
 }
 
@@ -176,7 +176,7 @@ Bu soruyu araştırmaya öncelikle RIOT'un kendi makalesi olan <a href="https://
 
 Açıkçası bu metinler beni tatmin etmedi. Evet, RIOT makalesinde Vanguard'ın zaten bilgisiyar açılışından itibaren çalıştığını açıkça söylüyor ancak bana soracak olursanız açıklama yetersiz. <b>Gizlilik</b> gibi böyle bir konuyu detaylandırarak oyunculara açıklamak ve güvenini kazanmak yerine böyle kısa açıklama ile konuyu kapatmak sizce de mantıklı mı? 
 
-Bu makale bana yetersiz geldiği için tekrardan reddit ortamlarına döndüm ve bu konuda tartışan insanların yorumlarına göz atmaya başladım. Daha sonra r/VALORANT subreddit'inde şu konuya denk geldim:
+Bu makale bana yetersiz geldiği için tekrardan reddit ortamlarına döndüm ve tekrar araştırmaya başladım. Daha sonra r/VALORANT subreddit'inde şu konuya denk geldim:
 
 <blockquote class="reddit-embed-bq" style="height:316px" data-embed-theme="dark" data-embed-height="612"><a href="https://www.reddit.com/r/VALORANT/comments/fzxdl7/anticheat_starts_upon_computer_boot/">Anticheat starts upon computer boot</a><br> by<a href="https://www.reddit.com/user/DolphinWhacker/">u/DolphinWhacker</a> in<a href="https://www.reddit.com/r/VALORANT/">VALORANT</a></blockquote><script async="" src="https://embed.reddit.com/widgets.js" charset="UTF-8"></script>
 
@@ -184,11 +184,11 @@ Gerçekten r/VALORANT subreddit'inde baya tartışılmış bir konu.
 
 Tartışmayı başlatan kişi, vgk.sys'in bilgisiyar başlangıcından itibaren çalıştığını ve bunu umursamasa da bunun nedenini soruyor ve gerçekten güzel bir soru.
 
-Daha sonra VANGUARD anti-cheat yazılımın lideri olan u/RiotArkem uzun bir cevabına denk geldim:
+Daha sonra VANGUARD anti-cheat yazılımın eski lideri olan u/RiotArkem uzun bir cevabına denk geldim. Cevap şöyle:
 
 <blockquote class="reddit-embed-bq" data-embed-theme="dark" data-embed-height="876"><a href="https://www.reddit.com/r/VALORANT/comments/fzxdl7/comment/fn6yqbe/">Comment</a><br> by<a href="https://www.reddit.com/user/DolphinWhacker/">u/DolphinWhacker</a> from discussion<a href="https://www.reddit.com/r/VALORANT/comments/fzxdl7/anticheat_starts_upon_computer_boot/"><no value=""></no></a><br> in<a href="https://www.reddit.com/r/VALORANT/">VALORANT</a></blockquote><script async="" src="https://embed.reddit.com/widgets.js" charset="UTF-8"></script>
 
-Bu açıklama, Vanguard üzerine okuduğum makaleye kıyasla daha açıklayıcıydı. Gelin bir detaylı göz atalım!
+Bu açıklama, Vanguard üzerine okuduğum makaleye kıyasla daha açıklayıcıydı. Bir göz atalım.
 
 vgk.sys sürücüsünün gerçekten bilgisiyar başlangıcında çalıştığını söylüyor ancak oyun çalışmadığı sürece hiçbir şeyin taramadığını, sunucularla iletişim kurmadığını ve mümkün olduğunca az sistem kaynağı kullanarak çalıştığını söylüyor ve bu yazılımın istendiği zaman kaldırılabileceği söyleniyor.
 
