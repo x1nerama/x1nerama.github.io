@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Is Valorant Spyware?
-description: Valorant'ın spyware iddiaları hakkında bir analiz yazısı 
+description: Valorant'ın spyware olabileceği iddialar üzerine bir analiz yazısı 
 published: true 
 tags: valorant spyware analysis malware-analysis
 ---
