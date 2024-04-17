@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Is Valorant Spyware?
-description: Valorant oyunun spyware iddiaları hakkında bir analiz yazısı 
+description: Valorant'ın spyware iddiaları hakkında bir analiz yazısı 
 published: true 
 tags: valorant spyware analysis malware-analysis
 ---
@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 Valorant oyunu, çıkışından beri hem oyuncuların ilgisini çeken hem de tartışmalara neden olan bir yapım olmuştur. Özellikle oyunun anti-hile sistemi olan Vanguard'ın, oyuncuların gizlilik haklarını ihlal ettiği ve spyware olarak adlandırılabilecek bir yazılım olduğu iddialarıyla sıkça gündeme gelmiştir. Bu iddialar, oyuncuların güvenlik endişelerini artırmış ve Valorant'ın popülaritesiyle birlikte bu konuda birçok tartışma başlatılmıştır.
 
-Reddit ve diğer sosyal medya platformlarında yayılan bu iddialar, Valorant'ın geliştiricisi olan Riot Games'in, oyuncuların bilgisayarlarında istenmeyen izleme ve kontrol yeteneklerine sahip olduğu yönünde eleştirilmesine neden olmuştur. Ancak, bu iddiaların gerçekliği ve Vanguard'ın gerçekten bir spyware olup olmadığı konusu hala netlik kazanmamıştır. Bu yazıda, Valorant'ın spyware olduğu iddialarını ele alacak ve bu iddiaların ne kadar temellendirilmiş olduğunu araştıracağız.
+Reddit ve diğer sosyal medya platformlarında yayılan bu iddialar, Valorant'ın geliştiricisi olan Riot Games'in, oyuncuların bilgisayarlarında istenmeyen izleme ve kontrol yeteneklerine sahip olduğu yönünde eleştirilmesine neden olmuştur. Ancak, bu iddiaların gerçekliği ve Vanguard'ın gerçekten bir spyware olup olmadığı konusu hala netlik kazanmamıştır. Bu yazıda, Valorant'ın spyware olduğu iddialarını ele alacak ve bu iddiala bir göz atacağız.
 
 ## Uyarı
 
@@ -135,13 +135,13 @@ Bununla beraber bazı hackerların oyuncuların bilgisayarına girmesine neden o
 
 <b>"Ulan beko alt tarafı oyunun güvenliğini sağlıyorlar ne abarttın be güvenlik açığı bilmem ne diye"</b> dediğinizi duyar gibiyim. Gelin reddit'ten bu sorunlara maruz kalmış insanların konularına bir göz atalım:
 
-<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/r-com1.png?raw=true" class="reddit" style="width: 80%;">
+<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/r-com1.png?raw=true" class="reddit" style="width: 80%;">
 
 Burada kullanıcı bilgisiyarı açtığı anda yukarıda bahsettiğim **SYSTEM THREAD EXCEPTION NOT HANDLED** hata koduyla mavi hata ekrana düştüğünü belirtiyor. Çözüm üretmek için Windows'a girmeye ya da windows'u güvenli modda çalıştırmayı denediğini ancak başaramadığını belirtiyor. Son olarak ise format atarak sorunu çözdüğünü belirtiyor.
 
 **vgk.sys**, RIOT Games'a ait olan bir Vanguard anti-cheat yazılımın driver yani sürücü dosyasıdır.
 
-<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/r-com2.png?raw=true" class="reddit" style="width: 80%;">
+<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/r-com2.png?raw=true" class="reddit" style="width: 80%;">
 
 Burada ise kullanıcı Counter Strike 2 oyununu oynadığı sürece yine aynı hata koduyla mavi ekrana düştüğünü ve çözüm aradığını belirtiyor. Burada tam olarak anti-cheat yüzünden olduğunu söylemek biraz güç gibi gözüküyor ancak yine de paylaşmak istedim. Ama bu hata nedeninin sürücü kodundan olduğu açıkça belli.
 
@@ -155,13 +155,13 @@ Tencent şirketi, Çin hükümeti ile yakın ilişkileri olan bir şirkettir ve 
 
 Bu tartışmaların başlangıcını 3-4 yıl öncesinde başladığını görebiliriz. Mesela <a href="https://www.reddit.com/r/privacy/comments/kz872x/is_valorant_malwarespyware/?rdt=41178">r/privacy</a> subreddit'inde denk geldiğim şu konuya bir göz atabiliriz:
 
-<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/r-com3.png?raw=true" class="reddit" style="width: 80%;">
+<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/r-com3.png?raw=true" class="reddit" style="width: 80%;">
 
 İçerikte, Valorant'ın anti-cheat yazılımı olan Vanguard'ın tehlikeli olup olmayacağına dair bir soru sorulmuş. Yine içerikte bu yazılımın arka tarafta sürekli çalıştığı söyleniyor. Peki gerçekten öyle mi?
 
 Bu soruyu araştırmaya öncelikle RIOT'un kendi makalesi olan <a href="https://support-valorant.riotgames.com/hc/tr/articles/360046160933-Vanguard-nedir">'Vanguard Nedir'</a> ile başlamaya karar verdim. Makalenin başında da kendileri de Vanguad'ın kernel modu sürücüsü olarak çalıştıklarını söylüyorlar. Ancak makalenin şu kısmı çok dikkatimi çekti:
 
-<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/vanguard-article.png?raw=true">
+<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/vanguard-article.png?raw=true">
 
 Açıkçası bu metinler beni tatmin etmedi. Evet, RIOT makalesinde Vanguard'ın zaten bilgisiyar açılışından itibaren çalıştığını açıkça söylüyor ancak bana soracak olursanız açıklama yetersiz. <b>Gizlilik</b> gibi böyle bir konuyu detaylandırarak oyunculara açıklamak ve güvenini kazanmak yerine böyle kısa açıklama ile konuyu kapatmak sizce de mantıklı mı? 
 
@@ -196,37 +196,36 @@ Açıklamaya göz attığımızda orijinal makaleye kıyasla daha açıklayıcı
 Öncelikle analize wireshark ile başlamak istedim. RIOT Client uygulaması başlatıldığında nerelere bağlantı kurduğunu görmek istedim ve sonuç korkutucuydu:
 
 <video controls>
-    <source src="https://github.com/x1nerama/x1nerama.github.io/raw/847f438aba42f3b2508c2803be731d5709f0ef3b/video/videos-for-valorant-topic/wireshark-video.mp4" type="video/mp4">
+    <source src="https://github.com/x1nerama/x1nerama.github.io/raw/main/video/videos-for-valorant-topic/wireshark-video.mp4" type="video/mp4">
 </video>
 
 Göründüğü gibi Client uygulaması çalıştırıldığında düşünüldüğünden daha fazla birçok yere veri gönderiliyor.
 
 Burada gönderilen verilerin içeriğini görmek pek mümkün olmayacaktır çünkü videoda görülebileceği gibi veriler şifrelenmiş halde. Dolayasıyla bunun izinden gitmemiz pek mümkün olmayacaktır. Bu yüzden bende bireysel bağlantıların adreslerinden bir kaçına göz atmaya karar verdim:
 
-<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/tcpview-for-riotclient.png?raw=true" style="margin-bottom: 0">
+<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/tcpview-for-riotclient.png?raw=true" style="margin-bottom: 0">
 <div class="image-container"> 
     <div class="overlay"></div>
     <div class="modal">
         <span class="close">&times;</span>
-        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/tcpview-for-riotclient.png?raw=true">
+        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/tcpview-for-riotclient.png?raw=true">
     </div>
     <div align="center">
         <h4 style="text-align:center;"> Fotoğrafı yakından görmek için üzerine tıklayın. </h4>
     </div>  
 </div>  
 
-Verilerin nereye gönderildiğine dair bir iz sürmeye çalıştığımda verilerin nereye gönderildiğine dair bir sonuca varamadım ancak <a href="https://www.youtube.com/@pcsecuritychannel">The PC Security Channel</a> adlı kanalın <a href="https://www.youtube.com/watch?v=UqLI1xKc-L4">'Is Valorant Spyware?'</a> videosunda analizini izlediğimde kendisinin birçok IP adresinin Amazon sunucularına ait olduğunu belirtiyor. Ayrıca bu konuyu hazırlarken ilham aldığım bahsi geçen videoya da göz atabilirsiniz. Gerçekten güzel ve açıklayıcı bir analiz gerçekleştiriyor.
-
+Verilerin nereye gönderildiğine dair bir iz sürmeye çalıştığımda sonuca varamadım ancak <a href="https://www.youtube.com/@pcsecuritychannel">The PC Security Channel</a> adlı kanalın <a href="https://www.youtube.com/watch?v=UqLI1xKc-L4">'Is Valorant Spyware?'</a> videosunun analizinde kendisinin birçok IP adresinin Amazon sunucularına ait olduğunu belirtiyor. Ayrıca bu konuyu hazırlarken ilham aldığım bahsi geçen videoya da göz atabilirsiniz. Gerçekten güzel ve açıklayıcı bir analiz gerçekleştiriyor.
 
 
 Bağlantı sayılarına buradan da göz attığımızda çok kadar fazla bağlantı olduğunu görebiliyoruz ve maalesef bu iç açıcı bir şey değil. Kendi kendime bunun abarttığımı düşündüm ve bilgisiyarımda yüklü olan Epic Games uygulaması için de kontrol etmek istedim ve sonuç:
 
-<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/tcpview-for-epicgames.png?raw=true" style="margin-bottom: 0">
+<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/tcpview-for-epicgames.png?raw=true" style="margin-bottom: 0">
 <div class="image-container"> 
     <div class="overlay"></div>
     <div class="modal">
         <span class="close">&times;</span>
-        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/tcpview-for-epicgames.png?raw=true">
+        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/tcpview-for-epicgames.png?raw=true">
     </div>
     <div align="center">
         <h4 style="text-align:center;"> Fotoğrafı yakından görmek için üzerine tıklayın. </h4>
@@ -237,12 +236,12 @@ Göründüğü gibi RIOT Client uygulamasına kıyasla daha az bir bağlantı va
 
 Daha sonra yönümü .sys dosyasına çevirdim ve <b>Process Explorer</b> aracılığıyla vgk.sys'e kısaca bakmak istedim:
 
-<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/sys-in-pe.png?raw=true" style="margin-bottom: 0">
+<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/sys-in-pe.png?raw=true" style="margin-bottom: 0">
 <div class="image-container"> 
     <div class="overlay"></div>
     <div class="modal">
         <span class="close">&times;</span>
-        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/sys-in-pe.png?raw=true">
+        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/sys-in-pe.png?raw=true">
     </div>
     <div align="center">
         <h4 style="text-align:center;"> Fotoğrafı yakından görmek için üzerine tıklayın. </h4>
@@ -251,12 +250,12 @@ Daha sonra yönümü .sys dosyasına çevirdim ve <b>Process Explorer</b> aracı
 
 Aynı zamanda vgk.sys'in durumunu **driverquery** aracı ile daha hızlı kontrol edebiliriz:
 
-<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/driverquery-result.png?raw=true" style="margin-bottom: 0">
+<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/driverquery-result.png?raw=true" style="margin-bottom: 0">
 <div class="image-container"> 
     <div class="overlay"></div>
     <div class="modal">
         <span class="close">&times;</span>
-        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/driverquery-result.png?raw=true">
+        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/driverquery-result.png?raw=true">
     </div>
     <div align="center">
         <h4 style="text-align:center;"> Fotoğrafı yakından görmek için üzerine tıklayın. </h4>
@@ -279,12 +278,12 @@ Araştırmalara, yukarıda Vanguard'ın eski lideri Arkhem'in bahsettiği şu k�
 
 Yazılımın istendiği zaman kaldırabileceği belirtilmiş. Bunu tekrar okuduktan sonra Vanguard'ı kaldırdım ardından işletim sistemini yeniden başlattım ve vgk.sys'in yine sistemde olup olmadığını kontrol ettim ve sonuç:
 
-<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/driverquery-result-2.png?raw=true" style="margin-bottom: 0">
+<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/driverquery-result-2.png?raw=true" style="margin-bottom: 0">
 <div class="image-container"> 
     <div class="overlay"></div>
     <div class="modal">
         <span class="close">&times;</span>
-        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/driverquery-result-2.png?raw=true">
+        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/driverquery-result-2.png?raw=true">
     </div>
 </div>
 
@@ -296,12 +295,12 @@ vgk.sys sürücüsünü yakından analiz etmeye başlayacaktım ancak maalesef b
 
 İlk başta VALORANT oyununu sanal makineye kurdum ve sistemi yeniden başlattıktan sonra VANGUARD yazılımın başlatılmadığını fark ettim. Hatalardan olabileceğini düşünerek çeşitli yollar denedim ancak olmadı:
 
-<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/valorant-in-vm.png?raw=true" style="margin-bottom: 0">
+<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/valorant-in-vm.png?raw=true" style="margin-bottom: 0">
 <div class="image-container"> 
     <div class="overlay"></div>
     <div class="modal">
         <span class="close">&times;</span>
-        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/valorant-in-vm.png?raw=true">
+        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/valorant-in-vm.png?raw=true">
     </div>
 </div>
 
@@ -311,12 +310,12 @@ Sanal makinelerde hiçbir şekilde vgk.sys sürücüsünü başlatılmıyor ve a
 
 Dinamik analizine gidemediğim için statik analize yönelmeye karar verdim ve .sys dosyasının kullandığı fonksiyonlara göz atmak istedim:
 
-<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/used-function.png?raw=true" style="margin-bottom: 0">
+<img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/used-function.png?raw=true" style="margin-bottom: 0">
 <div class="image-container"> 
     <div class="overlay"></div>
     <div class="modal">
         <span class="close">&times;</span>
-        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/images/photos-for-is-valorant-malware/used-function.png?raw=true">
+        <img src="https://github.com/x1nerama/x1nerama.github.io/blob/main/_site/images/photos-for-is-valorant-spyware/used-function.png?raw=true">
     </div>
 </div>
 
@@ -394,4 +393,3 @@ Analiz sonucunda, Vanguard'ın sürücüsü olan vgk.sys'in davranışlarını d
 - <a href="https://www.schellman.com/blog/cybersecurity/what-is-anti-cheat" id="source-2"><b>[2] - Schellman: Understanding Anti-Cheat</b></a>
 - <a href="https://en.wikipedia.org/wiki/Riot_Games#History" id="source-3"><b>[3] - EN Wikipedia: Riot Games </b></a>
 - <a href="https://www.theregister.com/2013/11/20/esea_gaming_bitcoin_fine/" id="source-4"><b>[4] - TheRegister: Gaming co ESEA hit by $1m fine for hidden Bitcoin mining enslaver</b></a>
-- <a href="https://www.engadget.com/valorant-vanguard-riot-games-security-interview-video-170025435.html" id="source-5"><b>[5] - Engadget: A closer look at Valorant's always-on anti-cheat system</b></a>
